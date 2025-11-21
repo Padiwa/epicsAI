@@ -1,0 +1,756 @@
+{
+  "idea": "Une application permettant aux utilisateurs de partager leur programme d'entrainement en salle de sport, les utilisateurs peuvent s'inscrire, se connecter, créer des entrainement, les partager",
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Permettre aux utilisateurs de s'inscrire et de se connecter à l'application",
+      "description": "Offrir une expérience d'authentification sécurisée pour accéder à l'application.",
+      "goal": "Atteindre un taux de conversion d'inscription de 70% et un taux de rétention de connexion de 80%.",
+      "issues": [
+        {
+          "id": "EPIC-1-TASK-1",
+          "epic_id": "EPIC-1",
+          "type": "feat",
+          "title": "feat: Implémenter l'interface d'inscription utilisateur",
+          "description": "En tant qu'utilisateur, je souhaite pouvoir m'inscrire avec une adresse e-mail et un mot de passe afin de créer un compte sur l'application.",
+          "tech_details": "Stack: React, Go, PostgreSQL. Utiliser Material-UI pour le formulaire. Endpoint: POST /auth/register. Schema: table 'users' (id, email, password_hash, created_at, updated_at).",
+          "dependencies": [
+            "EPIC-1-TASK-3",
+            "EPIC-1-TASK-4",
+            "EPIC-1-TASK-10"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-2",
+          "epic_id": "EPIC-1",
+          "type": "feat",
+          "title": "feat: Implémenter l'interface de connexion utilisateur",
+          "description": "En tant qu'utilisateur, je souhaite pouvoir me connecter avec mon adresse e-mail et mon mot de passe afin d'accéder à mon compte.",
+          "tech_details": "Stack: React, Go, PostgreSQL. Utiliser Material-UI pour le formulaire. Endpoint: POST /auth/login. Schema: table 'users' (id, email, password_hash).",
+          "dependencies": [
+            "EPIC-1-TASK-3",
+            "EPIC-1-TASK-4",
+            "EPIC-1-TASK-10"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-3",
+          "epic_id": "EPIC-1",
+          "type": "chore",
+          "title": "chore: Configurer la base de données pour stocker les informations utilisateur",
+          "description": "Mettre en place la table 'users' dans la base de données PostgreSQL pour stocker les informations d'identification des utilisateurs.",
+          "tech_details": "Stack: PostgreSQL. Schema: table 'users' (id UUID PRIMARY KEY, email VARCHAR(255) UNIQUE NOT NULL, password_hash VARCHAR(255) NOT NULL, created_at TIMESTAMP, updated_at TIMESTAMP).",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-1-TASK-4",
+          "epic_id": "EPIC-1",
+          "type": "chore",
+          "title": "chore: Implémenter le service d'authentification (backend)",
+          "description": "Développer le service d'authentification en Go pour gérer l'inscription, la connexion et la gestion des sessions utilisateur.",
+          "tech_details": "Stack: Go, PostgreSQL. Utiliser bcrypt pour le hashage des mots de passe. Utiliser JWT pour l'authentification. Endpoints: POST /auth/register, POST /auth/login. Bibliothèques: go-jwt, bcrypt.",
+          "dependencies": [
+            "EPIC-1-TASK-3",
+            "EPIC-1-TASK-10"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-5",
+          "epic_id": "EPIC-1",
+          "type": "chore",
+          "title": "chore: Ajouter la gestion des erreurs côté frontend",
+          "description": "Améliorer la gestion des erreurs côté frontend pour afficher des messages d'erreur clairs et informatifs aux utilisateurs en cas de problèmes lors de l'inscription ou de la connexion.",
+          "tech_details": "Stack: React. Utiliser un système de gestion des erreurs centralisé. Afficher les erreurs via Material-UI alerts.",
+          "dependencies": [
+            "EPIC-1-TASK-1",
+            "EPIC-1-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-6",
+          "epic_id": "EPIC-1",
+          "type": "chore",
+          "title": "chore: Ajouter des tests unitaires pour le service d'authentification",
+          "description": "Écrire des tests unitaires pour valider le fonctionnement du service d'authentification, y compris l'inscription, la connexion et la gestion des sessions.",
+          "tech_details": "Stack: Go. Utiliser le package 'testing' de Go. Couverture de code \u003e 80%.",
+          "dependencies": [
+            "EPIC-1-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-7",
+          "epic_id": "EPIC-1",
+          "type": "chore",
+          "title": "chore: Mettre en place un middleware d'authentification",
+          "description": "Créer un middleware pour vérifier l'authentification de l'utilisateur avant d'accéder à certaines routes protégées.",
+          "tech_details": "Stack: Go. Utiliser JWT pour l'authentification. Le middleware doit être configurable pour être appliqué à différentes routes.",
+          "dependencies": [
+            "EPIC-1-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-8",
+          "epic_id": "EPIC-1",
+          "type": "fix",
+          "title": "fix: Corriger le bug d'expiration du token JWT",
+          "description": "Corriger le bug qui empêche le renouvellement automatique du token JWT, forçant l'utilisateur à se reconnecter fréquemment.",
+          "tech_details": "Stack: Go, React. Vérifier la configuration de la durée de vie du JWT et le mécanisme de renouvellement côté frontend et backend. Utiliser Refresh Tokens si nécessaire.",
+          "dependencies": [
+            "EPIC-1-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-9",
+          "epic_id": "EPIC-1",
+          "type": "chore",
+          "title": "chore: Ajouter la documentation pour l'API d'authentification",
+          "description": "Documenter les endpoints de l'API d'authentification (inscription, connexion) avec des exemples de requêtes et de réponses.",
+          "tech_details": "Utiliser Swagger ou un outil similaire pour générer la documentation. Inclure des schémas JSON pour les requêtes et les réponses.",
+          "dependencies": [
+            "EPIC-1-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-10",
+          "epic_id": "EPIC-1",
+          "type": "chore",
+          "title": "chore: Sécuriser les mots de passe en utilisant bcrypt",
+          "description": "Implémenter le hashage des mots de passe avec bcrypt pour une meilleure sécurité.",
+          "tech_details": "Stack: Go. Utiliser la bibliothèque 'bcrypt' pour le hashage des mots de passe.",
+          "dependencies": [
+            "EPIC-1-TASK-3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Permettre aux utilisateurs de créer et de modifier leurs programmes d'entraînement",
+      "description": "Offrir une interface intuitive pour la création et la personnalisation des programmes d'entraînement.",
+      "goal": "Permettre aux utilisateurs de créer un programme d'entraînement complet en moins de 10 minutes.",
+      "issues": [
+        {
+          "id": "EPIC-2-TASK-1",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "feat: Add workout creation form",
+          "description": "En tant qu'utilisateur, je veux pouvoir créer un nouveau programme d'entraînement via un formulaire dédié, afin de pouvoir structurer mes séances.",
+          "tech_details": "Stack: React, Redux. Utiliser Formik pour la gestion du formulaire. Endpoint: POST /workouts. Schema: workouts (id, user_id, name, description, created_at, updated_at)",
+          "dependencies": [
+            "EPIC-1-TASK-7"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-2",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "feat: Implement workout editing functionality",
+          "description": "En tant qu'utilisateur, je veux pouvoir modifier un programme d'entraînement existant, afin de pouvoir l'adapter à mes besoins et à ma progression.",
+          "tech_details": "Stack: React, Redux. Utiliser Formik pour la gestion du formulaire. Endpoint: PUT /workouts/{workoutId}. Schema: workouts (id, user_id, name, description, created_at, updated_at)",
+          "dependencies": [
+            "EPIC-1-TASK-7",
+            "EPIC-2-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-3",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "feat: Add exercises to workout",
+          "description": "En tant qu'utilisateur, je veux pouvoir ajouter des exercices à mon programme d'entraînement, afin de définir précisément les exercices à réaliser.",
+          "tech_details": "Stack: React, Redux. Utiliser une API d'exercices existante (ou créer une API simple). Endpoint: POST /workouts/{workoutId}/exercises, DELETE /workouts/{workoutId}/exercises/{exerciseId}. Schema: workout_exercises (workout_id, exercise_id, sets, reps, weight)",
+          "dependencies": [
+            "EPIC-2-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-4",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "feat: Display sets, reps and weight for each exercise",
+          "description": "En tant qu'utilisateur, je veux pouvoir définir le nombre de séries, répétitions et le poids pour chaque exercice, afin de personnaliser mon entraînement.",
+          "tech_details": "Stack: React, Redux.  Schema: workout_exercises (workout_id, exercise_id, sets, reps, weight). Utiliser des input fields numériques avec des valeurs par défaut.",
+          "dependencies": [
+            "EPIC-2-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-5",
+          "epic_id": "EPIC-2",
+          "type": "chore",
+          "title": "chore: Implement input validation for workout form",
+          "description": "Implémenter la validation des entrées pour le formulaire de création/modification d'entraînement.",
+          "tech_details": "Stack: React, Formik. Utiliser Yup pour la validation. Afficher les erreurs sous les champs concernés.",
+          "dependencies": [
+            "EPIC-2-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-6",
+          "epic_id": "EPIC-2",
+          "type": "chore",
+          "title": "chore: Style workout creation/edition form",
+          "description": "Appliquer un style cohérent au formulaire de création/modification d'entraînement.",
+          "tech_details": "Stack: React, CSS (ou framework CSS comme Material UI ou Bootstrap). Suivre les directives de style de l'application.",
+          "dependencies": [
+            "EPIC-2-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-7",
+          "epic_id": "EPIC-2",
+          "type": "fix",
+          "title": "fix: Handle errors during workout creation/edition",
+          "description": "Gérer les erreurs lors de la création/modification d'un entraînement (ex: erreur de connexion, erreur de validation côté serveur).",
+          "tech_details": "Stack: React, Redux, Go. Utiliser un système de gestion des erreurs centralisé. Afficher des notifications à l'utilisateur.",
+          "dependencies": [
+            "EPIC-2-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-8",
+          "epic_id": "EPIC-2",
+          "type": "chore",
+          "title": "chore: Add unit tests for workout creation/edition",
+          "description": "Ajouter des tests unitaires pour la logique de création/modification d'entraînement.",
+          "tech_details": "Stack: React, Jest, Testing Library. Mock les appels API.",
+          "dependencies": [
+            "EPIC-2-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-9",
+          "epic_id": "EPIC-2",
+          "type": "chore",
+          "title": "chore: Add documentation for workout creation/edition",
+          "description": "Ajouter de la documentation pour la fonctionnalité de création/modification d'entraînement.",
+          "tech_details": "Utiliser un outil de documentation comme Storybook ou un fichier README.",
+          "dependencies": [
+            "EPIC-2-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-10",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "feat: Implement workout deletion functionality",
+          "description": "En tant qu'utilisateur, je veux pouvoir supprimer un programme d'entraînement existant, afin de pouvoir nettoyer ma liste d'entraînements.",
+          "tech_details": "Stack: React, Redux. Endpoint: DELETE /workouts/{workoutId}. Schema: workouts (id, user_id, name, description, created_at, updated_at). Utiliser une modal de confirmation.",
+          "dependencies": [
+            "EPIC-1-TASK-7"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Permettre aux utilisateurs de partager leurs programmes d'entraînement avec d'autres utilisateurs",
+      "description": "Faciliter le partage de programmes d'entraînement pour encourager la collaboration et l'inspiration.",
+      "goal": "Atteindre un taux de partage de programmes d'entraînement de 50% parmi les utilisateurs actifs.",
+      "issues": [
+        {
+          "id": "EPIC-3-TASK-1",
+          "epic_id": "EPIC-3",
+          "type": "feat",
+          "title": "feat: Ajouter une option de partage à la page d'entraînement",
+          "description": "En tant qu'utilisateur, je veux pouvoir partager mon programme d'entraînement depuis la page de détails de l'entraînement, afin de le montrer à mes amis ou à d'autres utilisateurs.",
+          "tech_details": "Stack: React, Redux. Utiliser Material-UI pour le bouton et la modale.  Endpoints: Aucun nouveau endpoint requis. Schema: Aucun changement de schéma requis.",
+          "dependencies": [
+            "EPIC-2-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-2",
+          "epic_id": "EPIC-3",
+          "type": "feat",
+          "title": "feat: Implémenter la fonctionnalité 'Copier le lien'",
+          "description": "En tant qu'utilisateur, je veux pouvoir copier un lien vers mon programme d'entraînement, afin de pouvoir le partager facilement par message ou par email.",
+          "tech_details": "Stack: React. Utiliser la bibliothèque 'react-copy-to-clipboard'.  Endpoints: Aucun nouveau endpoint requis. Schema: Aucun changement de schéma requis.",
+          "dependencies": [
+            "EPIC-3-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-3",
+          "epic_id": "EPIC-3",
+          "type": "feat",
+          "title": "feat: Intégrer le partage sur [Réseau Social 1]",
+          "description": "En tant qu'utilisateur, je veux pouvoir partager mon programme d'entraînement directement sur [Réseau Social 1], afin de le montrer à un public plus large.",
+          "tech_details": "Stack: React. Utiliser l'API de partage de [Réseau Social 1] (ex: Facebook Share Button).  Endpoints: Aucun nouveau endpoint requis. Schema: Aucun changement de schéma requis.",
+          "dependencies": [
+            "EPIC-3-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-4",
+          "epic_id": "EPIC-3",
+          "type": "feat",
+          "title": "feat: Ajouter une option pour rendre un entraînement public",
+          "description": "En tant qu'utilisateur, je veux pouvoir rendre mes entraînements publics afin que d'autres utilisateurs puissent les découvrir et s'en inspirer.",
+          "tech_details": "Stack: Go, React, PostgreSQL.  Endpoints: Modification des endpoints `PUT /workouts/{id}`. Schema: Ajout d'une colonne `is_public` (BOOLEAN) dans la table `workouts`.",
+          "dependencies": [
+            "EPIC-2-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-5",
+          "epic_id": "EPIC-3",
+          "type": "feat",
+          "title": "feat: Afficher les entraînements publics dans une section dédiée",
+          "description": "En tant qu'utilisateur, je veux pouvoir voir une liste des entraînements publics partagés par d'autres utilisateurs, afin de trouver de l'inspiration et de nouvelles idées.",
+          "tech_details": "Stack: Go, React, PostgreSQL.  Endpoints: Création d'un endpoint `GET /workouts/public`. Schema: Utilisation de la colonne `is_public` (BOOLEAN) dans la table `workouts` pour filtrer les résultats.",
+          "dependencies": [
+            "EPIC-3-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-6",
+          "epic_id": "EPIC-3",
+          "type": "chore",
+          "title": "chore: Ajouter des tests unitaires pour le partage d'entraînement",
+          "description": "Ajouter des tests unitaires pour assurer la stabilité de la fonctionnalité de partage d'entraînement.",
+          "tech_details": "Stack: React (Jest, Testing Library), Go (Go test).  Tester les composants React liés au partage et les handlers Go pour la gestion de la visibilité.",
+          "dependencies": [
+            "EPIC-3-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-7",
+          "epic_id": "EPIC-3",
+          "type": "chore",
+          "title": "chore: Ajouter des tests d'intégration pour le partage d'entraînement",
+          "description": "Ajouter des tests d'intégration pour assurer le bon fonctionnement de la fonctionnalité de partage d'entraînement avec les autres composants de l'application.",
+          "tech_details": "Stack: Cypress ou équivalent. Tester le workflow complet de partage d'un entrainement et de sa visualisation par un autre utilisateur.",
+          "dependencies": [
+            "EPIC-3-TASK-6"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-8",
+          "epic_id": "EPIC-3",
+          "type": "chore",
+          "title": "chore: Mettre à jour la documentation de l'API pour la gestion du partage",
+          "description": "Mettre à jour la documentation de l'API pour refléter les changements liés à la fonctionnalité de partage d'entraînement.",
+          "tech_details": "Stack: Swagger/OpenAPI. Mettre à jour la définition OpenAPI avec les nouveaux endpoints `GET /workouts/public` et les modifications de `PUT /workouts/{id}`.",
+          "dependencies": [
+            "EPIC-3-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-9",
+          "epic_id": "EPIC-3",
+          "type": "chore",
+          "title": "chore: Ajouter de la documentation utilisateur pour le partage d'entraînement",
+          "description": "Ajouter de la documentation utilisateur pour expliquer comment partager un entraînement et comment trouver des entraînements partagés par d'autres utilisateurs.",
+          "tech_details": "Stack: Markdown ou équivalent. Créer une page d'aide expliquant le processus de partage et de découverte d'entrainements.",
+          "dependencies": [
+            "EPIC-3-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-10",
+          "epic_id": "EPIC-3",
+          "type": "fix",
+          "title": "fix: Corriger un bug d'affichage des noms d'utilisateurs dans la liste des entraînements publics",
+          "description": "Corriger un bug où les noms d'utilisateurs ne s'affichent pas correctement dans la liste des entraînements publics.",
+          "tech_details": "Stack: React, Go.  Vérifier la récupération et l'affichage des données utilisateur associées aux entrainements publics.",
+          "dependencies": [
+            "EPIC-3-TASK-5"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-11",
+          "epic_id": "EPIC-3",
+          "type": "chore",
+          "title": "chore: Ajouter un index sur la colonne is_public de la table workouts",
+          "description": "Pour optimiser les requêtes sur les entraînements publics, ajouter un index sur la colonne is_public.",
+          "tech_details": "Stack: PostgreSQL. Créer un index de type B-tree sur la colonne `is_public` de la table `workouts`.",
+          "dependencies": [
+            "EPIC-3-TASK-4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Permettre aux utilisateurs de rechercher et de découvrir des programmes d'entraînement partagés par d'autres",
+      "description": "Offrir une fonctionnalité de recherche et de découverte de programmes d'entraînement basés sur des critères pertinents.",
+      "goal": "Augmenter le nombre de programmes d'entraînement découverts par utilisateur de 20% par semaine.",
+      "issues": [
+        {
+          "id": "EPIC-4-TASK-1",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "feat: Implémenter l'API de recherche d'entraînements",
+          "description": "En tant qu'utilisateur, je souhaite pouvoir rechercher des entraînements partagés par d'autres en utilisant des mots-clés, afin de découvrir de nouveaux programmes adaptés à mes besoins.",
+          "tech_details": "Stack: Go, PostgreSQL. Utiliser Gin pour l'API, GORM pour l'ORM. Endpoints: GET /api/v1/workouts/search?q={query}\u0026page={page}\u0026limit={limit}. Schema: Table 'workouts' avec index sur 'name', 'description', 'muscle_group', 'equipment'.",
+          "dependencies": [
+            "EPIC-3-TASK-4",
+            "EPIC-3-TASK-11"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-2",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "feat: Développer l'interface utilisateur de recherche d'entraînements",
+          "description": "En tant qu'utilisateur, je souhaite avoir une barre de recherche facilement accessible sur l'application pour rechercher des entraînements.",
+          "tech_details": "Stack: React. Utiliser Material-UI ou un composant de recherche similaire.  Appeler l'API /api/v1/workouts/search lors de la soumission du formulaire de recherche. Gérer l'état de la recherche avec Redux ou Context.",
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-3",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "feat: Ajouter des filtres de recherche avancés",
+          "description": "En tant qu'utilisateur, je souhaite pouvoir filtrer les résultats de recherche par groupe musculaire ciblé, niveau de difficulté et équipement requis, afin d'affiner ma recherche.",
+          "tech_details": "Stack: Go, React, PostgreSQL.  Modifier l'API /api/v1/workouts/search pour accepter des paramètres de filtre (muscle_group, difficulty, equipment).  Modifier l'interface utilisateur React pour inclure les filtres et les envoyer avec la requête de recherche.  Adapter la requête SQL pour prendre en compte les filtres.",
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-4",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "feat: Implémenter la fonctionnalité de tri des résultats de recherche",
+          "description": "En tant qu'utilisateur, je souhaite pouvoir trier les résultats de recherche par popularité, date de création et note moyenne, afin de trouver les entraînements les plus pertinents.",
+          "tech_details": "Stack: Go, React, PostgreSQL.  Modifier l'API /api/v1/workouts/search pour accepter un paramètre de tri (sort_by).  Modifier l'interface utilisateur React pour inclure un menu déroulant de tri et l'envoyer avec la requête de recherche. Adapter la requête SQL pour inclure l'ORDER BY.",
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-5",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "feat: Afficher les entraînements populaires sur la page d'accueil",
+          "description": "En tant qu'utilisateur, je souhaite voir une section dédiée aux entraînements populaires sur la page d'accueil, afin de découvrir rapidement les programmes les plus appréciés par la communauté.",
+          "tech_details": "Stack: Go, React, PostgreSQL.  Créer une nouvelle API pour récupérer les entraînements populaires (GET /api/v1/workouts/popular).  Modifier l'interface utilisateur React pour afficher les entraînements populaires sur la page d'accueil.  Utiliser une requête SQL pour récupérer les entraînements les plus populaires.",
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-6",
+          "epic_id": "EPIC-4",
+          "type": "chore",
+          "title": "chore: Ajouter des tests unitaires pour l'API de recherche",
+          "description": "Ajouter des tests unitaires pour l'API de recherche afin de garantir sa qualité et sa stabilité.",
+          "tech_details": "Stack: Go, PostgreSQL. Utiliser le package 'testing' de Go et un framework de test comme 'testify'. Mock la base de données pour les tests unitaires.",
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-7",
+          "epic_id": "EPIC-4",
+          "type": "chore",
+          "title": "chore: Ajouter des tests d'intégration pour l'API de recherche",
+          "description": "Ajouter des tests d'intégration pour l'API de recherche afin de garantir son bon fonctionnement avec la base de données.",
+          "tech_details": "Stack: Go, PostgreSQL. Utiliser un environnement de test PostgreSQL pour les tests d'intégration. Utiliser un framework de test comme 'testify'.",
+          "dependencies": [
+            "EPIC-4-TASK-6"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-8",
+          "epic_id": "EPIC-4",
+          "type": "chore",
+          "title": "chore: Mettre à jour la documentation de l'API",
+          "description": "Mettre à jour la documentation de l'API pour inclure les nouveaux endpoints et paramètres de recherche.",
+          "tech_details": "Stack: Swagger/OpenAPI. Mettre à jour le fichier Swagger/OpenAPI avec les nouveaux endpoints et paramètres. Générer la documentation à partir du fichier Swagger/OpenAPI.",
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-9",
+          "epic_id": "EPIC-4",
+          "type": "fix",
+          "title": "fix: Corriger un bug potentiel de pagination lors de la recherche",
+          "description": "Corriger un bug potentiel où la pagination ne fonctionne pas correctement lors de la recherche avec des filtres.",
+          "tech_details": "Stack: Go, PostgreSQL. Vérifier la logique de pagination dans l'API et la requête SQL. Ajouter des tests unitaires pour la pagination.",
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-10",
+          "epic_id": "EPIC-4",
+          "type": "chore",
+          "title": "chore: Ajouter un index sur la colonne 'muscle_group' de la table 'workouts'",
+          "description": "Ajouter un index sur la colonne 'muscle_group' de la table 'workouts' pour améliorer les performances de la recherche par groupe musculaire.",
+          "tech_details": "Stack: PostgreSQL. Exécuter la commande 'CREATE INDEX idx_workouts_muscle_group ON workouts (muscle_group);'.",
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Permettre aux utilisateurs de sauvegarder leurs programmes d'entrainement favoris",
+      "description": "Offrir la possibilité de sauvegarder des programmes afin de pouvoir les réutiliser plus tard",
+      "goal": "Avoir un taux d'utilisation de la fonctionnalité de sauvegarde de 60% par mois",
+      "issues": [
+        {
+          "id": "EPIC-5-TASK-1",
+          "epic_id": "EPIC-5",
+          "type": "feat",
+          "title": "feat: Add 'Save Workout' button to workout display",
+          "description": "As a user, I want to be able to save a workout program so that I can easily access it later.",
+          "tech_details": "Stack: React, Go, PostgreSQL. Utilize React's useState hook for button state. Endpoints: POST /api/users/{user_id}/saved_workouts. Schema: Add 'saved_workouts' table with user_id and workout_id.",
+          "dependencies": [
+            "EPIC-2-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-2",
+          "epic_id": "EPIC-5",
+          "type": "chore",
+          "title": "chore: Create 'saved_workouts' table in PostgreSQL",
+          "description": "Create the 'saved_workouts' table in the PostgreSQL database to store user's saved workouts.",
+          "tech_details": "Stack: PostgreSQL. Schema: Table 'saved_workouts' with columns id, user_id, workout_id, created_at.",
+          "dependencies": [
+            "EPIC-2-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-3",
+          "epic_id": "EPIC-5",
+          "type": "feat",
+          "title": "feat: Implement API endpoint to save workout for user",
+          "description": "Implement the API endpoint that handles saving a workout program for a specific user.",
+          "tech_details": "Stack: Go, PostgreSQL. Utilize Go's standard library for HTTP handling. Endpoints: POST /api/users/{user_id}/saved_workouts. Schema: 'saved_workouts' table.",
+          "dependencies": [
+            "EPIC-5-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-4",
+          "epic_id": "EPIC-5",
+          "type": "feat",
+          "title": "feat: Implement API endpoint to retrieve saved workouts for user",
+          "description": "Implement the API endpoint to retrieve a list of saved workouts for a specific user.",
+          "tech_details": "Stack: Go, PostgreSQL. Utilize Go's standard library for HTTP handling. Endpoints: GET /api/users/{user_id}/saved_workouts. Schema: 'saved_workouts' table.",
+          "dependencies": [
+            "EPIC-5-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-5",
+          "epic_id": "EPIC-5",
+          "type": "feat",
+          "title": "feat: Display saved workouts in user profile",
+          "description": "As a user, I want to see a list of my saved workouts in my profile.",
+          "tech_details": "Stack: React, Go. Utilize React components to display the list of saved workouts. Endpoints: GET /api/users/{user_id}/saved_workouts.",
+          "dependencies": [
+            "EPIC-5-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-6",
+          "epic_id": "EPIC-5",
+          "type": "chore",
+          "title": "chore: Add error handling for saving workout",
+          "description": "Implement error handling for saving workout functionality.",
+          "tech_details": "Stack: Go. Implement error handling in the POST /api/users/{user_id}/saved_workouts endpoint.",
+          "dependencies": [
+            "EPIC-5-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-7",
+          "epic_id": "EPIC-5",
+          "type": "chore",
+          "title": "chore: Add unit tests for saving workout API",
+          "description": "Write unit tests for the API endpoint that saves a workout for a user.",
+          "tech_details": "Stack: Go. Utilize Go's testing package.",
+          "dependencies": [
+            "EPIC-5-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-8",
+          "epic_id": "EPIC-5",
+          "type": "chore",
+          "title": "chore: Add unit tests for retrieving saved workouts API",
+          "description": "Write unit tests for the API endpoint that retrieves saved workouts for a user.",
+          "tech_details": "Stack: Go. Utilize Go's testing package.",
+          "dependencies": [
+            "EPIC-5-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-9",
+          "epic_id": "EPIC-5",
+          "type": "fix",
+          "title": "fix: Prevent duplicate saves of the same workout",
+          "description": "Prevent users from saving the same workout multiple times.",
+          "tech_details": "Stack: React, Go, PostgreSQL. Check for existing records in the 'saved_workouts' table before saving a new record. Update React component to disable or hide the button after save.",
+          "dependencies": [
+            "EPIC-5-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-10",
+          "epic_id": "EPIC-5",
+          "type": "chore",
+          "title": "chore: Document the new API endpoints for saved workouts",
+          "description": "Document the new API endpoints for saving and retrieving saved workouts.",
+          "tech_details": "Stack: Documentation tool (Swagger/OpenAPI). Document POST /api/users/{user_id}/saved_workouts and GET /api/users/{user_id}/saved_workouts.",
+          "dependencies": [
+            "EPIC-5-TASK-3",
+            "EPIC-5-TASK-4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Permettre aux utilisateurs de commenter et d'évaluer les programmes d'entraînement",
+      "description": "Offrir un système de commentaires et d'évaluation pour encourager le feedback et améliorer la qualité des programmes.",
+      "goal": "Obtenir une moyenne d'évaluation des programmes d'entraînement de 4 étoiles sur 5.",
+      "issues": [
+        {
+          "id": "EPIC-6-TASK-1",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "feat: Add database schema for comments and ratings",
+          "description": "Define the database schema to store comments and ratings for workout programs.",
+          "tech_details": "Stack: PostgreSQL. Schema: `comments` (id, user_id, program_id, comment_text, created_at, updated_at), `ratings` (id, user_id, program_id, rating_value, created_at, updated_at). Relationships: foreign keys to `users` and `programs` tables.",
+          "dependencies": [
+            "EPIC-2-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-2",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "feat: Implement API endpoint for creating comments",
+          "description": "Create an API endpoint that allows users to post comments on workout programs.",
+          "tech_details": "Stack: Go, REST API. Use chi router. Endpoint: POST /programs/{programId}/comments. Request body: { comment_text: string }. Authentication middleware required.",
+          "dependencies": [
+            "EPIC-6-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-3",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "feat: Implement API endpoint for retrieving comments for a program",
+          "description": "Create an API endpoint to retrieve all comments associated with a specific workout program.",
+          "tech_details": "Stack: Go, REST API. Use chi router. Endpoint: GET /programs/{programId}/comments. Response body: [{ id: int, user_id: int, username: string, profile_picture: string, comment_text: string, created_at: timestamp }]. Pagination should be considered.",
+          "dependencies": [
+            "EPIC-6-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-4",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "feat: Implement API endpoint for submitting ratings",
+          "description": "Create an API endpoint for users to submit ratings for workout programs.",
+          "tech_details": "Stack: Go, REST API. Use chi router. Endpoint: POST /programs/{programId}/ratings. Request body: { rating_value: int }. Authentication middleware required.",
+          "dependencies": [
+            "EPIC-6-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-5",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "feat: Implement API endpoint for retrieving average rating for a program",
+          "description": "Create an API endpoint to retrieve the average rating of a workout program.",
+          "tech_details": "Stack: Go, REST API. Use chi router. Endpoint: GET /programs/{programId}/ratings/average. Response body: { average_rating: float }.",
+          "dependencies": [
+            "EPIC-6-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-6",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "feat: Display comments and ratings on the program details page",
+          "description": "Display the comments and average rating on the workout program details page.",
+          "tech_details": "Stack: React. Fetch comments and average rating from the respective API endpoints. Use a star rating component.",
+          "dependencies": [
+            "EPIC-6-TASK-3",
+            "EPIC-6-TASK-5"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-7",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "feat: Implement comment submission form on the program details page",
+          "description": "Add a form on the program details page that allows users to submit comments.",
+          "tech_details": "Stack: React. Use a form component. Call the POST /programs/{programId}/comments endpoint on submit.",
+          "dependencies": [
+            "EPIC-6-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-8",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "feat: Implement rating submission component on the program details page",
+          "description": "Add a component on the program details page that allows users to submit ratings.",
+          "tech_details": "Stack: React. Use a star rating component. Call the POST /programs/{programId}/ratings endpoint on submit.",
+          "dependencies": [
+            "EPIC-6-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-9",
+          "epic_id": "EPIC-6",
+          "type": "chore",
+          "title": "chore: Add unit tests for comment and rating API endpoints",
+          "description": "Write unit tests for the comment and rating API endpoints to ensure they function correctly.",
+          "tech_details": "Stack: Go, testing package. Mock database dependencies. Test cases for different scenarios.",
+          "dependencies": [
+            "EPIC-6-TASK-2",
+            "EPIC-6-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-10",
+          "epic_id": "EPIC-6",
+          "type": "chore",
+          "title": "chore: Add integration tests for comment and rating functionality",
+          "description": "Write integration tests for the comment and rating functionality to ensure they work correctly together.",
+          "tech_details": "Stack: Go, testing package. Use a test database. Test cases for different user roles and program scenarios.",
+          "dependencies": [
+            "EPIC-6-TASK-9"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-11",
+          "epic_id": "EPIC-6",
+          "type": "chore",
+          "title": "chore: Document comment and rating API endpoints",
+          "description": "Document the comment and rating API endpoints using Swagger or a similar tool.",
+          "tech_details": "Stack: Swagger/OpenAPI. Generate documentation from code annotations.",
+          "dependencies": [
+            "EPIC-6-TASK-2",
+            "EPIC-6-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-12",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "feat: Prevent users from rating their own programs",
+          "description": "Implement logic to prevent users from rating their own workout programs.",
+          "tech_details": "Stack: Go, React. Check user ID against program creator ID in the API and component.",
+          "dependencies": [
+            "EPIC-6-TASK-4"
+          ]
+        }
+      ]
+    }
+  ]
+}
