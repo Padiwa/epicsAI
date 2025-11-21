@@ -1,0 +1,1831 @@
+{
+  "idea": "Une application permettant aux utilisateurs de partager leur programme d'entrainement en salle de sport, les utilisateurs peuvent s'inscrire, se connecter, créer des entrainement, les partager",
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Inscription et authentification des utilisateurs",
+      "description": "Permettre aux utilisateurs de créer un compte, de se connecter et de gérer leur profil.",
+      "goal": "Garantir un accès sécurisé et personnalisé à l'application.",
+      "issues": [
+        {
+          "id": "EPIC-1-TASK-1",
+          "epic_id": "EPIC-1",
+          "type": "feat",
+          "title": "Implémenter l'interface d'inscription utilisateur",
+          "description": "Créer l'interface utilisateur pour permettre aux nouveaux utilisateurs de s'inscrire avec une adresse e-mail, un nom d'utilisateur et un mot de passe.",
+          "tech_details": "Stack: React. Utiliser un formulaire avec validation côté client.  Intégrer avec l'API d'authentification (à définir).",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-1-TASK-2",
+          "epic_id": "EPIC-1",
+          "type": "feat",
+          "title": "Implémenter l'API d'inscription utilisateur",
+          "description": "Créer l'endpoint API pour gérer l'inscription d'un nouvel utilisateur.  Valider les données, hacher le mot de passe et enregistrer l'utilisateur dans la base de données.",
+          "tech_details": "Stack: Go. Utiliser bcrypt pour le hachage des mots de passe.  Base de données: PostgreSQL (à confirmer). Gérer les erreurs et les doublons d'email/username.",
+          "dependencies": [
+            "EPIC-1-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-3",
+          "epic_id": "EPIC-1",
+          "type": "feat",
+          "title": "Implémenter l'interface de connexion utilisateur",
+          "description": "Créer l'interface utilisateur pour permettre aux utilisateurs existants de se connecter avec leur adresse e-mail et leur mot de passe.",
+          "tech_details": "Stack: React. Utiliser un formulaire avec validation côté client. Intégrer avec l'API d'authentification.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-1-TASK-4",
+          "epic_id": "EPIC-1",
+          "type": "feat",
+          "title": "Implémenter l'API de connexion utilisateur",
+          "description": "Créer l'endpoint API pour gérer la connexion d'un utilisateur existant.  Valider les informations d'identification et générer un token JWT.",
+          "tech_details": "Stack: Go. Utiliser JWT (JSON Web Tokens) pour l'authentification.  Stocker le token dans un cookie sécurisé (httpOnly, secure). Gérer les erreurs d'authentification.",
+          "dependencies": [
+            "EPIC-1-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-5",
+          "epic_id": "EPIC-1",
+          "type": "feat",
+          "title": "Implémenter la gestion du profil utilisateur",
+          "description": "Permettre aux utilisateurs de consulter et de modifier les informations de leur profil (nom d'utilisateur, adresse e-mail, etc.).",
+          "tech_details": "Stack: React/Go. Créer une interface utilisateur pour afficher et modifier les informations du profil. Créer des endpoints API pour lire et mettre à jour les informations du profil.  Utiliser une authentification basée sur JWT pour sécuriser l'accès au profil.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-1-TASK-6",
+          "epic_id": "EPIC-1",
+          "type": "feat",
+          "title": "Implémenter la déconnexion utilisateur",
+          "description": "Permettre aux utilisateurs de se déconnecter de l'application.",
+          "tech_details": "Stack: React/Go. Supprimer le token JWT du cookie côté client.  Invalider le token JWT côté serveur (si nécessaire).",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-1-TASK-7",
+          "epic_id": "EPIC-1",
+          "type": "fix",
+          "title": "Ajouter la validation des formulaires côté serveur",
+          "description": "Valider les données du formulaire d'inscription et de connexion côté serveur pour garantir l'intégrité des données.",
+          "tech_details": "Stack: Go. Utiliser une librairie de validation pour valider les données (ex: `go-playground/validator`). Retourner des erreurs claires et précises à l'utilisateur.",
+          "dependencies": [
+            "EPIC-1-TASK-2",
+            "EPIC-1-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-8",
+          "epic_id": "EPIC-1",
+          "type": "chore",
+          "title": "Configurer CORS pour l'environnement de développement",
+          "description": "Configurer CORS (Cross-Origin Resource Sharing) pour permettre aux requêtes depuis le frontend (React) d'accéder à l'API (Go) en environnement de développement.",
+          "tech_details": "Stack: Go. Utiliser une librairie CORS (ex: `rs/cors`).  Autoriser uniquement les origines du frontend en développement.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-1-TASK-9",
+          "epic_id": "EPIC-1",
+          "type": "chore",
+          "title": "Ajouter des tests unitaires pour l'API d'authentification",
+          "description": "Écrire des tests unitaires pour les endpoints API d'inscription, de connexion et de gestion du profil.",
+          "tech_details": "Stack: Go. Utiliser le package `testing` de Go.  Tester les cas d'utilisation normaux et les cas d'erreur.",
+          "dependencies": [
+            "EPIC-1-TASK-2",
+            "EPIC-1-TASK-4",
+            "EPIC-1-TASK-5"
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-10",
+          "epic_id": "EPIC-1",
+          "type": "feat",
+          "title": "Implémenter la gestion des erreurs côté client",
+          "description": "Afficher des messages d'erreur clairs et conviviaux aux utilisateurs en cas d'erreur lors de l'inscription, de la connexion ou de la modification du profil.",
+          "tech_details": "Stack: React. Utiliser un système de notification (ex: toasts) pour afficher les erreurs.  Traduire les codes d'erreur de l'API en messages compréhensibles.",
+          "dependencies": []
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Création et édition des programmes d'entraînement",
+      "description": "Offrir aux utilisateurs la possibilité de créer et de modifier leurs propres programmes d'entraînement, incluant les exercices, les séries, les répétitions et le repos.",
+      "goal": "Fournir un outil flexible pour personnaliser les entraînements.",
+      "issues": [
+        {
+          "id": "EPIC-2-TASK-1",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "FE: Créer l'interface de création d'un programme d'entraînement",
+          "description": "Développer l'interface utilisateur permettant à l'utilisateur de créer un nouveau programme d'entraînement. L'interface doit inclure des champs pour le nom du programme, une description optionnelle et une liste d'exercices.",
+          "tech_details": "Stack: React. Utiliser Material UI pour les composants. Créer un formulaire avec les champs nécessaires et un bouton pour ajouter des exercices.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-2-TASK-2",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "BE: Créer l'endpoint pour la création d'un programme d'entraînement",
+          "description": "Développer l'endpoint API permettant de créer un nouveau programme d'entraînement dans la base de données.",
+          "tech_details": "Stack: Go. Utiliser Gin pour le routing. Valider les données entrantes. Sauvegarder le programme d'entraînement dans la base de données (MongoDB).",
+          "dependencies": [
+            "EPIC-1-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-3",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "FE: Afficher la liste des exercices disponibles",
+          "description": "Développer un composant permettant d'afficher la liste des exercices disponibles et de les ajouter au programme d'entraînement.",
+          "tech_details": "Stack: React. Utiliser l'API pour récupérer la liste des exercices. Permettre la recherche et le filtrage des exercices.",
+          "dependencies": [
+            "EPIC-8-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-4",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "BE: Créer l'endpoint pour récupérer la liste des exercices",
+          "description": "Développer l'endpoint API permettant de récupérer la liste des exercices depuis la base de données.",
+          "tech_details": "Stack: Go. Utiliser Gin pour le routing. Implémenter la pagination et le filtrage des exercices. (MongoDB)",
+          "dependencies": [
+            "EPIC-8-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-5",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "FE: Gérer l'ajout, la suppression et l'ordre des exercices dans le programme",
+          "description": "Implémenter la logique permettant d'ajouter, de supprimer et de réordonner les exercices dans le programme d'entraînement en cours de création.",
+          "tech_details": "Stack: React. Utiliser un state local pour gérer la liste des exercices. Utiliser une librairie de Drag and Drop si nécessaire.",
+          "dependencies": [
+            "EPIC-2-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-6",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "FE: Créer les champs pour les séries, répétitions et repos pour chaque exercice",
+          "description": "Ajouter des champs pour spécifier le nombre de séries, de répétitions et le temps de repos pour chaque exercice dans le programme d'entraînement.",
+          "tech_details": "Stack: React. Ajouter des inputs numériques pour les séries, répétitions et repos. Valider les entrées utilisateur.",
+          "dependencies": [
+            "EPIC-2-TASK-5"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-7",
+          "epic_id": "EPIC-2",
+          "type": "chore",
+          "title": "BE: Mettre à jour le modèle de données pour inclure les séries, répétitions et repos",
+          "description": "Mettre à jour le modèle de données (MongoDB) pour inclure les champs 'series', 'repetitions' et 'repos' pour chaque exercice dans un programme d'entraînement.",
+          "tech_details": "Stack: Go. Modifier les structures Go et le schéma MongoDB.",
+          "dependencies": [
+            "EPIC-2-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-8",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "FE: Implémenter la sauvegarde du programme d'entraînement",
+          "description": "Implémenter la logique permettant de sauvegarder le programme d'entraînement en utilisant l'API.",
+          "tech_details": "Stack: React. Envoyer une requête POST à l'API avec les données du programme d'entraînement.",
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-2-TASK-2",
+            "EPIC-2-TASK-5",
+            "EPIC-2-TASK-6"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-9",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "BE: Implémenter la logique de sauvegarde du programme d'entraînement",
+          "description": "Implémenter la logique permettant de sauvegarder le programme d'entraînement dans la base de données.",
+          "tech_details": "Stack: Go. Valider les données. Sauvegarder le programme d'entraînement dans MongoDB.",
+          "dependencies": [
+            "EPIC-2-TASK-7"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-10",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "FE: Créer l'interface d'édition d'un programme d'entraînement existant",
+          "description": "Développer l'interface utilisateur permettant à l'utilisateur de modifier un programme d'entraînement existant. L'interface doit pré-remplir les champs avec les données existantes.",
+          "tech_details": "Stack: React. Récupérer les données du programme d'entraînement depuis l'API. Afficher les données dans le formulaire.",
+          "dependencies": [
+            "EPIC-2-TASK-11"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-11",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "BE: Créer l'endpoint pour récupérer un programme d'entraînement spécifique",
+          "description": "Développer l'endpoint API permettant de récupérer un programme d'entraînement spécifique depuis la base de données.",
+          "tech_details": "Stack: Go. Utiliser Gin pour le routing. Récupérer le programme d'entraînement depuis MongoDB par son ID.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-2-TASK-12",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "FE: Implémenter la mise à jour du programme d'entraînement",
+          "description": "Implémenter la logique permettant de mettre à jour le programme d'entraînement en utilisant l'API.",
+          "tech_details": "Stack: React. Envoyer une requête PUT à l'API avec les données du programme d'entraînement.",
+          "dependencies": [
+            "EPIC-2-TASK-10",
+            "EPIC-2-TASK-11"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-13",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "BE: Implémenter la logique de mise à jour du programme d'entraînement",
+          "description": "Implémenter la logique permettant de mettre à jour le programme d'entraînement dans la base de données.",
+          "tech_details": "Stack: Go. Valider les données. Mettre à jour le programme d'entraînement dans MongoDB.",
+          "dependencies": [
+            "EPIC-2-TASK-11"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-14",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "FE: Gérer les erreurs et les validations côté client",
+          "description": "Implémenter la gestion des erreurs et les validations côté client pour la création et l'édition des programmes d'entraînement.",
+          "tech_details": "Stack: React. Afficher les messages d'erreur appropriés à l'utilisateur.",
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-2-TASK-10"
+          ]
+        },
+        {
+          "id": "EPIC-2-TASK-15",
+          "epic_id": "EPIC-2",
+          "type": "feat",
+          "title": "BE: Gérer les erreurs et les validations côté serveur",
+          "description": "Implémenter la gestion des erreurs et les validations côté serveur pour la création et l'édition des programmes d'entraînement.",
+          "tech_details": "Stack: Go. Retourner des codes d'erreur HTTP appropriés.",
+          "dependencies": [
+            "EPIC-2-TASK-2",
+            "EPIC-2-TASK-13"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Partage des programmes d'entraînement",
+      "description": "Permettre aux utilisateurs de partager leurs programmes d'entraînement avec d'autres utilisateurs.",
+      "goal": "Faciliter la découverte et l'échange de programmes d'entraînement.",
+      "issues": [
+        {
+          "id": "EPIC-3-TASK-1",
+          "epic_id": "EPIC-3",
+          "type": "feat",
+          "title": "Créer une API pour partager un programme d'entraînement",
+          "description": "En tant que développeur, je dois créer une API qui permettra de partager un programme d'entraînement existant. L'API doit prendre en entrée l'ID du programme d'entraînement et renvoyer un identifiant unique (UUID) pour le partage.",
+          "tech_details": "Stack: Go. Utiliser Gin pour l'API, GORM pour l'accès à la base de données. Créer une table 'shares' avec les champs 'id' (UUID), 'program_id' (INT, foreign key), 'created_at' (TIMESTAMP). L'API doit être accessible via une requête POST sur /api/v1/programs/:program_id/share. Retourner un code 201 Created avec un body JSON contenant l'UUID.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-3-TASK-2",
+          "epic_id": "EPIC-3",
+          "type": "feat",
+          "title": "Créer une API pour récupérer un programme d'entraînement partagé",
+          "description": "En tant que développeur, je dois créer une API qui permettra de récupérer un programme d'entraînement partagé à partir de son identifiant unique. L'API doit prendre en entrée l'UUID et renvoyer le programme d'entraînement correspondant.",
+          "tech_details": "Stack: Go. Utiliser Gin pour l'API, GORM pour l'accès à la base de données. L'API doit être accessible via une requête GET sur /api/v1/shares/:share_id. Si l'UUID n'existe pas, retourner un code 404 Not Found. Si le programme existe, retourner un code 200 OK avec un body JSON contenant les détails du programme d'entraînement.",
+          "dependencies": [
+            "EPIC-3-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-3",
+          "epic_id": "EPIC-3",
+          "type": "feat",
+          "title": "Ajouter un bouton 'Partager' sur la page de détail d'un programme d'entraînement",
+          "description": "En tant que développeur front-end, je dois ajouter un bouton 'Partager' sur la page de détail d'un programme d'entraînement. Lorsque l'utilisateur clique sur ce bouton, une requête est envoyée à l'API de partage et un modal s'ouvre avec l'URL de partage.",
+          "tech_details": "Stack: React. Utiliser Axios pour les requêtes API. Le bouton doit être stylisé et placé de manière visible. Afficher un modal avec l'URL de partage (e.g., 'https://app.example.com/share/{UUID}') et un bouton 'Copier' pour copier l'URL dans le presse-papier.",
+          "dependencies": [
+            "EPIC-3-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-4",
+          "epic_id": "EPIC-3",
+          "type": "feat",
+          "title": "Créer une page de visualisation d'un programme partagé",
+          "description": "En tant que développeur front-end, je dois créer une page qui permettra de visualiser un programme d'entraînement partagé à partir de son URL. La page doit récupérer le programme d'entraînement via l'API et l'afficher de manière lisible.",
+          "tech_details": "Stack: React. Utiliser React Router pour gérer la route '/share/:share_id'. Utiliser Axios pour récupérer les données du programme d'entraînement. Afficher le nom du programme, la description, et la liste des exercices avec leurs détails (séries, répétitions, etc.).",
+          "dependencies": [
+            "EPIC-3-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-5",
+          "epic_id": "EPIC-3",
+          "type": "fix",
+          "title": "Gestion des erreurs pour le partage de programme",
+          "description": "En tant que développeur, je dois gérer les erreurs potentielles lors du partage d'un programme d'entraînement. Par exemple, l'utilisateur n'a pas les droits pour partager le programme, le programme n'existe pas, etc.",
+          "tech_details": "Stack: Go/React. Côté API (Go), gérer les erreurs et retourner des codes d'erreur appropriés (400 Bad Request, 403 Forbidden, 404 Not Found). Côté front-end (React), afficher des messages d'erreur clairs et informatifs à l'utilisateur en cas d'échec du partage ou de la récupération du programme.",
+          "dependencies": [
+            "EPIC-3-TASK-1",
+            "EPIC-3-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-3-TASK-6",
+          "epic_id": "EPIC-3",
+          "type": "chore",
+          "title": "Ajouter des tests unitaires et d'intégration pour l'API de partage",
+          "description": "En tant que développeur, je dois ajouter des tests unitaires et d'intégration pour l'API de partage afin de garantir sa stabilité et sa fiabilité.",
+          "tech_details": "Stack: Go. Utiliser le package 'testify' pour les assertions. Tester les cas suivants: partage réussi, partage échoué (programme inexistant, utilisateur non autorisé), récupération réussie, récupération échouée (UUID inexistant).",
+          "dependencies": [
+            "EPIC-3-TASK-1",
+            "EPIC-3-TASK-2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Recherche et découverte de programmes d'entraînement",
+      "description": "Offrir aux utilisateurs la possibilité de rechercher et de découvrir des programmes d'entraînement partagés par d'autres utilisateurs.",
+      "goal": "Aider les utilisateurs à trouver de nouveaux programmes d'entraînement adaptés à leurs besoins.",
+      "issues": [
+        {
+          "id": "EPIC-4-TASK-1",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "Implémenter l'API de recherche d'entraînements",
+          "description": "Développer une API REST permettant de rechercher des entraînements en fonction de différents critères (nom, type d'exercice, niveau de difficulté, etc.).",
+          "tech_details": "Stack: Go. Utiliser Gin pour le framework API. La recherche doit être paginée et filtrable.  Base de données: PostgreSQL. Utiliser GORM pour l'ORM.  Considerer l'indexation des champs de recherche pour optimiser les performances.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-4-TASK-2",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "Créer un composant de recherche d'entraînements (Frontend)",
+          "description": "Développer un composant React permettant aux utilisateurs de saisir des critères de recherche et d'afficher les résultats sous forme de liste.",
+          "tech_details": "Stack: React. Utiliser Material UI pour l'interface utilisateur.  Le composant doit gérer la pagination des résultats. Gérer les états de chargement et d'erreur.",
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-3",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "Intégrer l'API de recherche au composant de recherche (Frontend)",
+          "description": "Connecter le composant de recherche React à l'API de recherche d'entraînements pour afficher les résultats de recherche.",
+          "tech_details": "Stack: React. Utiliser Axios ou Fetch pour les requêtes HTTP. Gérer les erreurs de l'API et les afficher à l'utilisateur.",
+          "dependencies": [
+            "EPIC-4-TASK-2",
+            "EPIC-4-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-4",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "Afficher les détails d'un entraînement dans les résultats de recherche",
+          "description": "Afficher un aperçu des détails de l'entraînement (nom, description, créateur, etc.) dans les résultats de recherche.",
+          "tech_details": "Stack: React. Créer un composant pour afficher les détails de l'entraînement.  Ce composant doit être réutilisable pour l'affichage des détails complets de l'entraînement (cf. future epic).",
+          "dependencies": [
+            "EPIC-4-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-5",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "Ajouter des filtres de recherche avancés",
+          "description": "Ajouter des filtres de recherche avancés (par exemple, par groupe musculaire ciblé, par équipement requis, par durée de l'entraînement) pour affiner les résultats.",
+          "tech_details": "Stack: Go/React. Modifier l'API pour accepter les nouveaux paramètres de filtre.  Modifier le composant React pour inclure les nouveaux filtres. Utiliser des composants de formulaire Material UI pour les filtres.",
+          "dependencies": [
+            "EPIC-4-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-6",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "Implémenter la pagination des résultats de recherche (Backend)",
+          "description": "Implémenter la pagination des résultats de recherche côté backend pour gérer de grands ensembles de données.",
+          "tech_details": "Stack: Go. Utiliser des paramètres de requête (offset, limit) pour la pagination. Retourner les informations de pagination dans l'en-tête de réponse (total count).",
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-7",
+          "epic_id": "EPIC-4",
+          "type": "feat",
+          "title": "Implémenter la pagination des résultats de recherche (Frontend)",
+          "description": "Implémenter la pagination des résultats de recherche côté frontend pour permettre aux utilisateurs de naviguer à travers les résultats.",
+          "tech_details": "Stack: React. Utiliser un composant de pagination Material UI.  Mettre à jour l'URL avec les paramètres de pagination.",
+          "dependencies": [
+            "EPIC-4-TASK-6",
+            "EPIC-4-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-8",
+          "epic_id": "EPIC-4",
+          "type": "chore",
+          "title": "Ajouter des tests unitaires pour l'API de recherche",
+          "description": "Écrire des tests unitaires pour l'API de recherche afin de garantir sa qualité et sa fiabilité.",
+          "tech_details": "Stack: Go. Utiliser le package 'testify' pour les assertions.  Tester les différents scénarios de recherche (avec et sans filtres, avec et sans résultats).",
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-9",
+          "epic_id": "EPIC-4",
+          "type": "chore",
+          "title": "Ajouter des tests d'intégration pour le composant de recherche (Frontend)",
+          "description": "Écrire des tests d'intégration pour le composant de recherche React afin de garantir son bon fonctionnement avec l'API.",
+          "tech_details": "Stack: React. Utiliser Jest et React Testing Library.  Mocker l'API pour les tests d'intégration. Tester les différents scénarios d'interaction utilisateur.",
+          "dependencies": [
+            "EPIC-4-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-4-TASK-10",
+          "epic_id": "EPIC-4",
+          "type": "fix",
+          "title": "Améliorer l'affichage des résultats de recherche sur mobile",
+          "description": "Optimiser l'affichage des résultats de recherche pour les appareils mobiles.",
+          "tech_details": "Stack: React. Utiliser les media queries CSS pour adapter l'affichage aux différentes tailles d'écran.  S'assurer que les éléments sont cliquables et lisibles sur mobile.",
+          "dependencies": [
+            "EPIC-4-TASK-3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Gestion des favoris",
+      "description": "Permettre aux utilisateurs de sauvegarder les programmes d'entraînement qu'ils apprécient dans une liste de favoris.",
+      "goal": "Offrir un moyen simple de retrouver facilement les programmes d'entraînement préférés.",
+      "issues": [
+        {
+          "id": "EPIC-5-TASK-1",
+          "epic_id": "EPIC-5",
+          "type": "feat",
+          "title": "Créer la table 'Favoris' dans la base de données",
+          "description": "Ajouter une table 'Favoris' à la base de données pour stocker les relations entre les utilisateurs et les programmes d'entraînement favoris.",
+          "tech_details": "Stack: PostgreSQL. La table doit contenir les colonnes 'user_id' (clé étrangère vers la table 'users'), 'workout_id' (clé étrangère vers la table 'workouts') et 'created_at' (timestamp). Ajouter un index unique sur (user_id, workout_id) pour éviter les doublons.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-5-TASK-2",
+          "epic_id": "EPIC-5",
+          "type": "feat",
+          "title": "Développer l'API pour ajouter un entraînement aux favoris",
+          "description": "Créer un endpoint d'API permettant à un utilisateur d'ajouter un programme d'entraînement à sa liste de favoris.",
+          "tech_details": "Stack: Go. Endpoint: POST /api/favorites. Le corps de la requête doit contenir l'ID de l'entraînement (workout_id). Vérifier que l'utilisateur est authentifié. Vérifier que l'entraînement existe. Insérer une nouvelle entrée dans la table 'Favoris'. Retourner un code 201 Created en cas de succès.",
+          "dependencies": [
+            "EPIC-5-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-3",
+          "epic_id": "EPIC-5",
+          "type": "feat",
+          "title": "Développer l'API pour supprimer un entraînement des favoris",
+          "description": "Créer un endpoint d'API permettant à un utilisateur de supprimer un programme d'entraînement de sa liste de favoris.",
+          "tech_details": "Stack: Go. Endpoint: DELETE /api/favorites/{workout_id}. Vérifier que l'utilisateur est authentifié.  Supprimer l'entrée correspondante dans la table 'Favoris'. Retourner un code 204 No Content en cas de succès.",
+          "dependencies": [
+            "EPIC-5-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-4",
+          "epic_id": "EPIC-5",
+          "type": "feat",
+          "title": "Développer l'API pour récupérer la liste des entraînements favoris d'un utilisateur",
+          "description": "Créer un endpoint d'API permettant de récupérer la liste des programmes d'entraînement favoris d'un utilisateur.",
+          "tech_details": "Stack: Go. Endpoint: GET /api/favorites. Vérifier que l'utilisateur est authentifié. Récupérer tous les workout_id de la table Favoris pour un user_id donné.  Récupérer les informations complètes de ces entraînements depuis la table 'workouts'. Retourner un tableau d'objets 'workout'.",
+          "dependencies": [
+            "EPIC-5-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-5",
+          "epic_id": "EPIC-5",
+          "type": "feat",
+          "title": "Implémenter le bouton 'Ajouter aux favoris' sur la page de détail d'un entraînement",
+          "description": "Ajouter un bouton 'Ajouter aux favoris' sur la page de détail d'un entraînement. Ce bouton doit appeler l'API pour ajouter l'entraînement aux favoris.",
+          "tech_details": "Stack: React. Utiliser une icône de coeur pour le bouton. Gérer l'état du bouton (favori ou non) en fonction de la présence de l'entraînement dans la liste des favoris de l'utilisateur.  Afficher un message d'erreur si l'ajout aux favoris échoue.",
+          "dependencies": [
+            "EPIC-5-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-6",
+          "epic_id": "EPIC-5",
+          "type": "feat",
+          "title": "Implémenter l'affichage de la liste des favoris dans le profil utilisateur",
+          "description": "Créer une section 'Favoris' dans le profil utilisateur pour afficher la liste des programmes d'entraînement favoris de l'utilisateur.",
+          "tech_details": "Stack: React. Appeler l'API pour récupérer la liste des favoris. Afficher chaque entraînement favori avec son titre et une miniature.  Permettre à l'utilisateur de supprimer un entraînement de ses favoris directement depuis cette liste.",
+          "dependencies": [
+            "EPIC-5-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-7",
+          "epic_id": "EPIC-5",
+          "type": "chore",
+          "title": "Ajouter des tests unitaires pour les API de gestion des favoris",
+          "description": "Écrire des tests unitaires pour les endpoints d'API liés à la gestion des favoris (ajouter, supprimer, lister).",
+          "tech_details": "Stack: Go. Utiliser le package 'testify' pour les assertions. Tester les cas suivants : ajout réussi, suppression réussie, utilisateur non authentifié, entraînement inexistant, etc.",
+          "dependencies": [
+            "EPIC-5-TASK-2",
+            "EPIC-5-TASK-3",
+            "EPIC-5-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-8",
+          "epic_id": "EPIC-5",
+          "type": "chore",
+          "title": "Ajouter des tests d'intégration pour le composant React 'Liste des favoris'",
+          "description": "Écrire des tests d'intégration pour le composant React qui affiche la liste des favoris.",
+          "tech_details": "Stack: React. Utiliser Jest et React Testing Library. Simuler l'appel à l'API et vérifier que les données sont affichées correctement. Tester l'interaction avec le bouton de suppression.",
+          "dependencies": [
+            "EPIC-5-TASK-6"
+          ]
+        },
+        {
+          "id": "EPIC-5-TASK-9",
+          "epic_id": "EPIC-5",
+          "type": "fix",
+          "title": "Gestion des erreurs côté client",
+          "description": "Afficher des messages d'erreur conviviaux à l'utilisateur en cas d'échec des appels API (e.g., problème de réseau, erreur serveur).",
+          "tech_details": "Stack: React. Utiliser un système de notifications (e.g., toast) pour afficher les erreurs. Traduire les erreurs en messages compréhensibles par l'utilisateur.",
+          "dependencies": [
+            "EPIC-5-TASK-2",
+            "EPIC-5-TASK-3",
+            "EPIC-5-TASK-4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Système de notation et d'avis",
+      "description": "Implémenter un système permettant aux utilisateurs de noter et de commenter les programmes d'entraînement.",
+      "goal": "Fournir un feedback utile pour améliorer la qualité des programmes et aider les autres utilisateurs à faire leur choix.",
+      "issues": [
+        {
+          "id": "EPIC-6-TASK-1",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "Créer le modèle de données pour les avis et les notes",
+          "description": "Définir la structure de données pour stocker les avis et les notes des programmes d'entraînement. Inclure l'ID de l'utilisateur, l'ID du programme d'entraînement, la note (sur 5), le commentaire (texte) et la date de création.",
+          "tech_details": "Stack: Go, PostgreSQL. Créer une table 'reviews' avec les colonnes: user_id (INT, FK), workout_program_id (INT, FK), rating (INT), comment (TEXT), created_at (TIMESTAMP). Utiliser GORM pour la gestion de la base de données.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-6-TASK-2",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "Développer l'API pour ajouter un avis et une note",
+          "description": "Créer un endpoint API permettant aux utilisateurs d'ajouter un avis et une note à un programme d'entraînement. Valider que l'utilisateur est connecté et qu'il n'a pas déjà noté ce programme.",
+          "tech_details": "Stack: Go, REST API. Endpoint: POST /api/workouts/{workout_id}/reviews.  Body: { rating: INT, comment: STRING }.  Utiliser JWT pour l'authentification. Retourner une erreur 400 si la validation échoue. Retourner l'avis créé en cas de succès.",
+          "dependencies": [
+            "EPIC-6-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-3",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "Développer l'API pour récupérer les avis et la note moyenne d'un programme",
+          "description": "Créer un endpoint API pour récupérer tous les avis et la note moyenne d'un programme d'entraînement spécifique.  Trier les avis par date de création (du plus récent au plus ancien).",
+          "tech_details": "Stack: Go, REST API. Endpoint: GET /api/workouts/{workout_id}/reviews. Retourner une liste d'objets review et la note moyenne (average_rating). Utiliser une requête SQL pour calculer la moyenne.",
+          "dependencies": [
+            "EPIC-6-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-4",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "Implémenter l'affichage des avis et de la note moyenne sur la page de détail du programme",
+          "description": "Afficher les avis et la note moyenne sur la page de détail du programme d'entraînement. Permettre aux utilisateurs de lire les commentaires et voir la note de chaque avis.",
+          "tech_details": "Stack: React.  Récupérer les données via l'API GET /api/workouts/{workout_id}/reviews.  Utiliser un composant pour afficher chaque avis et la note moyenne. Gérer le chargement des données.",
+          "dependencies": [
+            "EPIC-6-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-5",
+          "epic_id": "EPIC-6",
+          "type": "feat",
+          "title": "Implémenter le formulaire d'ajout d'avis et de note",
+          "description": "Ajouter un formulaire sur la page de détail du programme d'entraînement permettant aux utilisateurs connectés d'ajouter un avis et une note.  Afficher un message d'erreur si l'utilisateur n'est pas connecté.",
+          "tech_details": "Stack: React.  Créer un formulaire avec un champ pour la note (select de 1 à 5) et un champ texte pour le commentaire.  Envoyer les données via l'API POST /api/workouts/{workout_id}/reviews.  Rafraîchir la liste des avis après la soumission.",
+          "dependencies": [
+            "EPIC-6-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-6",
+          "epic_id": "EPIC-6",
+          "type": "chore",
+          "title": "Ajouter des tests unitaires pour l'API d'ajout d'avis",
+          "description": "Ecrire des tests unitaires pour l'API d'ajout d'avis afin de vérifier la validation des données et le bon fonctionnement de la logique métier.",
+          "tech_details": "Stack: Go, Testing. Utiliser le package 'testify' pour les assertions. Tester les cas suivants: utilisateur non connecté, données invalides, ajout réussi.",
+          "dependencies": [
+            "EPIC-6-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-7",
+          "epic_id": "EPIC-6",
+          "type": "chore",
+          "title": "Ajouter des tests d'intégration pour l'API de récupération des avis",
+          "description": "Ecrire des tests d'intégration pour l'API de récupération des avis afin de vérifier le bon fonctionnement de l'API avec la base de données.",
+          "tech_details": "Stack: Go, Testing, PostgreSQL.  Créer des données de test dans la base de données.  Vérifier que l'API retourne les données correctes et la note moyenne correcte.",
+          "dependencies": [
+            "EPIC-6-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-8",
+          "epic_id": "EPIC-6",
+          "type": "fix",
+          "title": "Améliorer le style des avis (CSS)",
+          "description": "Améliorer l'apparence des avis sur la page de détail du programme d'entraînement. Utiliser un design clair et lisible.",
+          "tech_details": "Stack: React, CSS.  Utiliser des classes CSS pour styliser les avis.  Utiliser des icônes pour les étoiles de la note.",
+          "dependencies": [
+            "EPIC-6-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-6-TASK-9",
+          "epic_id": "EPIC-6",
+          "type": "fix",
+          "title": "Empêcher un utilisateur de noter plusieurs fois le même workout",
+          "description": "Un utilisateur ne doit pouvoir noter qu'une seule fois un workout. Si il a déjà noté, il ne peut que modifier son avis. ",
+          "tech_details": "Stack: Go, PostgreSQL. Ajouter une contrainte unique sur la table reviews pour user_id et workout_program_id. Modifier l'API POST /api/workouts/{workout_id}/reviews pour vérifier si l'utilisateur a déjà noté le workout. Si oui, mettre à jour l'avis existant au lieu d'en créer un nouveau. ",
+          "dependencies": [
+            "EPIC-6-TASK-2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Interface utilisateur intuitive et responsive",
+      "description": "Développer une interface utilisateur agréable et facile à utiliser, adaptée à différents appareils (mobiles, tablettes, ordinateurs).",
+      "goal": "Garantir une expérience utilisateur optimale sur toutes les plateformes.",
+      "issues": [
+        {
+          "id": "EPIC-7-TASK-1",
+          "epic_id": "EPIC-7",
+          "type": "chore",
+          "title": "Créer la structure de base de l'application React avec Next.js",
+          "description": "Initialiser le projet Next.js avec la configuration de base (arborescence des dossiers, configuration ESLint/Prettier, etc.).",
+          "tech_details": "Stack: React/Next.js. Utiliser `create-next-app`. Configurer ESLint, Prettier et Husky pour garantir la qualité du code.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-7-TASK-2",
+          "epic_id": "EPIC-7",
+          "type": "feat",
+          "title": "Implémenter le composant de navigation principale (Header)",
+          "description": "Développer un composant Header responsif contenant le logo, les liens de navigation (Accueil, Entraînements, Profil, Connexion/Inscription) et un menu hamburger pour les petits écrans.",
+          "tech_details": "Stack: React/Next.js, CSS Modules ou Styled Components. Utiliser `next/link` pour la navigation. Media queries pour la responsivité.",
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-7-TASK-3",
+          "epic_id": "EPIC-7",
+          "type": "feat",
+          "title": "Implémenter le composant Footer",
+          "description": "Développer un composant Footer contenant les informations de copyright, les liens vers les mentions légales et la politique de confidentialité.",
+          "tech_details": "Stack: React/Next.js, CSS Modules ou Styled Components. Assurer la responsivité.",
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-7-TASK-4",
+          "epic_id": "EPIC-7",
+          "type": "feat",
+          "title": "Développer la page d'accueil",
+          "description": "Créer une page d'accueil attrayante avec une présentation de l'application, un appel à l'action pour l'inscription et des exemples de programmes d'entraînement.",
+          "tech_details": "Stack: React/Next.js. Utiliser des composants réutilisables pour la mise en page. Optimiser les images pour la performance.",
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-7-TASK-5",
+          "epic_id": "EPIC-7",
+          "type": "feat",
+          "title": "Créer la page d'inscription",
+          "description": "Développer un formulaire d'inscription avec les champs nécessaires (nom d'utilisateur, adresse e-mail, mot de passe, etc.).",
+          "tech_details": "Stack: React/Next.js, Formik ou React Hook Form pour la gestion du formulaire. Validation côté client. Intégration avec l'API d'authentification (à définir).",
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-7-TASK-6",
+          "epic_id": "EPIC-7",
+          "type": "feat",
+          "title": "Créer la page de connexion",
+          "description": "Développer un formulaire de connexion avec les champs nécessaires (adresse e-mail, mot de passe).",
+          "tech_details": "Stack: React/Next.js, Formik ou React Hook Form pour la gestion du formulaire. Validation côté client. Intégration avec l'API d'authentification (à définir).",
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-7-TASK-7",
+          "epic_id": "EPIC-7",
+          "type": "feat",
+          "title": "Développer la page de profil utilisateur",
+          "description": "Créer une page de profil où l'utilisateur peut consulter et modifier ses informations personnelles (nom d'utilisateur, adresse e-mail, photo de profil, etc.).",
+          "tech_details": "Stack: React/Next.js. Utiliser un système de gestion d'état (Redux, Context API) pour gérer les informations de l'utilisateur. Intégration avec l'API utilisateur (à définir).",
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-7-TASK-8",
+          "epic_id": "EPIC-7",
+          "type": "feat",
+          "title": "Créer la page de création d'entraînement",
+          "description": "Développer une interface permettant à l'utilisateur de créer un nouvel entraînement en définissant le nom, la description, les exercices et les séries/répétitions.",
+          "tech_details": "Stack: React/Next.js. Utiliser des composants réutilisables pour la gestion des formulaires et des listes. Intégration avec l'API d'entraînement (à définir).",
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-7-TASK-9",
+          "epic_id": "EPIC-7",
+          "type": "feat",
+          "title": "Développer la page de visualisation d'un entraînement",
+          "description": "Créer une page affichant les détails d'un entraînement spécifique (nom, description, liste des exercices, etc.).",
+          "tech_details": "Stack: React/Next.js. Récupérer les données de l'entraînement depuis l'API (à définir). Afficher les informations de manière claire et concise.",
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-7-TASK-10",
+          "epic_id": "EPIC-7",
+          "type": "chore",
+          "title": "Implémenter la responsivité globale de l'application",
+          "description": "Assurer que l'interface utilisateur s'adapte correctement à différentes tailles d'écran (mobiles, tablettes, ordinateurs).",
+          "tech_details": "Stack: CSS Modules ou Styled Components. Utiliser des media queries pour adapter la mise en page en fonction de la taille de l'écran. Tester sur différents appareils et navigateurs.",
+          "dependencies": [
+            "EPIC-7-TASK-2",
+            "EPIC-7-TASK-3",
+            "EPIC-7-TASK-4",
+            "EPIC-7-TASK-5",
+            "EPIC-7-TASK-6",
+            "EPIC-7-TASK-7",
+            "EPIC-7-TASK-8",
+            "EPIC-7-TASK-9"
+          ]
+        },
+        {
+          "id": "EPIC-7-TASK-11",
+          "epic_id": "EPIC-7",
+          "type": "chore",
+          "title": "Ajouter des animations et des transitions subtiles",
+          "description": "Améliorer l'expérience utilisateur en ajoutant des animations et des transitions fluides lors des changements de page et des interactions avec l'interface.",
+          "tech_details": "Stack: CSS Animations, React Transition Group ou une librairie d'animation (Framer Motion, etc.). Utiliser des animations discrètes et performantes.",
+          "dependencies": [
+            "EPIC-7-TASK-10"
+          ]
+        },
+        {
+          "id": "EPIC-7-TASK-12",
+          "epic_id": "EPIC-7",
+          "type": "feat",
+          "title": "Implémenter un système de feedback utilisateur (toasts/notifications)",
+          "description": "Fournir un retour visuel à l'utilisateur lors des actions importantes (inscription réussie, entraînement créé, etc.).",
+          "tech_details": "Stack: React Toastify, Notistack ou une librairie similaire. Afficher des messages de confirmation ou d'erreur clairs et concis.",
+          "dependencies": [
+            "EPIC-7-TASK-10"
+          ]
+        },
+        {
+          "id": "EPIC-7-TASK-13",
+          "epic_id": "EPIC-7",
+          "type": "chore",
+          "title": "Créer des composants UI réutilisables (boutons, inputs, cards, etc.)",
+          "description": "Développer une bibliothèque de composants UI réutilisables pour garantir la cohérence visuelle et faciliter le développement futur.",
+          "tech_details": "Stack: React/Next.js, CSS Modules ou Styled Components. Documenter les composants avec Storybook ou un outil similaire.",
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-8",
+      "title": "Intégration avec une base de données d'exercices",
+      "description": "Connecter l'application à une base de données d'exercices pour faciliter la création des programmes d'entraînement.",
+      "goal": "Simplifier la saisie des exercices et fournir des informations détaillées sur chaque exercice.",
+      "issues": [
+        {
+          "id": "EPIC-8-TASK-1",
+          "epic_id": "EPIC-8",
+          "type": "feat",
+          "title": "Créer le modèle de données 'Exercise'",
+          "description": "Définir le modèle de données 'Exercise' qui sera utilisé pour stocker les informations sur chaque exercice (nom, description, type, muscle ciblé, image/vidéo URL)",
+          "tech_details": "Stack: Go. Définir le modèle Go avec les champs nécessaires. Utiliser les tags `json` et `db` pour la sérialisation/désérialisation et le mapping ORM.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-8-TASK-2",
+          "epic_id": "EPIC-8",
+          "type": "feat",
+          "title": "Implémenter le service d'accès aux données 'Exercise'",
+          "description": "Créer un service Go qui permet d'interagir avec la base de données pour les opérations CRUD sur les exercices.",
+          "tech_details": "Stack: Go. Utiliser un ORM (GORM) pour interagir avec la base de données.  Implémenter les méthodes `GetExercise(id)`, `ListExercises(filters)`, `CreateExercise(exercise)`, `UpdateExercise(exercise)`, `DeleteExercise(id)`.",
+          "dependencies": [
+            "EPIC-8-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-8-TASK-3",
+          "epic_id": "EPIC-8",
+          "type": "feat",
+          "title": "Créer une API pour les exercices",
+          "description": "Développer une API RESTful pour exposer les fonctionnalités du service d'accès aux données 'Exercise'.",
+          "tech_details": "Stack: Go. Utiliser un framework web (Gin/Echo) pour créer les endpoints. Définir les routes: `GET /exercises/{id}`, `GET /exercises`, `POST /exercises`, `PUT /exercises/{id}`, `DELETE /exercises/{id}`. Valider les données d'entrée.",
+          "dependencies": [
+            "EPIC-8-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-8-TASK-4",
+          "epic_id": "EPIC-8",
+          "type": "feat",
+          "title": "Intégrer l'API d'exercices dans l'interface utilisateur",
+          "description": "Modifier l'interface utilisateur pour permettre aux utilisateurs de rechercher et sélectionner des exercices à partir de la base de données lors de la création d'un programme d'entraînement.",
+          "tech_details": "Stack: React.  Créer un composant React pour la recherche d'exercices. Utiliser `useEffect` pour charger les exercices depuis l'API. Afficher les résultats de la recherche dans une liste. Permettre à l'utilisateur de sélectionner un exercice et de l'ajouter à son programme d'entraînement.",
+          "dependencies": [
+            "EPIC-8-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-8-TASK-5",
+          "epic_id": "EPIC-8",
+          "type": "chore",
+          "title": "Ajouter des données d'exercices initiales",
+          "description": "Importer un ensemble de données d'exercices initiales dans la base de données pour faciliter le test et l'utilisation de l'application.",
+          "tech_details": "Créer un script d'importation de données. Utiliser un fichier CSV/JSON comme source de données.  Valider les données avant l'importation.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-8-TASK-6",
+          "epic_id": "EPIC-8",
+          "type": "feat",
+          "title": "Implémenter la recherche d'exercices",
+          "description": "Permettre aux utilisateurs de rechercher des exercices par nom, type ou muscle ciblé.",
+          "tech_details": "Stack: Go/React. Modifier l'API pour prendre en charge les paramètres de recherche.  Modifier le composant React pour permettre à l'utilisateur de spécifier les critères de recherche. Utiliser une requête `GET /exercises?name=...\u0026type=...\u0026muscle=...`.",
+          "dependencies": [
+            "EPIC-8-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-8-TASK-7",
+          "epic_id": "EPIC-8",
+          "type": "feat",
+          "title": "Ajouter la pagination à la liste d'exercices",
+          "description": "Implémenter la pagination pour gérer un grand nombre d'exercices dans la base de données.",
+          "tech_details": "Stack: Go/React. Modifier l'API pour renvoyer les résultats paginés.  Ajouter des contrôles de pagination dans le composant React. Utiliser les paramètres `limit` et `offset` dans la requête API.",
+          "dependencies": [
+            "EPIC-8-TASK-6"
+          ]
+        },
+        {
+          "id": "EPIC-8-TASK-8",
+          "epic_id": "EPIC-8",
+          "type": "chore",
+          "title": "Mettre à jour la documentation de l'API",
+          "description": "Mettre à jour la documentation de l'API pour refléter les changements apportés par l'intégration de la base de données d'exercices.",
+          "tech_details": "Utiliser Swagger/OpenAPI pour documenter l'API. Décrire les nouveaux endpoints, les paramètres et les schémas de données.",
+          "dependencies": [
+            "EPIC-8-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-8-TASK-9",
+          "epic_id": "EPIC-8",
+          "type": "chore",
+          "title": "Tests unitaires pour le service d'accès aux données 'Exercise'",
+          "description": "Écrire des tests unitaires pour valider le comportement du service d'accès aux données 'Exercise'.",
+          "tech_details": "Stack: Go. Utiliser le package `testing` de Go. Tester les cas d'utilisation principaux: création, lecture, mise à jour, suppression d'exercices.",
+          "dependencies": [
+            "EPIC-8-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-8-TASK-10",
+          "epic_id": "EPIC-8",
+          "type": "chore",
+          "title": "Tests d'intégration pour l'API d'exercices",
+          "description": "Écrire des tests d'intégration pour valider le fonctionnement de l'API d'exercices.",
+          "tech_details": "Stack: Go. Tester les endpoints de l'API avec des requêtes HTTP. Vérifier les codes de statut et les données renvoyées.",
+          "dependencies": [
+            "EPIC-8-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-8-TASK-11",
+          "epic_id": "EPIC-8",
+          "type": "fix",
+          "title": "Corriger le bug d'affichage des images d'exercices",
+          "description": "Certaines images d'exercices ne s'affichent pas correctement dans l'interface utilisateur.",
+          "tech_details": "Stack: React. Vérifier le chemin des images et s'assurer qu'il est correct.  Vérifier si le serveur d'images est accessible.",
+          "dependencies": [
+            "EPIC-8-TASK-4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-9",
+      "title": "Notifications",
+      "description": "Mettre en place un système de notifications pour informer les utilisateurs des nouveaux programmes partagés, des commentaires reçus, etc.",
+      "goal": "Maintenir les utilisateurs engagés et informés des activités sur l'application.",
+      "issues": [
+        {
+          "id": "EPIC-9-TASK-1",
+          "epic_id": "EPIC-9",
+          "type": "chore",
+          "title": "Configurer FCM pour les notifications Push",
+          "description": "Configurer Firebase Cloud Messaging (FCM) pour l'envoi de notifications push sur Android et iOS.",
+          "tech_details": "Stack: Go (backend), React Native (frontend).  Installer et configurer le package `firebase-admin` en Go.  Installer `react-native-firebase` dans l'application React Native et configurer pour iOS et Android.  Stocker les clés API FCM dans les variables d'environnement.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-9-TASK-2",
+          "epic_id": "EPIC-9",
+          "type": "feat",
+          "title": "Implémenter l'enregistrement des tokens FCM",
+          "description": "Permettre à l'application mobile d'enregistrer le token FCM de l'utilisateur sur le backend.",
+          "tech_details": "Stack: Go (backend), React Native (frontend). Créer une API `/users/me/fcm_token` (PUT) sur le backend pour recevoir et stocker le token FCM de l'utilisateur. Mettre à jour le profil utilisateur avec le token FCM. Gérer les erreurs et les doublons. Dans l'app React Native, utiliser `react-native-firebase` pour récupérer le token et l'envoyer au backend après la connexion ou l'inscription.",
+          "dependencies": [
+            "EPIC-9-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-9-TASK-3",
+          "epic_id": "EPIC-9",
+          "type": "feat",
+          "title": "Créer le service de notification",
+          "description": "Créer un service Go pour gérer l'envoi des notifications push.",
+          "tech_details": "Stack: Go (backend). Créer un package `notifications` avec une fonction `SendNotification(userID string, title string, body string, data map[string]interface{}) error`. Utiliser `firebase-admin` pour envoyer la notification. Logguer les erreurs et les succès. Gérer les cas où l'utilisateur n'a pas de token FCM.",
+          "dependencies": [
+            "EPIC-9-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-9-TASK-4",
+          "epic_id": "EPIC-9",
+          "type": "feat",
+          "title": "Notification de nouveau programme partagé",
+          "description": "Envoyer une notification aux followers d'un utilisateur lorsqu'il partage un nouveau programme.",
+          "tech_details": "Stack: Go (backend). Modifier le endpoint de création d'un programme d'entrainement. Après la création réussie d'un programme, récupérer la liste des followers de l'utilisateur. Pour chaque follower, appeler `SendNotification` avec un titre \"Nouvel entraînement\", un corps \"[Nom de l'utilisateur] a partagé un nouvel entraînement : [Nom de l'entraînement]\" et des données contenant l'ID de l'entraînement. Utiliser des workers pour l'envoi asynchrone des notifications.",
+          "dependencies": [
+            "EPIC-9-TASK-2",
+            "EPIC-9-TASK-3",
+            "EPIC-11-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-9-TASK-5",
+          "epic_id": "EPIC-9",
+          "type": "feat",
+          "title": "Notification de nouveau commentaire",
+          "description": "Envoyer une notification à l'auteur d'un programme lorsqu'il reçoit un nouveau commentaire.",
+          "tech_details": "Stack: Go (backend). Modifier le endpoint de création d'un commentaire. Après la création réussie d'un commentaire, récupérer l'ID de l'utilisateur auteur du programme. Appeler `SendNotification` avec un titre \"Nouveau commentaire\", un corps \"[Nom de l'utilisateur] a commenté votre entraînement\" et des données contenant l'ID de l'entraînement et l'ID du commentaire. Utiliser des workers pour l'envoi asynchrone des notifications.",
+          "dependencies": [
+            "EPIC-9-TASK-2",
+            "EPIC-9-TASK-3",
+            "EPIC-6-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-9-TASK-6",
+          "epic_id": "EPIC-9",
+          "type": "feat",
+          "title": "Notification de nouvelle demande de suivi",
+          "description": "Envoyer une notification à un utilisateur lorsqu'il reçoit une nouvelle demande de suivi.",
+          "tech_details": "Stack: Go (backend). Modifier le endpoint de demande de suivi. Après la création réussie de la demande, récupérer l'ID de l'utilisateur qui reçoit la demande. Appeler `SendNotification` avec un titre \"Nouvelle demande de suivi\", un corps \"[Nom de l'utilisateur] souhaite vous suivre\" et des données contenant l'ID de l'utilisateur qui demande à suivre. Utiliser des workers pour l'envoi asynchrone des notifications.",
+          "dependencies": [
+            "EPIC-9-TASK-2",
+            "EPIC-9-TASK-3",
+            "EPIC-11-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-9-TASK-7",
+          "epic_id": "EPIC-9",
+          "type": "feat",
+          "title": "Afficher les notifications dans l'application",
+          "description": "Afficher les notifications reçues dans une section dédiée de l'application mobile.",
+          "tech_details": "Stack: React Native (frontend). Créer un nouvel écran \"Notifications\". Utiliser `react-native-firebase` pour écouter les notifications reçues. Afficher les notifications dans une liste avec un titre, un corps et une date. Permettre à l'utilisateur de marquer les notifications comme lues.  Naviguer vers la ressource pertinente (entraînement, profil) lorsque l'utilisateur clique sur une notification.",
+          "dependencies": [
+            "EPIC-9-TASK-4",
+            "EPIC-9-TASK-5",
+            "EPIC-9-TASK-6"
+          ]
+        },
+        {
+          "id": "EPIC-9-TASK-8",
+          "epic_id": "EPIC-9",
+          "type": "chore",
+          "title": "Tests unitaires pour le service de notification",
+          "description": "Écrire des tests unitaires pour le service de notification Go.",
+          "tech_details": "Stack: Go (backend). Tester la fonction `SendNotification` avec différents cas de figure (utilisateur avec token FCM, utilisateur sans token FCM, erreur lors de l'envoi). Utiliser un mock de FCM pour éviter d'envoyer de vraies notifications pendant les tests.",
+          "dependencies": [
+            "EPIC-9-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-9-TASK-9",
+          "epic_id": "EPIC-9",
+          "type": "chore",
+          "title": "Gestion des erreurs et logging",
+          "description": "Améliorer la gestion des erreurs et le logging pour le système de notifications.",
+          "tech_details": "Stack: Go (backend). Ajouter des logs détaillés pour chaque étape du processus d'envoi de notifications. Mettre en place un système de monitoring des erreurs (Sentry, etc.).",
+          "dependencies": [
+            "EPIC-9-TASK-3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-10",
+      "title": "Statistiques et suivi des performances",
+      "description": "Permettre aux utilisateurs de suivre leurs performances et de visualiser leurs progrès au fil du temps.",
+      "goal": "Offrir un outil de motivation et d'analyse pour améliorer les entraînements.",
+      "issues": [
+        {
+          "id": "EPIC-10-TASK-1",
+          "epic_id": "EPIC-10",
+          "type": "feat",
+          "title": "Implémenter le modèle de données pour le suivi des performances",
+          "description": "Définir la structure de données pour stocker les informations de performance des utilisateurs (poids soulevé, répétitions, séries, date, etc.).",
+          "tech_details": "Stack: Go, PostgreSQL. Créer les tables et relations nécessaires dans la base de données. Utiliser GORM pour l'ORM.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-10-TASK-2",
+          "epic_id": "EPIC-10",
+          "type": "feat",
+          "title": "Créer une API pour enregistrer les performances d'un exercice",
+          "description": "Développer une API REST permettant aux utilisateurs d'enregistrer leurs performances pour un exercice spécifique dans un entraînement.",
+          "tech_details": "Stack: Go, Gin. Définir les endpoints, la validation des données et la logique métier pour l'enregistrement des performances. Tester avec Postman.",
+          "dependencies": [
+            "EPIC-10-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-10-TASK-3",
+          "epic_id": "EPIC-10",
+          "type": "feat",
+          "title": "Développer une interface utilisateur pour l'enregistrement des performances",
+          "description": "Créer une interface utilisateur permettant aux utilisateurs d'entrer et de sauvegarder leurs performances pour chaque exercice de leur entraînement.",
+          "tech_details": "Stack: React, Redux (ou Context API), Material-UI (ou autre librairie de composants).  Intégrer avec l'API d'enregistrement des performances. Gérer les états et les erreurs.",
+          "dependencies": [
+            "EPIC-10-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-10-TASK-4",
+          "epic_id": "EPIC-10",
+          "type": "feat",
+          "title": "Implémenter le calcul des statistiques de performance",
+          "description": "Développer la logique pour calculer différentes statistiques de performance (ex: poids moyen soulevé, nombre total de répétitions, progression au fil du temps).",
+          "tech_details": "Stack: Go. Utiliser des requêtes SQL optimisées ou des librairies d'analyse de données pour effectuer les calculs. Optimiser pour la performance.",
+          "dependencies": [
+            "EPIC-10-TASK-1",
+            "EPIC-10-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-10-TASK-5",
+          "epic_id": "EPIC-10",
+          "type": "feat",
+          "title": "Créer une API pour récupérer les statistiques de performance",
+          "description": "Développer une API REST permettant de récupérer les statistiques de performance pour un utilisateur, un exercice ou une période donnée.",
+          "tech_details": "Stack: Go, Gin. Définir les endpoints et les paramètres de requête. Gérer l'authentification et l'autorisation.",
+          "dependencies": [
+            "EPIC-10-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-10-TASK-6",
+          "epic_id": "EPIC-10",
+          "type": "feat",
+          "title": "Développer des visualisations de données pour les statistiques de performance",
+          "description": "Créer des graphiques et des tableaux de bord pour visualiser les statistiques de performance des utilisateurs.",
+          "tech_details": "Stack: React, Chart.js (ou autre librairie de graphiques).  Intégrer avec l'API de statistiques de performance. Permettre aux utilisateurs de filtrer et de personnaliser les visualisations.",
+          "dependencies": [
+            "EPIC-10-TASK-5"
+          ]
+        },
+        {
+          "id": "EPIC-10-TASK-7",
+          "epic_id": "EPIC-10",
+          "type": "chore",
+          "title": "Ajouter des tests unitaires et d'intégration pour le suivi des performances",
+          "description": "Écrire des tests unitaires et d'intégration pour valider la logique d'enregistrement des performances, le calcul des statistiques et l'intégrité des données.",
+          "tech_details": "Stack: Go (pour le backend), Jest/Mocha (pour le frontend). Utiliser des mocks et des stubs pour isoler les composants. Couverture de test \u003e 80%.",
+          "dependencies": [
+            "EPIC-10-TASK-2",
+            "EPIC-10-TASK-4",
+            "EPIC-10-TASK-5"
+          ]
+        },
+        {
+          "id": "EPIC-10-TASK-8",
+          "epic_id": "EPIC-10",
+          "type": "fix",
+          "title": "Améliorer la gestion des erreurs et le feedback utilisateur",
+          "description": "Améliorer la gestion des erreurs dans l'API et l'interface utilisateur pour fournir un feedback clair et utile aux utilisateurs en cas de problème.",
+          "tech_details": "Stack: Go, React.  Implémenter des mécanismes de logging et de reporting d'erreurs. Afficher des messages d'erreur conviviaux.",
+          "dependencies": [
+            "EPIC-10-TASK-2",
+            "EPIC-10-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-10-TASK-9",
+          "epic_id": "EPIC-10",
+          "type": "chore",
+          "title": "Optimiser les performances des requêtes de statistiques",
+          "description": "Analyser et optimiser les requêtes SQL utilisées pour calculer les statistiques de performance afin d'améliorer les temps de réponse.",
+          "tech_details": "Stack: PostgreSQL. Utiliser des outils de profiling de requêtes. Ajouter des index si nécessaire.",
+          "dependencies": [
+            "EPIC-10-TASK-5"
+          ]
+        },
+        {
+          "id": "EPIC-10-TASK-10",
+          "epic_id": "EPIC-10",
+          "type": "chore",
+          "title": "Revoir l'accessibilité de l'interface de suivi des performances",
+          "description": "S'assurer que l'interface de suivi des performances est accessible aux utilisateurs ayant des handicaps visuels ou moteurs.",
+          "tech_details": "Stack: React, Material-UI. Utiliser des outils d'audit d'accessibilité. Suivre les directives WCAG.",
+          "dependencies": [
+            "EPIC-10-TASK-3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-11",
+      "title": "Fonctionnalités sociales (suivre des utilisateurs)",
+      "description": "Permettre aux utilisateurs de suivre d'autres utilisateurs et de voir leurs programmes partagés.",
+      "goal": "Créer une communauté et encourager l'échange entre les utilisateurs.",
+      "issues": [
+        {
+          "id": "EPIC-11-TASK-1",
+          "epic_id": "EPIC-11",
+          "type": "feat",
+          "title": "Implémenter l'API de suivi d'utilisateur",
+          "description": "Développer les endpoints API pour permettre à un utilisateur de suivre/ne plus suivre un autre utilisateur.",
+          "tech_details": "Stack: Go. Créer les endpoints `/api/users/{user_id}/follow` (POST) et `/api/users/{user_id}/unfollow` (POST).  Utiliser GORM pour interagir avec la base de données.  Ajouter une table `followers` avec `follower_id` (user_id de celui qui suit) et `followed_id` (user_id de celui qui est suivi).",
+          "dependencies": [
+            "EPIC-11-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-11-TASK-2",
+          "epic_id": "EPIC-11",
+          "type": "chore",
+          "title": "Modifier le modèle User pour inclure les relations de suivi",
+          "description": "Mettre à jour le modèle User dans la base de données pour inclure les relations 'followers' et 'following'.",
+          "tech_details": "Stack: Go, GORM.  Ajouter les relations `HasMany` dans le modèle User pour `Followers` et `Following`. Définir les clés étrangères correctement.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-11-TASK-3",
+          "epic_id": "EPIC-11",
+          "type": "feat",
+          "title": "Afficher le bouton 'Suivre' sur le profil d'un autre utilisateur",
+          "description": "Ajouter un bouton 'Suivre' ou 'Ne plus suivre' sur la page de profil d'un utilisateur que l'utilisateur connecté ne suit pas encore.",
+          "tech_details": "Stack: React. Le bouton doit appeler l'API `follow` ou `unfollow` en fonction de l'état actuel du suivi. Gérer l'état localement pour une mise à jour rapide de l'UI, puis synchroniser avec le backend.",
+          "dependencies": [
+            "EPIC-11-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-11-TASK-4",
+          "epic_id": "EPIC-11",
+          "type": "feat",
+          "title": "Afficher la liste des abonnements d'un utilisateur",
+          "description": "Créer une section sur le profil de l'utilisateur pour afficher la liste des utilisateurs qu'il suit.",
+          "tech_details": "Stack: React.  Utiliser un composant pour afficher la liste des utilisateurs suivis.  Récupérer les données via un appel API à `/api/users/{user_id}/following`.",
+          "dependencies": [
+            "EPIC-11-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-11-TASK-5",
+          "epic_id": "EPIC-11",
+          "type": "feat",
+          "title": "Afficher la liste des abonnés d'un utilisateur",
+          "description": "Créer une section sur le profil de l'utilisateur pour afficher la liste de ses abonnés.",
+          "tech_details": "Stack: React.  Utiliser un composant pour afficher la liste des abonnés.  Récupérer les données via un appel API à `/api/users/{user_id}/followers`.",
+          "dependencies": [
+            "EPIC-11-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-11-TASK-6",
+          "epic_id": "EPIC-11",
+          "type": "feat",
+          "title": "Créer un flux d'activité (timeline) des utilisateurs suivis",
+          "description": "Développer un flux d'activité qui affiche les derniers entraînements partagés par les utilisateurs que l'utilisateur connecté suit.",
+          "tech_details": "Stack: React/Go. Créer un endpoint API `/api/feed` qui renvoie les entraînements des utilisateurs suivis, triés par date de publication.  Afficher ces entraînements dans un composant 'Timeline' sur la page d'accueil.",
+          "dependencies": [
+            "EPIC-11-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-11-TASK-7",
+          "epic_id": "EPIC-11",
+          "type": "chore",
+          "title": "Ajouter des tests unitaires pour l'API de suivi",
+          "description": "Ecrire des tests unitaires pour valider le bon fonctionnement des endpoints de suivi/désabonnement.",
+          "tech_details": "Stack: Go, `testify`. Tester les cas de succès et d'erreur (utilisateur inexistant, etc.).",
+          "dependencies": [
+            "EPIC-11-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-11-TASK-8",
+          "epic_id": "EPIC-11",
+          "type": "fix",
+          "title": "Gérer les erreurs et les cas limites pour le suivi",
+          "description": "Implémenter la gestion des erreurs et des cas limites pour le suivi (ex: tentative de suivi de soi-même).",
+          "tech_details": "Stack: Go/React.  Retourner des erreurs HTTP appropriées depuis l'API. Afficher des messages d'erreur clairs à l'utilisateur dans l'interface React.",
+          "dependencies": [
+            "EPIC-11-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-11-TASK-9",
+          "epic_id": "EPIC-11",
+          "type": "chore",
+          "title": "Optimiser les requêtes pour le flux d'activité",
+          "description": "Optimiser les requêtes SQL pour améliorer la performance du flux d'activité.",
+          "tech_details": "Stack: Go, SQL.  Utiliser des index appropriés sur les tables `followers` et `workouts`.  Analyser les performances des requêtes avec `EXPLAIN` et optimiser en conséquence.",
+          "dependencies": [
+            "EPIC-11-TASK-6"
+          ]
+        },
+        {
+          "id": "EPIC-11-TASK-10",
+          "epic_id": "EPIC-11",
+          "type": "chore",
+          "title": "Refactorisation du code existant pour la gestion des utilisateurs",
+          "description": "Refactoriser le code existant pour améliorer la maintenabilité et la lisibilité du code.",
+          "tech_details": "Stack: Go/React. Appliquer les principes SOLID. Extraire la logique métier dans des services dédiés. Utiliser des hooks React pour la gestion de l'état.",
+          "dependencies": [
+            "EPIC-11-TASK-1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-12",
+      "title": "Support multilingue",
+      "description": "Rendre l'application disponible dans plusieurs langues.",
+      "goal": "Élargir l'audience de l'application.",
+      "issues": [
+        {
+          "id": "EPIC-12-TASK-1",
+          "epic_id": "EPIC-12",
+          "type": "chore",
+          "title": "Configuration de i18n pour React",
+          "description": "Mettre en place la librairie i18next pour gérer les traductions côté front-end.",
+          "tech_details": "Stack: React. Installer i18next, react-i18next et i18next-browser-languagedetector. Configurer la détection de la langue du navigateur et le fallback vers une langue par défaut (ex: anglais).",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-12-TASK-2",
+          "epic_id": "EPIC-12",
+          "type": "chore",
+          "title": "Configuration de i18n pour Go",
+          "description": "Mettre en place la librairie go-i18n pour gérer les traductions côté back-end.",
+          "tech_details": "Stack: Go. Installer go-i18n. Configurer le chargement des fichiers de traductions et l'utilisation de la langue demandée dans les handlers d'API.",
+          "dependencies": [
+            "EPIC-12-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-12-TASK-3",
+          "epic_id": "EPIC-12",
+          "type": "chore",
+          "title": "Extraction des textes (front-end)",
+          "description": "Identifier et extraire tous les textes statiques de l'application React qui doivent être traduits.",
+          "tech_details": "Stack: React. Remplacer les textes statiques par des appels à la fonction `t` de i18next. Créer un fichier de traduction de base (ex: `en.json`) avec les clés et les valeurs par défaut.",
+          "dependencies": [
+            "EPIC-12-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-12-TASK-4",
+          "epic_id": "EPIC-12",
+          "type": "chore",
+          "title": "Extraction des textes (back-end)",
+          "description": "Identifier et extraire tous les textes statiques du back-end qui doivent être traduits (messages d'erreur, etc.).",
+          "tech_details": "Stack: Go. Remplacer les textes statiques par des appels à la fonction de traduction de go-i18n. Créer un fichier de traduction de base (ex: `en.json`) avec les clés et les valeurs par défaut.",
+          "dependencies": [
+            "EPIC-12-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-12-TASK-5",
+          "epic_id": "EPIC-12",
+          "type": "feat",
+          "title": "Ajout de la langue française",
+          "description": "Fournir la traduction complète de l'application en français.",
+          "tech_details": "Stack: Go/React. Créer les fichiers `fr.json` pour le front-end et le back-end. Traduire tous les textes extraits dans ces fichiers. Vérifier l'affichage correct des caractères spéciaux.",
+          "dependencies": [
+            "EPIC-12-TASK-3",
+            "EPIC-12-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-12-TASK-6",
+          "epic_id": "EPIC-12",
+          "type": "feat",
+          "title": "Ajout d'un sélecteur de langue",
+          "description": "Ajouter un composant permettant à l'utilisateur de choisir la langue de l'application.",
+          "tech_details": "Stack: React. Créer un dropdown ou un menu permettant de choisir parmi les langues disponibles. Mettre à jour la langue de i18next lors de la sélection.",
+          "dependencies": [
+            "EPIC-12-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-12-TASK-7",
+          "epic_id": "EPIC-12",
+          "type": "feat",
+          "title": "Persistance de la langue choisie par l'utilisateur",
+          "description": "Sauvegarder la langue choisie par l'utilisateur pour qu'elle soit conservée entre les sessions.",
+          "tech_details": "Stack: React. Utiliser localStorage ou une cookie pour stocker la langue choisie. Charger la langue sauvegardée au démarrage de l'application.",
+          "dependencies": [
+            "EPIC-12-TASK-6"
+          ]
+        },
+        {
+          "id": "EPIC-12-TASK-8",
+          "epic_id": "EPIC-12",
+          "type": "feat",
+          "title": "Adaptation des formats de date et nombre",
+          "description": "Adapter les formats de date et de nombre en fonction de la langue choisie.",
+          "tech_details": "Stack: Go/React. Utiliser les fonctions de formattage de date et de nombre de i18next pour React et de go-i18n pour Go. Configurer les formats pour chaque langue supportée.",
+          "dependencies": [
+            "EPIC-12-TASK-1",
+            "EPIC-12-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-12-TASK-9",
+          "epic_id": "EPIC-12",
+          "type": "chore",
+          "title": "Tests unitaires et d'intégration pour i18n",
+          "description": "Ecrire des tests pour vérifier le bon fonctionnement de l'internationalisation.",
+          "tech_details": "Stack: Go/React. Ajouter des tests unitaires pour vérifier que les traductions sont chargées correctement et que les composants utilisent les bonnes traductions. Ajouter des tests d'intégration pour vérifier que le sélecteur de langue fonctionne correctement et que la langue est persistée.",
+          "dependencies": [
+            "EPIC-12-TASK-1",
+            "EPIC-12-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-12-TASK-10",
+          "epic_id": "EPIC-12",
+          "type": "chore",
+          "title": "Review des traductions",
+          "description": "Faire relire les traductions par un locuteur natif.",
+          "tech_details": "Stack: N/A. Envoyer les fichiers de traductions à un traducteur professionnel ou à un locuteur natif pour relecture et correction.",
+          "dependencies": [
+            "EPIC-12-TASK-5"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-13",
+      "title": "Gestion des abonnements (si applicable)",
+      "description": "Mettre en place un système d'abonnements pour débloquer des fonctionnalités premium.",
+      "goal": "Générer des revenus pour soutenir le développement de l'application.",
+      "issues": [
+        {
+          "id": "EPIC-13-TASK-1",
+          "epic_id": "EPIC-13",
+          "type": "feat",
+          "title": "Implémenter le modèle de données pour les abonnements",
+          "description": "Définir les tables/collections pour stocker les informations sur les abonnements (plans, prix, fonctionnalités débloquées, statut de l'abonnement utilisateur).",
+          "tech_details": "Stack: Go (backend), PostgreSQL/MongoDB (database).  Définir les champs nécessaires : plan_id, user_id, start_date, end_date, status (actif, inactif, en attente), payment_method. Utiliser un ORM comme Gorm ou un ODM comme Mongoose si MongoDB est utilisé.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-13-TASK-2",
+          "epic_id": "EPIC-13",
+          "type": "feat",
+          "title": "Créer l'API pour la gestion des abonnements (backend)",
+          "description": "Développer les endpoints API pour créer, lire, mettre à jour et supprimer (CRUD) les abonnements. Inclure la logique pour gérer les abonnements actifs/inactifs.",
+          "tech_details": "Stack: Go (backend), REST API.  Endpoints: /subscriptions (GET, POST), /subscriptions/{id} (GET, PUT, DELETE).  Valider les données entrantes. Gérer les erreurs de manière appropriée (codes HTTP, messages d'erreur).",
+          "dependencies": [
+            "EPIC-13-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-13-TASK-3",
+          "epic_id": "EPIC-13",
+          "type": "feat",
+          "title": "Intégration avec un fournisseur de paiement (Stripe/Paypal)",
+          "description": "Choisir et intégrer un fournisseur de paiement pour gérer les transactions d'abonnement.  Implémenter la logique pour les paiements récurrents, les annulations et les remboursements.",
+          "tech_details": "Stack: Go (backend), Stripe/Paypal API.  Utiliser les SDK Go officiels pour Stripe ou Paypal.  Stocker les informations de paiement de manière sécurisée (tokenization).  Implémenter les webhooks pour gérer les événements de paiement (paiement réussi, échec de paiement, annulation d'abonnement).",
+          "dependencies": [
+            "EPIC-13-TASK-2"
+          ]
+        },
+        {
+          "id": "EPIC-13-TASK-4",
+          "epic_id": "EPIC-13",
+          "type": "feat",
+          "title": "Interface utilisateur pour la gestion des abonnements (frontend)",
+          "description": "Développer l'interface utilisateur pour permettre aux utilisateurs de s'abonner, de gérer leur abonnement et de consulter les fonctionnalités premium.",
+          "tech_details": "Stack: React (frontend). Créer des composants pour afficher les plans d'abonnement, gérer le paiement et afficher l'état de l'abonnement. Utiliser une librairie de gestion d'état comme Redux ou Context pour gérer l'état de l'abonnement.",
+          "dependencies": [
+            "EPIC-13-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-13-TASK-5",
+          "epic_id": "EPIC-13",
+          "type": "feat",
+          "title": "Gestion des accès aux fonctionnalités premium",
+          "description": "Implémenter la logique pour vérifier si un utilisateur a un abonnement actif et lui donner accès aux fonctionnalités premium en conséquence.",
+          "tech_details": "Stack: Go (backend), React (frontend).  Backend:  Middleware pour vérifier l'état de l'abonnement avant d'autoriser l'accès aux endpoints premium. Frontend:  Utiliser l'état de l'abonnement pour afficher ou masquer les fonctionnalités premium.",
+          "dependencies": [
+            "EPIC-13-TASK-1",
+            "EPIC-13-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-13-TASK-6",
+          "epic_id": "EPIC-13",
+          "type": "chore",
+          "title": "Tests unitaires et d'intégration pour la gestion des abonnements",
+          "description": "Écrire des tests unitaires et d'intégration pour valider la logique de gestion des abonnements, l'intégration avec le fournisseur de paiement et la gestion des accès aux fonctionnalités premium.",
+          "tech_details": "Stack: Go (backend), Jest/Mocha (frontend).  Utiliser des mocks et des stubs pour isoler les tests.  Couverture de test élevée (80% minimum).",
+          "dependencies": [
+            "EPIC-13-TASK-2",
+            "EPIC-13-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-13-TASK-7",
+          "epic_id": "EPIC-13",
+          "type": "chore",
+          "title": "Documentation de l'API et des composants frontend",
+          "description": "Documenter l'API pour la gestion des abonnements et les composants frontend pour faciliter la maintenance et l'évolution du code.",
+          "tech_details": "Utiliser Swagger/OpenAPI pour documenter l'API.  Utiliser JSDoc ou TypeScript pour documenter les composants frontend.",
+          "dependencies": [
+            "EPIC-13-TASK-2",
+            "EPIC-13-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-13-TASK-8",
+          "epic_id": "EPIC-13",
+          "type": "feat",
+          "title": "Mise en place d'un système de notification (email/push) pour les abonnements",
+          "description": "Envoyer des notifications aux utilisateurs pour les informer de l'état de leur abonnement (confirmation d'abonnement, renouvellement, expiration, échec de paiement).",
+          "tech_details": "Stack: Go (backend), SendGrid/Mailgun/Firebase Cloud Messaging.  Utiliser des templates d'email pour personnaliser les notifications.  Gérer les erreurs d'envoi de notifications.",
+          "dependencies": [
+            "EPIC-13-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-13-TASK-9",
+          "epic_id": "EPIC-13",
+          "type": "chore",
+          "title": "Gestion des erreurs et logging",
+          "description": "Implémenter une gestion robuste des erreurs et un système de logging pour faciliter le débogage et la surveillance de l'application.",
+          "tech_details": "Stack: Go (backend), React (frontend).  Utiliser un logger comme Zap ou Logrus pour le backend.  Utiliser un outil de monitoring comme Sentry ou Rollbar pour le frontend et le backend.",
+          "dependencies": [
+            "EPIC-13-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-13-TASK-10",
+          "epic_id": "EPIC-13",
+          "type": "chore",
+          "title": "Sécurisation des données sensibles (informations de paiement)",
+          "description": "S'assurer que les informations de paiement sont stockées et traitées de manière sécurisée, conformément aux normes PCI DSS.",
+          "tech_details": "Stack: Go (backend), Stripe/Paypal API.  Utiliser la tokenization pour stocker les informations de paiement.  Ne jamais stocker les numéros de carte de crédit en clair.  Implémenter des mesures de sécurité pour protéger contre les attaques XSS et CSRF.",
+          "dependencies": [
+            "EPIC-13-TASK-3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-14",
+      "title": "Intégration avec des trackers d'activité physique (montres connectées, etc.)",
+      "description": "Permettre aux utilisateurs de synchroniser leurs données d'activité physique avec l'application.",
+      "goal": "Fournir une vue d'ensemble complète de l'activité physique des utilisateurs.",
+      "issues": [
+        {
+          "id": "EPIC-14-TASK-1",
+          "epic_id": "EPIC-14",
+          "type": "feat",
+          "title": "Auth - Implémentation de l'authentification OAuth2 pour l'API Fitbit",
+          "description": "Permettre aux utilisateurs de s'authentifier via OAuth2 avec Fitbit pour synchroniser leurs données d'activité.",
+          "tech_details": "Stack: Go. Utiliser la librairie `golang.org/x/oauth2`. Stocker le token d'accès de manière sécurisée (e.g., chiffré dans la base de données).",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-14-TASK-2",
+          "epic_id": "EPIC-14",
+          "type": "feat",
+          "title": "Auth - Implémentation de l'authentification OAuth2 pour l'API Garmin",
+          "description": "Permettre aux utilisateurs de s'authentifier via OAuth2 avec Garmin pour synchroniser leurs données d'activité.",
+          "tech_details": "Stack: Go. Utiliser la librairie `golang.org/x/oauth2`. Stocker le token d'accès de manière sécurisée (e.g., chiffré dans la base de données).",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-14-TASK-3",
+          "epic_id": "EPIC-14",
+          "type": "feat",
+          "title": "Auth - Implémentation de l'authentification OAuth2 pour l'API Polar",
+          "description": "Permettre aux utilisateurs de s'authentifier via OAuth2 avec Polar pour synchroniser leurs données d'activité.",
+          "tech_details": "Stack: Go. Utiliser la librairie `golang.org/x/oauth2`. Stocker le token d'accès de manière sécurisée (e.g., chiffré dans la base de données).",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-14-TASK-4",
+          "epic_id": "EPIC-14",
+          "type": "feat",
+          "title": "Backend - Création d'un service de synchronisation des données Fitbit",
+          "description": "Créer un service Go qui récupère les données d'activité de l'API Fitbit (pas, fréquence cardiaque, sommeil) et les stocke dans la base de données.",
+          "tech_details": "Stack: Go. Utiliser l'API Fitbit via des requêtes HTTP.  Mapper les données Fitbit vers le modèle de données interne. Gérer les erreurs et les limitations de l'API Fitbit (e.g., rate limiting).",
+          "dependencies": [
+            "EPIC-14-TASK-1",
+            "EPIC-14-TASK-7"
+          ]
+        },
+        {
+          "id": "EPIC-14-TASK-5",
+          "epic_id": "EPIC-14",
+          "type": "feat",
+          "title": "Backend - Création d'un service de synchronisation des données Garmin",
+          "description": "Créer un service Go qui récupère les données d'activité de l'API Garmin (pas, fréquence cardiaque, sommeil) et les stocke dans la base de données.",
+          "tech_details": "Stack: Go. Utiliser l'API Garmin via des requêtes HTTP. Mapper les données Garmin vers le modèle de données interne. Gérer les erreurs et les limitations de l'API Garmin (e.g., rate limiting).",
+          "dependencies": [
+            "EPIC-14-TASK-2",
+            "EPIC-14-TASK-7"
+          ]
+        },
+        {
+          "id": "EPIC-14-TASK-6",
+          "epic_id": "EPIC-14",
+          "type": "feat",
+          "title": "Backend - Création d'un service de synchronisation des données Polar",
+          "description": "Créer un service Go qui récupère les données d'activité de l'API Polar (pas, fréquence cardiaque, sommeil) et les stocke dans la base de données.",
+          "tech_details": "Stack: Go. Utiliser l'API Polar via des requêtes HTTP. Mapper les données Polar vers le modèle de données interne. Gérer les erreurs et les limitations de l'API Polar (e.g., rate limiting).",
+          "dependencies": [
+            "EPIC-14-TASK-3",
+            "EPIC-14-TASK-7"
+          ]
+        },
+        {
+          "id": "EPIC-14-TASK-7",
+          "epic_id": "EPIC-14",
+          "type": "chore",
+          "title": "Backend - Définition du modèle de données pour les activités synchronisées",
+          "description": "Définir le schéma de la base de données pour stocker les données d'activité synchronisées (pas, fréquence cardiaque, sommeil, etc.).",
+          "tech_details": "Stack: Go, Database (e.g., PostgreSQL). Créer les tables et les relations nécessaires.  Prendre en compte la possibilité d'ajouter de nouveaux types de données à l'avenir.",
+          "dependencies": [
+            "EPIC-1-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-14-TASK-8",
+          "epic_id": "EPIC-14",
+          "type": "feat",
+          "title": "Frontend - Ajout d'une section 'Trackers Connectés' dans les paramètres utilisateur",
+          "description": "Ajouter une section dans les paramètres utilisateur pour permettre aux utilisateurs de connecter/déconnecter leurs trackers d'activité.",
+          "tech_details": "Stack: React. Créer une UI pour afficher la liste des trackers supportés (Fitbit, Garmin, Polar). Utiliser des boutons pour connecter/déconnecter chaque tracker. Afficher le statut de connexion (connecté/déconnecté).",
+          "dependencies": [
+            "EPIC-14-TASK-1",
+            "EPIC-14-TASK-2",
+            "EPIC-14-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-14-TASK-9",
+          "epic_id": "EPIC-14",
+          "type": "feat",
+          "title": "Frontend - Affichage des données d'activité synchronisées dans l'application",
+          "description": "Afficher les données d'activité synchronisées (pas, fréquence cardiaque, sommeil) dans l'application, par exemple, sur la page de profil de l'utilisateur ou dans un tableau de bord dédié.",
+          "tech_details": "Stack: React. Utiliser des graphiques et des tableaux pour visualiser les données. Permettre à l'utilisateur de filtrer les données par date. Assurer une bonne performance de l'affichage des données.",
+          "dependencies": [
+            "EPIC-14-TASK-4",
+            "EPIC-14-TASK-5",
+            "EPIC-14-TASK-6",
+            "EPIC-14-TASK-8"
+          ]
+        },
+        {
+          "id": "EPIC-14-TASK-10",
+          "epic_id": "EPIC-14",
+          "type": "chore",
+          "title": "Tests - Ecrire des tests unitaires pour les services de synchronisation des données",
+          "description": "Ecrire des tests unitaires pour les services Go qui synchronisent les données des trackers d'activité.",
+          "tech_details": "Stack: Go. Utiliser le package `testing`. Mock les appels aux APIs des trackers pour isoler les tests. Tester les cas d'erreur et les limitations de l'API.",
+          "dependencies": [
+            "EPIC-14-TASK-4",
+            "EPIC-14-TASK-5",
+            "EPIC-14-TASK-6"
+          ]
+        },
+        {
+          "id": "EPIC-14-TASK-11",
+          "epic_id": "EPIC-14",
+          "type": "chore",
+          "title": "Tests - Ecrire des tests d'intégration pour l'authentification OAuth2",
+          "description": "Ecrire des tests d'intégration pour vérifier le bon fonctionnement de l'authentification OAuth2 avec Fitbit, Garmin et Polar.",
+          "tech_details": "Stack: Go. Simuler le flux d'authentification OAuth2. Vérifier que le token d'accès est stocké correctement et peut être utilisé pour récupérer les données d'activité.",
+          "dependencies": [
+            "EPIC-14-TASK-1",
+            "EPIC-14-TASK-2",
+            "EPIC-14-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-14-TASK-12",
+          "epic_id": "EPIC-14",
+          "type": "chore",
+          "title": "Documentation - Mettre à jour la documentation de l'API avec les nouveaux endpoints pour la synchronisation des données",
+          "description": "Mettre à jour la documentation de l'API (e.g., avec Swagger) pour inclure les nouveaux endpoints pour la synchronisation des données.",
+          "tech_details": "Stack: Swagger/OpenAPI. Décrire les endpoints, les paramètres et les réponses. Inclure des exemples d'utilisation.",
+          "dependencies": [
+            "EPIC-14-TASK-4",
+            "EPIC-14-TASK-5",
+            "EPIC-14-TASK-6"
+          ]
+        },
+        {
+          "id": "EPIC-14-TASK-13",
+          "epic_id": "EPIC-14",
+          "type": "chore",
+          "title": "Infra - Ajouter la configuration pour les variables d'environnement des APIs de trackers",
+          "description": "Ajouter la configuration nécessaire (variables d'environnement) pour les clés d'API et les secrets des APIs de trackers (Fitbit, Garmin, Polar).",
+          "tech_details": "Utiliser un gestionnaire de secrets (e.g., HashiCorp Vault) pour stocker les secrets de manière sécurisée.  S'assurer que les variables d'environnement sont configurées correctement dans l'environnement de développement, de test et de production.",
+          "dependencies": [
+            "EPIC-14-TASK-1",
+            "EPIC-14-TASK-2",
+            "EPIC-14-TASK-3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-15",
+      "title": "Amélioration de l'algorithme de recherche et de recommandation",
+      "description": "Affiner l'algorithme de recherche et de recommandation pour proposer des programmes d'entraînement plus pertinents aux utilisateurs.",
+      "goal": "Augmenter l'engagement des utilisateurs et la découverte de nouveaux programmes.",
+      "issues": [
+        {
+          "id": "EPIC-15-TASK-1",
+          "epic_id": "EPIC-15",
+          "type": "chore",
+          "title": "Analyse des données existantes et identification des axes d'amélioration",
+          "description": "Analyser les données existantes (programmes d'entraînement, données utilisateur, interactions) pour identifier les points faibles de l'algorithme actuel et les opportunités d'amélioration.",
+          "tech_details": "Stack: Python (Pandas, NumPy, Scikit-learn). Accès à la base de données via requêtes SQL. Générer un rapport avec les statistiques clés et les recommandations.",
+          "dependencies": []
+        },
+        {
+          "id": "EPIC-15-TASK-2",
+          "epic_id": "EPIC-15",
+          "type": "feat",
+          "title": "Implémentation d'une nouvelle méthode de scoring basée sur le contenu",
+          "description": "Développer une nouvelle méthode de scoring des programmes d'entraînement basée sur le contenu (type d'exercices, muscles sollicités, niveau de difficulté, durée).",
+          "tech_details": "Stack: Go. Créer une fonction `scoreProgram(program)` qui retourne un score basé sur une analyse du contenu du programme. Utiliser une représentation vectorielle des exercices et des groupes musculaires.",
+          "dependencies": [
+            "EPIC-15-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-15-TASK-3",
+          "epic_id": "EPIC-15",
+          "type": "feat",
+          "title": "Implémentation d'une méthode de filtrage collaboratif basée sur les similarités entre utilisateurs",
+          "description": "Développer une méthode de filtrage collaboratif pour recommander des programmes d'entraînement en fonction des similarités entre les utilisateurs (historique d'entraînement, objectifs, préférences).",
+          "tech_details": "Stack: Go. Calculer une matrice de similarité utilisateur-utilisateur. Utiliser une approche de type k-NN pour identifier les utilisateurs similaires. Stocker la matrice de similarité en cache (Redis).",
+          "dependencies": [
+            "EPIC-15-TASK-1"
+          ]
+        },
+        {
+          "id": "EPIC-15-TASK-4",
+          "epic_id": "EPIC-15",
+          "type": "feat",
+          "title": "Intégration des nouvelles méthodes de scoring et de filtrage dans l'algorithme de recommandation",
+          "description": "Intégrer les nouvelles méthodes de scoring et de filtrage dans l'algorithme de recommandation existant. Définir une stratégie de combinaison des différents scores.",
+          "tech_details": "Stack: Go. Modifier la fonction `getRecommendedPrograms(user)` pour inclure les nouveaux scores. Implémenter une stratégie de pondération des différents scores (scoring basé sur le contenu, filtrage collaboratif, popularité).",
+          "dependencies": [
+            "EPIC-15-TASK-2",
+            "EPIC-15-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-15-TASK-5",
+          "epic_id": "EPIC-15",
+          "type": "chore",
+          "title": "Tests unitaires et tests d'intégration des nouvelles fonctionnalités",
+          "description": "Écrire des tests unitaires et des tests d'intégration pour valider le bon fonctionnement des nouvelles fonctionnalités.",
+          "tech_details": "Stack: Go (testing package). Mocker les dépendances externes (base de données, Redis). Couverture de code \u003e 80%.",
+          "dependencies": [
+            "EPIC-15-TASK-2",
+            "EPIC-15-TASK-3"
+          ]
+        },
+        {
+          "id": "EPIC-15-TASK-6",
+          "epic_id": "EPIC-15",
+          "type": "feat",
+          "title": "Tests A/B pour évaluer l'impact des améliorations sur l'engagement utilisateur",
+          "description": "Mettre en place des tests A/B pour comparer l'algorithme de recommandation amélioré avec la version actuelle et mesurer l'impact sur l'engagement utilisateur (taux de clics, nombre de programmes suivis, etc.).",
+          "tech_details": "Stack: React (pour l'interface utilisateur), Go (pour la logique A/B). Utiliser une librairie de gestion des tests A/B (ex: Google Optimize). Collecter les données et analyser les résultats.",
+          "dependencies": [
+            "EPIC-15-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-15-TASK-7",
+          "epic_id": "EPIC-15",
+          "type": "feat",
+          "title": "Optimisation des performances de l'algorithme de recherche",
+          "description": "Optimiser les performances de l'algorithme de recherche des programmes d'entraînement (temps de réponse, utilisation des ressources).",
+          "tech_details": "Stack: Go. Profiler le code pour identifier les goulots d'étranglement. Utiliser l'indexation (Elasticsearch ou équivalent) pour accélérer les recherches. Mettre en cache les résultats des requêtes fréquentes.",
+          "dependencies": [
+            "EPIC-15-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-15-TASK-8",
+          "epic_id": "EPIC-15",
+          "type": "feat",
+          "title": "Ajout de filtres de recherche avancés (matériel disponible, type d'entraînement)",
+          "description": "Ajouter des filtres de recherche avancés pour permettre aux utilisateurs de trouver plus facilement les programmes d'entraînement qui correspondent à leurs besoins (matériel disponible, type d'entraînement, etc.).",
+          "tech_details": "Stack: React (pour l'interface utilisateur), Go (pour la gestion des filtres). Modifier l'API de recherche pour prendre en compte les nouveaux filtres. Mettre à jour l'interface utilisateur pour permettre aux utilisateurs de sélectionner les filtres.",
+          "dependencies": [
+            "EPIC-15-TASK-4"
+          ]
+        },
+        {
+          "id": "EPIC-15-TASK-9",
+          "epic_id": "EPIC-15",
+          "type": "fix",
+          "title": "Correction d'un bug lié à la recherche par nom d'utilisateur",
+          "description": "Corriger un bug qui empêche la recherche de programmes d'entraînement par nom d'utilisateur.",
+          "tech_details": "Stack: Go. Identifier la cause du bug. Corriger le code et écrire un test unitaire pour éviter la réapparition du bug.",
+          "dependencies": [
+            "EPIC-15-TASK-4"
+          ]
+        }
+      ]
+    }
+  ]
+}
