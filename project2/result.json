@@ -1,0 +1,400 @@
+{
+    "idea": "Une application permettant aux utilisateurs de partager leur programme d'entrainement en salle de sport, les utilisateurs peuvent s'inscrire, se connecter, créer des entrainement, les partager",
+    "epics": [
+        {
+            "id": "EPIC-1",
+            "title": "Authentification et Gestion des Utilisateurs",
+            "description": "Permettre aux utilisateurs de s'inscrire, de se connecter, de gérer leur profil et de réinitialiser leur mot de passe.",
+            "goal": "Fournir une base d'utilisateurs sécurisée et gérable pour l'application.",
+            "issues": [
+                {
+                    "id": "EPIC-1-TASK-1",
+                    "epic_id": "EPIC-1",
+                    "type": "feat",
+                    "title": "Implémenter l'inscription des utilisateurs",
+                    "description": "Permettre aux nouveaux utilisateurs de créer un compte avec une adresse e-mail, un nom d'utilisateur et un mot de passe.",
+                    "tech_details": "Stack: Go (backend), React (frontend). Utiliser bcrypt pour le hachage des mots de passe. Mettre en place une validation côté serveur et côté client. Ajouter un système de vérification d'email.",
+                    "dependencies": []
+                },
+                {
+                    "id": "EPIC-1-TASK-2",
+                    "epic_id": "EPIC-1",
+                    "type": "feat",
+                    "title": "Implémenter la connexion des utilisateurs",
+                    "description": "Permettre aux utilisateurs enregistrés de se connecter avec leur adresse e-mail et leur mot de passe.",
+                    "tech_details": "Stack: Go (backend), React (frontend). Utiliser JWT pour l'authentification. Stocker le JWT dans un cookie HTTP sécurisé ou local storage.  Gérer les erreurs de connexion (mauvais identifiants).",
+                    "dependencies": [
+                        "EPIC-1-TASK-1"
+                    ]
+                },
+                {
+                    "id": "EPIC-1-TASK-3",
+                    "epic_id": "EPIC-1",
+                    "type": "feat",
+                    "title": "Créer la page de profil utilisateur",
+                    "description": "Afficher les informations du profil de l'utilisateur connecté (nom d'utilisateur, email) et permettre de les modifier.",
+                    "tech_details": "Stack: React (frontend). Créer un formulaire de modification de profil.  Utiliser une requête API pour récupérer et mettre à jour les informations de l'utilisateur.",
+                    "dependencies": [
+                        "EPIC-1-TASK-2"
+                    ]
+                },
+                {
+                    "id": "EPIC-1-TASK-4",
+                    "epic_id": "EPIC-1",
+                    "type": "feat",
+                    "title": "Implémenter la modification du profil utilisateur",
+                    "description": "Permettre aux utilisateurs de modifier leur nom d'utilisateur et leur adresse e-mail.",
+                    "tech_details": "Stack: Go (backend), React (frontend). Valider les nouvelles informations côté serveur et côté client. Mettre à jour la base de données avec les nouvelles informations.",
+                    "dependencies": [
+                        "EPIC-1-TASK-2"
+                    ]
+                },
+                {
+                    "id": "EPIC-1-TASK-5",
+                    "epic_id": "EPIC-1",
+                    "type": "feat",
+                    "title": "Implémenter la réinitialisation du mot de passe",
+                    "description": "Permettre aux utilisateurs de réinitialiser leur mot de passe via un lien envoyé par e-mail.",
+                    "tech_details": "Stack: Go (backend). Générer un token unique pour la réinitialisation du mot de passe et l'envoyer par e-mail.  Créer une page de réinitialisation du mot de passe accessible via le lien.  Valider le token avant de permettre la modification du mot de passe.",
+                    "dependencies": []
+                },
+                {
+                    "id": "EPIC-1-TASK-6",
+                    "epic_id": "EPIC-1",
+                    "type": "chore",
+                    "title": "Ajouter une validation des données côté serveur",
+                    "description": "Valider toutes les données entrantes côté serveur pour l'inscription, la connexion, la modification du profil et la réinitialisation du mot de passe.",
+                    "tech_details": "Stack: Go (backend). Utiliser une librairie de validation comme 'validator'.  Retourner des erreurs appropriées en cas d'échec de la validation.",
+                    "dependencies": [
+                        "EPIC-1-TASK-1",
+                        "EPIC-1-TASK-2",
+                        "EPIC-1-TASK-4",
+                        "EPIC-1-TASK-5"
+                    ]
+                },
+                {
+                    "id": "EPIC-1-TASK-7",
+                    "epic_id": "EPIC-1",
+                    "type": "chore",
+                    "title": "Ajouter une validation des données côté client",
+                    "description": "Valider toutes les données entrantes côté client pour l'inscription, la connexion, la modification du profil et la réinitialisation du mot de passe.",
+                    "tech_details": "Stack: React (frontend). Utiliser une librairie de validation comme Formik ou React Hook Form. Afficher des messages d'erreur clairs et concis.",
+                    "dependencies": [
+                        "EPIC-1-TASK-1",
+                        "EPIC-1-TASK-2",
+                        "EPIC-1-TASK-4",
+                        "EPIC-1-TASK-5"
+                    ]
+                },
+                {
+                    "id": "EPIC-1-TASK-8",
+                    "epic_id": "EPIC-1",
+                    "type": "chore",
+                    "title": "Sécuriser les API d'authentification",
+                    "description": "Protéger les API d'authentification contre les attaques courantes (CSRF, XSS, etc.).",
+                    "tech_details": "Stack: Go (backend).  Utiliser des headers de sécurité appropriés.  Implémenter une protection CSRF.  Valider et échapper les données entrantes.",
+                    "dependencies": [
+                        "EPIC-1-TASK-1",
+                        "EPIC-1-TASK-2",
+                        "EPIC-1-TASK-5"
+                    ]
+                },
+                {
+                    "id": "EPIC-1-TASK-9",
+                    "epic_id": "EPIC-1",
+                    "type": "feat",
+                    "title": "Implémenter la déconnexion de l'utilisateur",
+                    "description": "Permettre aux utilisateurs de se déconnecter de l'application.",
+                    "tech_details": "Stack: React (frontend), Go (backend). Supprimer le JWT du cookie ou local storage côté client.  Invalider le token côté serveur (optionnel).",
+                    "dependencies": [
+                        "EPIC-1-TASK-2"
+                    ]
+                },
+                {
+                    "id": "EPIC-1-TASK-10",
+                    "epic_id": "EPIC-1",
+                    "type": "feat",
+                    "title": "UI: Créer les composants React pour l'authentification",
+                    "description": "Créer les composants React pour l'inscription, la connexion, la modification du profil et la réinitialisation du mot de passe.",
+                    "tech_details": "Stack: React (frontend). Utiliser un framework UI comme Material UI ou Ant Design.  Assurer une expérience utilisateur fluide et intuitive.",
+                    "dependencies": [
+                        "EPIC-1-TASK-1",
+                        "EPIC-1-TASK-2",
+                        "EPIC-1-TASK-4",
+                        "EPIC-1-TASK-5"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "EPIC-2",
+            "title": "Création et Gestion des Entraînements",
+            "description": "Permettre aux utilisateurs de créer, modifier et supprimer leurs propres programmes d'entraînement, en définissant les exercices, les séries, les répétitions et les temps de repos.",
+            "goal": "Offrir aux utilisateurs la possibilité de structurer et de suivre leurs séances d'entraînement personnalisées.",
+            "issues": [
+                {
+                    "id": "EPIC-2-TASK-1",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: Créer l'entité Workout (Entraînement) et ses attributs",
+                    "description": "Définir le modèle de données pour un entraînement. Un entraînement doit contenir un nom, une description optionnelle, une liste d'exercices et un identifiant d'utilisateur (propriétaire).",
+                    "tech_details": "Stack: Go (backend). Créer une structure Go pour représenter l'entité Workout. Utiliser GORM pour l'ORM et définir les migrations nécessaires.  Ajouter les champs: `ID` (UUID), `UserID` (UUID), `Name` (string), `Description` (string), `CreatedAt` (time.Time), `UpdatedAt` (time.Time).",
+                    "dependencies": []
+                },
+                {
+                    "id": "EPIC-2-TASK-2",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: Créer l'entité Exercise (Exercice) et ses attributs",
+                    "description": "Définir le modèle de données pour un exercice. Un exercice doit contenir un nom, une description optionnelle, une liste de séries, un identifiant d'entraînement.",
+                    "tech_details": "Stack: Go (backend). Créer une structure Go pour représenter l'entité Exercise. Utiliser GORM pour l'ORM et définir les migrations nécessaires. Ajouter les champs: `ID` (UUID), `WorkoutID` (UUID), `Name` (string), `Description` (string), `Sets` (int), `Reps` (int), `Rest` (int), `CreatedAt` (time.Time), `UpdatedAt` (time.Time).",
+                    "dependencies": []
+                },
+                {
+                    "id": "EPIC-2-TASK-3",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: API Endpoint pour la création d'un entraînement",
+                    "description": "Développer un endpoint API pour permettre à un utilisateur de créer un nouvel entraînement.  Valider les données entrantes et renvoyer une réponse appropriée.",
+                    "tech_details": "Stack: Go (backend). Utiliser Gin pour le routing.  Endpoint: `POST /workouts`.  Body: `{ name: string, description: string (optional) }`.  Authentification via JWT.  Retourner l'entraînement créé au format JSON. Gérer les erreurs de validation et les erreurs de base de données.",
+                    "dependencies": [
+                        "EPIC-2-TASK-1"
+                    ]
+                },
+                {
+                    "id": "EPIC-2-TASK-4",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: API Endpoint pour la récupération d'un entraînement",
+                    "description": "Développer un endpoint API pour permettre à un utilisateur de récupérer un entraînement spécifique par son ID.",
+                    "tech_details": "Stack: Go (backend). Utiliser Gin pour le routing. Endpoint: `GET /workouts/:id`. Authentification via JWT. Vérifier que l'utilisateur a le droit d'accéder à l'entraînement (est propriétaire). Retourner l'entraînement au format JSON. Gérer les erreurs si l'entraînement n'existe pas.",
+                    "dependencies": [
+                        "EPIC-2-TASK-1"
+                    ]
+                },
+                {
+                    "id": "EPIC-2-TASK-5",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: API Endpoint pour la mise à jour d'un entraînement",
+                    "description": "Développer un endpoint API pour permettre à un utilisateur de mettre à jour un entraînement existant.",
+                    "tech_details": "Stack: Go (backend). Utiliser Gin pour le routing. Endpoint: `PUT /workouts/:id`. Body: `{ name: string, description: string (optional) }`. Authentification via JWT. Vérifier que l'utilisateur a le droit de modifier l'entraînement (est propriétaire). Mettre à jour l'entraînement dans la base de données. Retourner l'entraînement mis à jour au format JSON. Gérer les erreurs de validation et les erreurs de base de données.",
+                    "dependencies": [
+                        "EPIC-2-TASK-1"
+                    ]
+                },
+                {
+                    "id": "EPIC-2-TASK-6",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: API Endpoint pour la suppression d'un entraînement",
+                    "description": "Développer un endpoint API pour permettre à un utilisateur de supprimer un entraînement existant.",
+                    "tech_details": "Stack: Go (backend). Utiliser Gin pour le routing. Endpoint: `DELETE /workouts/:id`. Authentification via JWT. Vérifier que l'utilisateur a le droit de supprimer l'entraînement (est propriétaire). Supprimer l'entraînement de la base de données. Retourner un code de succès (204 No Content). Gérer les erreurs si l'entraînement n'existe pas.",
+                    "dependencies": [
+                        "EPIC-2-TASK-1"
+                    ]
+                },
+                {
+                    "id": "EPIC-2-TASK-7",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: API Endpoint pour lister les entraînements d'un utilisateur",
+                    "description": "Développer un endpoint API pour permettre à un utilisateur de lister tous ses entraînements.",
+                    "tech_details": "Stack: Go (backend). Utiliser Gin pour le routing. Endpoint: `GET /workouts`. Authentification via JWT. Retourner une liste d'entraînements au format JSON. Ajouter une pagination (limite et offset).",
+                    "dependencies": [
+                        "EPIC-2-TASK-1"
+                    ]
+                },
+                {
+                    "id": "EPIC-2-TASK-8",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: Interface utilisateur pour la création d'un entraînement",
+                    "description": "Créer un formulaire dans l'interface utilisateur pour permettre à l'utilisateur de créer un nouvel entraînement.",
+                    "tech_details": "Stack: React (frontend). Utiliser Material UI ou un autre framework UI. Champs: Nom (text), Description (textarea), Liste des exercices (composant dynamique). Gérer la validation des données côté client. Envoyer une requête POST à l'API `/workouts` lors de la soumission du formulaire. Afficher un message de succès ou d'erreur à l'utilisateur.",
+                    "dependencies": [
+                        "EPIC-2-TASK-1",
+                        "EPIC-1-TASK-2"
+                    ]
+                },
+                {
+                    "id": "EPIC-2-TASK-9",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: Interface utilisateur pour l'affichage des entraînements",
+                    "description": "Afficher la liste des entraînements de l'utilisateur sur une page dédiée.",
+                    "tech_details": "Stack: React (frontend). Récupérer les entraînements depuis l'API `/workouts`. Afficher chaque entraînement dans une carte ou une liste. Inclure le nom et la description de l'entraînement. Ajouter des boutons pour modifier et supprimer l'entraînement.",
+                    "dependencies": [
+                        "EPIC-2-TASK-1",
+                        "EPIC-1-TASK-2"
+                    ]
+                },
+                {
+                    "id": "EPIC-2-TASK-10",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: Interface utilisateur pour la modification d'un entraînement",
+                    "description": "Créer un formulaire dans l'interface utilisateur pour permettre à l'utilisateur de modifier un entraînement existant.",
+                    "tech_details": "Stack: React (frontend). Récupérer les données de l'entraînement depuis l'API `/workouts/:id`. Pré-remplir le formulaire avec les données existantes. Utiliser Material UI ou un autre framework UI. Champs: Nom (text), Description (textarea), Liste des exercices (composant dynamique). Gérer la validation des données côté client. Envoyer une requête PUT à l'API `/workouts/:id` lors de la soumission du formulaire. Afficher un message de succès ou d'erreur à l'utilisateur.",
+                    "dependencies": [
+                        "EPIC-2-TASK-1",
+                        "EPIC-1-TASK-2"
+                    ]
+                },
+                {
+                    "id": "EPIC-2-TASK-11",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: Gestion des erreurs côté client (Frontend)",
+                    "description": "Afficher des messages d'erreur clairs et précis à l'utilisateur en cas d'erreur lors de la création, la modification ou la suppression d'un entraînement.",
+                    "tech_details": "Stack: React (frontend). Utiliser un système de notification (par exemple, un toast) pour afficher les erreurs. Gérer les erreurs de validation (champs manquants, formats incorrects) et les erreurs de réseau (API inaccessible, erreur 500).",
+                    "dependencies": []
+                },
+                {
+                    "id": "EPIC-2-TASK-12",
+                    "epic_id": "EPIC-2",
+                    "type": "chore",
+                    "title": "CHORE: Ajout de tests unitaires pour le backend (API)",
+                    "description": "Ajouter des tests unitaires pour les endpoints de l'API Workout (création, lecture, mise à jour, suppression, liste).",
+                    "tech_details": "Stack: Go (backend). Utiliser le package `testify` pour les assertions. Tester les cas suivants: création d'un entraînement valide, création d'un entraînement invalide, récupération d'un entraînement existant, récupération d'un entraînement inexistant, mise à jour d'un entraînement valide, suppression d'un entraînement existant, suppression d'un entraînement inexistant, liste des entraînements d'un utilisateur.",
+                    "dependencies": [
+                        "EPIC-2-TASK-3",
+                        "EPIC-2-TASK-4",
+                        "EPIC-2-TASK-5",
+                        "EPIC-2-TASK-6",
+                        "EPIC-2-TASK-7"
+                    ]
+                },
+                {
+                    "id": "EPIC-2-TASK-13",
+                    "epic_id": "EPIC-2",
+                    "type": "feat",
+                    "title": "FEAT: Ajouter la possibilité de dupliquer un entrainement",
+                    "description": "Permettre à l'utilisateur de dupliquer un entrainement existant.",
+                    "tech_details": "Stack: Go/React. Ajouter un bouton 'Dupliquer' sur l'interface d'affichage d'un entrainement. Créer un endpoint API `POST /workouts/:id/duplicate` qui copie l'entrainement et ses exercices associés. Adapter l'interface utilisateur pour afficher le nouvel entrainement créé.",
+                    "dependencies": [
+                        "EPIC-2-TASK-1"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "EPIC-3",
+            "title": "Partage et Découverte des Entraînements",
+            "description": "Permettre aux utilisateurs de partager leurs entraînements avec d'autres utilisateurs et de découvrir les entraînements partagés par la communauté.",
+            "goal": "Favoriser l'échange de programmes d'entraînement et l'inspiration entre les utilisateurs.",
+            "issues": [
+                {
+                    "id": "EPIC-3-TASK-1",
+                    "epic_id": "EPIC-3",
+                    "type": "feat",
+                    "title": "Implémenter le modèle de données 'WorkoutShare'",
+                    "description": "Définir le modèle de données pour gérer le partage des entraînements. Inclure les champs nécessaires comme l'ID de l'entraînement, l'ID de l'utilisateur qui partage, la date de partage, et un statut (public/privé).",
+                    "tech_details": "Stack: Go/PostgreSQL. Créer une nouvelle table 'workout_shares' dans la base de données avec les colonnes appropriées. Utiliser GORM pour la gestion de l'ORM.",
+                    "dependencies": []
+                },
+                {
+                    "id": "EPIC-3-TASK-2",
+                    "epic_id": "EPIC-3",
+                    "type": "feat",
+                    "title": "Développer une API pour partager un entraînement",
+                    "description": "Créer un endpoint d'API permettant à un utilisateur de partager un entraînement existant. L'API doit vérifier que l'utilisateur est bien le propriétaire de l'entraînement avant de le partager.",
+                    "tech_details": "Stack: Go/Gin. Créer un endpoint POST '/workouts/:workoutId/share'. Valider l'ID de l'utilisateur via le middleware d'authentification. Utiliser le modèle 'WorkoutShare' pour enregistrer le partage.",
+                    "dependencies": [
+                        "EPIC-3-TASK-1",
+                        "EPIC-2-TASK-1"
+                    ]
+                },
+                {
+                    "id": "EPIC-3-TASK-3",
+                    "epic_id": "EPIC-3",
+                    "type": "feat",
+                    "title": "Développer une API pour récupérer les entraînements partagés",
+                    "description": "Créer un endpoint d'API pour récupérer la liste des entraînements partagés publiquement.  Permettre le filtrage par date de partage, popularité (nombre de likes/vues), et catégories d'entraînement.",
+                    "tech_details": "Stack: Go/Gin/PostgreSQL. Créer un endpoint GET '/workouts/shared'. Implémenter les filtres via des paramètres de requête (query parameters). Utiliser des requêtes SQL optimisées pour la pagination et le tri.",
+                    "dependencies": [
+                        "EPIC-3-TASK-1"
+                    ]
+                },
+                {
+                    "id": "EPIC-3-TASK-4",
+                    "epic_id": "EPIC-3",
+                    "type": "feat",
+                    "title": "Implémenter l'interface utilisateur pour partager un entraînement",
+                    "description": "Ajouter un bouton ou une option dans l'interface utilisateur (sur la page de détail d'un entraînement) permettant à l'utilisateur de partager son entraînement.",
+                    "tech_details": "Stack: React/Redux. Ajouter un bouton 'Partager' sur la page de détail de l'entraînement.  Ce bouton doit déclencher un appel à l'API de partage (POST '/workouts/:workoutId/share').",
+                    "dependencies": [
+                        "EPIC-3-TASK-2",
+                        "EPIC-2-TASK-9"
+                    ]
+                },
+                {
+                    "id": "EPIC-3-TASK-5",
+                    "epic_id": "EPIC-3",
+                    "type": "feat",
+                    "title": "Développer l'interface utilisateur pour la découverte des entraînements partagés",
+                    "description": "Créer une nouvelle page ou section dans l'application affichant la liste des entraînements partagés. Permettre aux utilisateurs de filtrer et trier les entraînements.",
+                    "tech_details": "Stack: React/Redux. Créer une nouvelle route '/workouts/shared'. Utiliser des composants de filtrage et de tri.  Faire un appel à l'API GET '/workouts/shared' pour récupérer les données.",
+                    "dependencies": [
+                        "EPIC-3-TASK-3"
+                    ]
+                },
+                {
+                    "id": "EPIC-3-TASK-6",
+                    "epic_id": "EPIC-3",
+                    "type": "chore",
+                    "title": "Ajouter des tests unitaires pour l'API de partage d'entraînement",
+                    "description": "Écrire des tests unitaires pour valider le bon fonctionnement de l'API de partage (POST '/workouts/:workoutId/share'). Tester les cas d'erreur (utilisateur non autorisé, entraînement inexistant...).",
+                    "tech_details": "Stack: Go/Testify. Utiliser le framework Testify pour écrire les tests.  Mock les dépendances externes (base de données, services d'authentification).",
+                    "dependencies": [
+                        "EPIC-3-TASK-2"
+                    ]
+                },
+                {
+                    "id": "EPIC-3-TASK-7",
+                    "epic_id": "EPIC-3",
+                    "type": "chore",
+                    "title": "Ajouter des tests d'intégration pour la récupération des entraînements partagés",
+                    "description": "Écrire des tests d'intégration pour valider le bon fonctionnement de l'API de récupération des entraînements partagés (GET '/workouts/shared'). Tester les filtres et le tri.",
+                    "tech_details": "Stack: Go/Testify/Docker. Utiliser un environnement de test Docker pour garantir la cohérence des tests.  Créer des données de test dans la base de données.",
+                    "dependencies": [
+                        "EPIC-3-TASK-3"
+                    ]
+                },
+                {
+                    "id": "EPIC-3-TASK-8",
+                    "epic_id": "EPIC-3",
+                    "type": "fix",
+                    "title": "Améliorer la performance de la requête de récupération des entraînements partagés",
+                    "description": "Optimiser la requête SQL utilisée pour récupérer les entraînements partagés afin d'améliorer la performance et réduire le temps de réponse.",
+                    "tech_details": "Stack: Go/PostgreSQL. Utiliser EXPLAIN ANALYZE pour identifier les goulots d'étranglement.  Ajouter des index appropriés sur les colonnes utilisées dans les filtres et le tri.",
+                    "dependencies": [
+                        "EPIC-3-TASK-3"
+                    ]
+                },
+                {
+                    "id": "EPIC-3-TASK-9",
+                    "epic_id": "EPIC-3",
+                    "type": "fix",
+                    "title": "Implémenter la gestion des erreurs pour le partage d'entraînement",
+                    "description": "Gérer correctement les erreurs qui peuvent survenir lors du partage d'un entraînement (par exemple, si l'utilisateur n'a pas les droits nécessaires). Afficher des messages d'erreur clairs à l'utilisateur.",
+                    "tech_details": "Stack: Go/React. Ajouter une gestion des erreurs centralisée dans l'API.  Afficher des notifications d'erreur conviviales dans l'interface utilisateur.",
+                    "dependencies": [
+                        "EPIC-3-TASK-2"
+                    ]
+                },
+                {
+                    "id": "EPIC-3-TASK-10",
+                    "epic_id": "EPIC-3",
+                    "type": "feat",
+                    "title": "Intégration de l'Infinite Scroll sur la page des entraînements partagés",
+                    "description": "Mettre en place un système d'infinite scroll sur la page des entraînements partagés pour améliorer l'expérience utilisateur et éviter de charger trop de données en une seule fois.",
+                    "tech_details": "Stack: React. Utiliser une librairie React d'infinite scroll. Modifier l'appel API pour prendre en compte la pagination.",
+                    "dependencies": [
+                        "EPIC-3-TASK-5"
+                    ]
+                }
+            ]
+        }
+    ]
+}
