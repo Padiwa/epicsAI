@@ -1,0 +1,1327 @@
+{
+  "idea": "Une application permettant aux utilisateurs de partager leur programme d'entrainement en salle de sport, les utilisateurs peuvent s'inscrire, se connecter, créer des entrainement, les partager",
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Permettre aux utilisateurs de s'inscrire et de se connecter à l'application",
+      "description": "Les utilisateurs peuvent créer un compte et se connecter en toute sécurité pour accéder à leurs données et fonctionnalités personnalisées.",
+      "goal": "Atteindre un taux de conversion d'inscription de 70% et un taux de rétention de connexion hebdomadaire de 80%.",
+      "issues": [
+        {
+          "id": "EPIC-1-TASK-1",
+          "epic_id": "EPIC-1",
+          "title": "feat: Add user registration endpoint",
+          "type": "feat",
+          "description": "As a user, I want to be able to register an account with my email and password so I can access the application.",
+          "acceptance_criteria": [
+            "A new user account is created when valid registration details are submitted.",
+            "The user receives a confirmation message upon successful registration.",
+            "The system prevents registration with an email address that already exists.",
+            "The password is securely hashed and stored in the database.",
+            "Appropriate error messages are displayed for invalid registration details."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use: bcrypt for password hashing. Endpoint: POST /register. Schema: users table (id, email, password_hash, created_at, updated_at).",
+          "tests": [
+            "Test successful registration with valid email and password.",
+            "Test registration with an existing email address.",
+            "Test registration with an invalid email format.",
+            "Test registration with a password that does not meet complexity requirements (e.g., minimum length).",
+            "Test registration with empty email or password fields."
+          ],
+          "definition_of_done": [
+            "Registration endpoint implemented and functional.",
+            "Password hashing is implemented and secure.",
+            "Email validation is implemented.",
+            "Error handling is implemented for invalid registration details.",
+            "Unit tests are written and passing for all registration scenarios.",
+            "API documentation is updated with the registration endpoint details."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-1-TASK-1"
+          ],
+          "id": "EPIC-1-TASK-2",
+          "epic_id": "EPIC-1",
+          "title": "feat: Implement user login endpoint with JWT authentication",
+          "type": "feat",
+          "description": "As a user, I want to be able to log in with my email and password and receive a JWT token so I can access protected resources.",
+          "acceptance_criteria": [
+            "A user can log in with valid email and password.",
+            "A JWT token is generated and returned upon successful login.",
+            "The system returns an error message for invalid credentials.",
+            "The JWT token has a defined expiration time.",
+            "The password is verified against the stored hash in the database."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use: JWT for authentication. Endpoint: POST /login. Schema: users table (id, email, password_hash).",
+          "tests": [
+            "Test successful login with valid email and password.",
+            "Test login with an invalid email address.",
+            "Test login with an incorrect password.",
+            "Test login with empty email or password fields."
+          ],
+          "definition_of_done": [
+            "Login endpoint implemented and functional.",
+            "JWT token generation is implemented upon successful login.",
+            "Password verification is implemented using bcrypt.",
+            "Error handling is implemented for invalid login attempts.",
+            "Unit tests are written and passing for all login scenarios.",
+            "API documentation is updated with the login endpoint details."
+          ]
+        },
+        {
+          "id": "EPIC-1-TASK-3",
+          "epic_id": "EPIC-1",
+          "title": "chore: Create users table in PostgreSQL database",
+          "type": "chore",
+          "description": "Create a 'users' table in the PostgreSQL database to store user information.",
+          "acceptance_criteria": [
+            "The 'users' table is created in the database with the specified schema.",
+            "The table includes columns for 'id', 'email', 'password_hash', 'created_at', and 'updated_at'.",
+            "Appropriate data types and constraints are applied to each column (e.g., unique email, not null constraints).",
+            "Indexes are created on relevant columns (e.g., email) for performance optimization."
+          ],
+          "tech_details": "Stack: PostgreSQL. Schema: users table (id SERIAL PRIMARY KEY, email VARCHAR(255) UNIQUE NOT NULL, password_hash VARCHAR(255) NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT NOW(), updated_at TIMESTAMP NOT NULL DEFAULT NOW()).",
+          "tests": [
+            "Verify that the 'users' table is created with the correct schema.",
+            "Verify that the 'email' column has a unique constraint.",
+            "Verify that the 'password_hash' column is large enough to store the hashed password.",
+            "Verify that the 'created_at' and 'updated_at' columns have default values."
+          ],
+          "definition_of_done": [
+            "The 'users' table is created in the PostgreSQL database with the specified schema and constraints.",
+            "Indexes are created on relevant columns for performance optimization.",
+            "Database migrations are created and applied successfully.",
+            "The database schema is documented."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-1-TASK-1",
+            "EPIC-1-TASK-2"
+          ],
+          "id": "EPIC-1-TASK-4",
+          "epic_id": "EPIC-1",
+          "title": "chore: Add input validation middleware for registration and login",
+          "type": "chore",
+          "description": "Implement middleware to validate user input for registration and login endpoints.",
+          "acceptance_criteria": [
+            "Middleware validates the presence and format of required fields (email, password).",
+            "Middleware returns appropriate error messages for invalid input.",
+            "Middleware prevents invalid data from reaching the application logic.",
+            "Middleware is applied to the registration and login endpoints.",
+            "The email validation uses a regular expression.",
+            "The password validation checks for minimum length and complexity."
+          ],
+          "tech_details": "Stack: Go. Use: Middleware pattern. Applied to: POST /register, POST /login.",
+          "tests": [
+            "Test that the middleware rejects requests with missing email or password fields.",
+            "Test that the middleware rejects requests with invalid email formats.",
+            "Test that the middleware rejects requests with passwords that do not meet complexity requirements.",
+            "Test that the middleware allows valid requests to proceed."
+          ],
+          "definition_of_done": [
+            "Input validation middleware is implemented and functional.",
+            "Middleware is applied to the registration and login endpoints.",
+            "Error handling is implemented for invalid input.",
+            "Unit tests are written and passing for all validation scenarios."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-1-TASK-1"
+          ],
+          "id": "EPIC-1-TASK-5",
+          "epic_id": "EPIC-1",
+          "title": "fix: Handle password hashing errors during registration",
+          "type": "fix",
+          "description": "Implement proper error handling for password hashing failures during user registration.",
+          "acceptance_criteria": [
+            "The system gracefully handles errors during password hashing (e.g., bcrypt failure).",
+            "An appropriate error message is returned to the user if password hashing fails.",
+            "The system does not create a user account if password hashing fails.",
+            "Logging is implemented to capture password hashing errors for debugging."
+          ],
+          "tech_details": "Stack: Go. Use: bcrypt. Function: Hash password.",
+          "tests": [
+            "Simulate a bcrypt failure and verify that the system handles the error correctly.",
+            "Verify that an appropriate error message is returned to the user.",
+            "Verify that a user account is not created if password hashing fails."
+          ],
+          "definition_of_done": [
+            "Error handling is implemented for password hashing failures.",
+            "Appropriate error messages are returned to the user.",
+            "Logging is implemented to capture password hashing errors.",
+            "Unit tests are written and passing for password hashing error scenarios."
+          ]
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Permettre aux utilisateurs de créer et de gérer leurs programmes d'entraînement",
+      "description": "Les utilisateurs peuvent définir des exercices, des séries, des répétitions et des temps de repos pour construire des programmes personnalisés.",
+      "goal": "80% des utilisateurs actifs créent au moins un programme d'entraînement dans le premier mois.",
+      "issues": [
+        {
+          "id": "EPIC-2-TASK-1",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer le modèle de données 'Workout'",
+          "type": "feat",
+          "description": "En tant que développeur backend, je dois créer le modèle de données 'Workout' pour stocker les informations sur les programmes d'entraînement des utilisateurs dans la base de données.",
+          "acceptance_criteria": [
+            "Le modèle 'Workout' doit être créé avec les champs suivants: id (UUID, PK), user_id (UUID, FK vers la table users), name (VARCHAR(255), NOT NULL), description (TEXT), created_at (TIMESTAMP), updated_at (TIMESTAMP).",
+            "Une migration de base de données doit être créée pour appliquer ce modèle.",
+            "Le modèle doit avoir des relations avec les tables 'users' et 'exercises' (One-to-Many avec 'exercises').",
+            "Les contraintes de validation doivent être définies (par exemple, longueur maximale du nom, non-null pour les champs obligatoires)."
+          ],
+          "tech_details": "Stack: PostgreSQL. Utiliser SQLAlchemy pour l'ORM. Schema: Créer la table 'workouts' avec les colonnes spécifiées. La table workouts aura une relation One-to-Many avec la table exercises (workout_id en FK dans la table exercises). La table workouts aura une relation Many-to-One avec la table users (user_id en FK dans la table workouts)."
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1"
+          ],
+          "id": "EPIC-2-TASK-2",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer une API pour créer un programme d'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir créer un nouveau programme d'entraînement en fournissant un nom et une description.",
+          "acceptance_criteria": [
+            "Un endpoint POST /workouts doit être créé pour permettre la création de programmes d'entraînement.",
+            "L'API doit valider que l'utilisateur est authentifié.",
+            "L'API doit valider les données entrantes (nom et description).",
+            "L'API doit renvoyer un code 201 Created et le programme d'entraînement créé en cas de succès.",
+            "L'API doit renvoyer un code 400 Bad Request avec un message d'erreur approprié en cas d'erreur de validation.",
+            "L'API doit renvoyer un code 500 Internal Server Error en cas d'erreur serveur."
+          ],
+          "tech_details": "Stack: Go, Gin. Utiliser Gin pour le routing et la gestion des requêtes HTTP. Utiliser GORM pour l'interaction avec la base de données. Endpoints: POST /workouts. Schéma de la requête: { \"name\": \"Nom du programme\", \"description\": \"Description du programme\" }. Schéma de la réponse (succès): { \"id\": \"UUID\", \"user_id\": \"UUID\", \"name\": \"Nom du programme\", \"description\": \"Description du programme\", \"created_at\": \"TIMESTAMP\", \"updated_at\": \"TIMESTAMP\" }. Validation: name (VARCHAR(255), NOT NULL, minLength: 3, maxLength: 255), description (TEXT)."
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-2-TASK-7"
+          ],
+          "id": "EPIC-2-TASK-3",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer une API pour récupérer un programme d'entraînement par ID",
+          "type": "feat",
+          "description": "En tant qu'utilisateur authentifié, je veux pouvoir récupérer un programme d'entraînement spécifique en utilisant son ID.",
+          "acceptance_criteria": [
+            "Un endpoint GET /workouts/{id} doit être créé pour récupérer un programme d'entraînement par son ID.",
+            "L'API doit valider que l'utilisateur est authentifié.",
+            "L'API doit vérifier que le programme d'entraînement existe et appartient à l'utilisateur.",
+            "L'API doit renvoyer un code 200 OK et le programme d'entraînement en cas de succès.",
+            "L'API doit renvoyer un code 404 Not Found si le programme d'entraînement n'existe pas ou n'appartient pas à l'utilisateur.",
+            "L'API doit renvoyer un code 500 Internal Server Error en cas d'erreur serveur."
+          ],
+          "tech_details": "Stack: Go, Gin. Utiliser Gin pour le routing et la gestion des requêtes HTTP. Utiliser GORM pour l'interaction avec la base de données. Endpoints: GET /workouts/{id}. Schéma de la réponse (succès): { \"id\": \"UUID\", \"user_id\": \"UUID\", \"name\": \"Nom du programme\", \"description\": \"Description du programme\", \"created_at\": \"TIMESTAMP\", \"updated_at\": \"TIMESTAMP\" }. Cas limites: Workout non trouvé, Workout appartenant à un autre utilisateur."
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-2-TASK-7"
+          ],
+          "id": "EPIC-2-TASK-4",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer une API pour mettre à jour un programme d'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur authentifié, je veux pouvoir modifier un programme d'entraînement existant en utilisant son ID.",
+          "acceptance_criteria": [
+            "Un endpoint PUT /workouts/{id} doit être créé pour mettre à jour un programme d'entraînement.",
+            "L'API doit valider que l'utilisateur est authentifié.",
+            "L'API doit vérifier que le programme d'entraînement existe et appartient à l'utilisateur.",
+            "L'API doit valider les données entrantes (nom et description).",
+            "L'API doit renvoyer un code 200 OK et le programme d'entraînement mis à jour en cas de succès.",
+            "L'API doit renvoyer un code 400 Bad Request avec un message d'erreur approprié en cas d'erreur de validation.",
+            "L'API doit renvoyer un code 404 Not Found si le programme d'entraînement n'existe pas ou n'appartient pas à l'utilisateur.",
+            "L'API doit renvoyer un code 500 Internal Server Error en cas d'erreur serveur."
+          ],
+          "tech_details": "Stack: Go, Gin. Utiliser Gin pour le routing et la gestion des requêtes HTTP. Utiliser GORM pour l'interaction avec la base de données. Endpoints: PUT /workouts/{id}. Schéma de la requête: { \"name\": \"Nouveau nom du programme\", \"description\": \"Nouvelle description du programme\" }. Schéma de la réponse (succès): { \"id\": \"UUID\", \"user_id\": \"UUID\", \"name\": \"Nouveau nom du programme\", \"description\": \"Nouvelle description du programme\", \"created_at\": \"TIMESTAMP\", \"updated_at\": \"TIMESTAMP\" }. Validation: name (VARCHAR(255), NOT NULL, minLength: 3, maxLength: 255), description (TEXT)."
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-2-TASK-7"
+          ],
+          "id": "EPIC-2-TASK-5",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer une API pour supprimer un programme d'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur authentifié, je veux pouvoir supprimer un programme d'entraînement existant en utilisant son ID.",
+          "acceptance_criteria": [
+            "Un endpoint DELETE /workouts/{id} doit être créé pour supprimer un programme d'entraînement.",
+            "L'API doit valider que l'utilisateur est authentifié.",
+            "L'API doit vérifier que le programme d'entraînement existe et appartient à l'utilisateur.",
+            "L'API doit renvoyer un code 204 No Content en cas de succès.",
+            "L'API doit renvoyer un code 404 Not Found si le programme d'entraînement n'existe pas ou n'appartient pas à l'utilisateur.",
+            "L'API doit renvoyer un code 500 Internal Server Error en cas d'erreur serveur."
+          ],
+          "tech_details": "Stack: Go, Gin. Utiliser Gin pour le routing et la gestion des requêtes HTTP. Utiliser GORM pour l'interaction avec la base de données. Endpoints: DELETE /workouts/{id}. Cas limites: Workout non trouvé, Workout appartenant à un autre utilisateur."
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-2-TASK-7"
+          ],
+          "id": "EPIC-2-TASK-6",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer une API pour lister les programmes d'entraînement d'un utilisateur",
+          "type": "feat",
+          "description": "En tant qu'utilisateur authentifié, je veux pouvoir lister tous mes programmes d'entraînement.",
+          "acceptance_criteria": [
+            "Un endpoint GET /workouts doit être créé pour lister les programmes d'entraînement de l'utilisateur authentifié.",
+            "L'API doit valider que l'utilisateur est authentifié.",
+            "L'API doit renvoyer un code 200 OK et une liste de programmes d'entraînement en cas de succès.",
+            "L'API doit renvoyer une liste vide si l'utilisateur n'a aucun programme d'entraînement.",
+            "L'API doit renvoyer un code 500 Internal Server Error en cas d'erreur serveur."
+          ],
+          "tech_details": "Stack: Go, Gin. Utiliser Gin pour le routing et la gestion des requêtes HTTP. Utiliser GORM pour l'interaction avec la base de données. Endpoints: GET /workouts. Schéma de la réponse (succès): [{ \"id\": \"UUID\", \"user_id\": \"UUID\", \"name\": \"Nom du programme\", \"description\": \"Description du programme\", \"created_at\": \"TIMESTAMP\", \"updated_at\": \"TIMESTAMP\" }]."
+        },
+        {
+          "dependencies": [
+            "EPIC-1-TASK-2"
+          ],
+          "id": "EPIC-2-TASK-7",
+          "epic_id": "EPIC-2",
+          "title": "feat: Ajouter l'authentification aux endpoints de l'API Workout",
+          "type": "feat",
+          "description": "En tant que développeur backend, je dois ajouter une couche d'authentification à tous les endpoints de l'API Workout pour sécuriser l'accès aux données.",
+          "acceptance_criteria": [
+            "Tous les endpoints de l'API Workout (POST /workouts, GET /workouts/{id}, PUT /workouts/{id}, DELETE /workouts/{id}, GET /workouts) doivent nécessiter une authentification.",
+            "Seuls les utilisateurs authentifiés doivent pouvoir accéder à ces endpoints.",
+            "Les utilisateurs non authentifiés doivent recevoir un code d'erreur 401 Unauthorized.",
+            "L'authentification doit être implémentée en utilisant JWT (JSON Web Tokens)."
+          ],
+          "tech_details": "Stack: Go, Gin. Utiliser JWT pour l'authentification. Créer un middleware Gin pour valider le token JWT. Dépendances: Bibliothèque JWT (ex: github.com/dgrijalva/jwt-go)."
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-2-TASK-2",
+            "EPIC-2-TASK-3",
+            "EPIC-2-TASK-4",
+            "EPIC-2-TASK-5",
+            "EPIC-2-TASK-6"
+          ],
+          "id": "EPIC-2-TASK-8",
+          "epic_id": "EPIC-2",
+          "title": "chore: Ajouter des tests unitaires pour l'API Workout",
+          "type": "chore",
+          "description": "En tant que développeur backend, je dois ajouter des tests unitaires pour l'API Workout afin de garantir la qualité du code et prévenir les régressions.",
+          "acceptance_criteria": [
+            "Des tests unitaires doivent être écrits pour chaque endpoint de l'API Workout (POST /workouts, GET /workouts/{id}, PUT /workouts/{id}, DELETE /workouts/{id}, GET /workouts).",
+            "Les tests doivent couvrir les cas suivants: succès, erreurs de validation, utilisateur non authentifié, workout non trouvé, workout appartenant à un autre utilisateur.",
+            "Le taux de couverture des tests doit être supérieur à 80%."
+          ],
+          "tech_details": "Stack: Go, Testing. Utiliser le package 'testing' de Go pour écrire les tests unitaires. Utiliser une base de données de test (ex: SQLite en mémoire) pour isoler les tests. Mock les dépendances externes (ex: base de données) si nécessaire."
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-2",
+            "EPIC-2-TASK-3",
+            "EPIC-2-TASK-4",
+            "EPIC-2-TASK-5",
+            "EPIC-2-TASK-6"
+          ],
+          "id": "EPIC-2-TASK-9",
+          "epic_id": "EPIC-2",
+          "title": "feat: Implémenter la gestion des erreurs pour l'API Workout",
+          "type": "feat",
+          "description": "En tant que développeur backend, je dois implémenter une gestion des erreurs robuste pour l'API Workout afin de fournir des messages d'erreur clairs et informatifs aux utilisateurs.",
+          "acceptance_criteria": [
+            "Tous les endpoints de l'API Workout doivent gérer les erreurs de manière appropriée.",
+            "Les erreurs doivent être loguées.",
+            "Les messages d'erreur doivent être clairs et informatifs.",
+            "Les codes d'erreur HTTP appropriés doivent être renvoyés (ex: 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Internal Server Error).",
+            "Un middleware de gestion des erreurs doit être implémenté pour centraliser la gestion des erreurs."
+          ],
+          "tech_details": "Stack: Go, Gin. Créer un middleware Gin pour la gestion des erreurs. Utiliser un logger (ex: zap) pour loguer les erreurs. Définir des codes d'erreur HTTP standardisés."
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-2",
+            "EPIC-2-TASK-3",
+            "EPIC-2-TASK-4",
+            "EPIC-2-TASK-5",
+            "EPIC-2-TASK-6"
+          ],
+          "id": "EPIC-2-TASK-10",
+          "epic_id": "EPIC-2",
+          "title": "chore: Ajouter de la documentation pour l'API Workout",
+          "type": "chore",
+          "description": "En tant que développeur backend, je dois ajouter de la documentation pour l'API Workout afin de faciliter son utilisation par les développeurs frontend et les autres utilisateurs.",
+          "acceptance_criteria": [
+            "La documentation doit inclure une description de chaque endpoint (URL, méthode HTTP, paramètres, schéma de la requête, schéma de la réponse, codes d'erreur).",
+            "La documentation doit être générée automatiquement à partir du code source (ex: en utilisant Swagger/OpenAPI).",
+            "La documentation doit être accessible via une URL (ex: /swagger).",
+            "La documentation doit être à jour."
+          ],
+          "tech_details": "Stack: Go, Swagger/OpenAPI. Utiliser une bibliothèque Go pour générer la documentation Swagger/OpenAPI (ex: swaggo/swag). Ajouter des commentaires au code source pour décrire les endpoints et les modèles de données."
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Permettre aux utilisateurs de partager leurs programmes d'entraînement avec la communauté",
+      "description": "Les utilisateurs peuvent rendre leurs programmes publics et les partager avec d'autres utilisateurs de l'application.",
+      "goal": "100 programmes partagés par semaine.",
+      "issues": [
+        {
+          "id": "EPIC-3-TASK-1",
+          "epic_id": "EPIC-3",
+          "title": "feat: Add 'is_public' field to Workout model",
+          "type": "feat",
+          "description": "As a developer, I want to add an 'is_public' boolean field to the Workout model, so that users can choose whether to share their workout with the community.",
+          "acceptance_criteria": [
+            "The Workout model in the database should have a new 'is_public' boolean field.",
+            "The default value for 'is_public' should be false.",
+            "A database migration should be created to add this field."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use GORM for database interactions. Schema: workouts table. Migration using GORM auto-migration or custom SQL."
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-1"
+          ],
+          "id": "EPIC-3-TASK-2",
+          "epic_id": "EPIC-3",
+          "title": "chore: Create migration to add is_public column",
+          "type": "chore",
+          "description": "Create a GORM migration to add the `is_public` column to the `workouts` table. The column should be of type BOOLEAN and have a default value of FALSE.",
+          "acceptance_criteria": [
+            "Migration file is created and contains the necessary SQL to add the column.",
+            "Migration can be applied without errors.",
+            "After migration, the `workouts` table has the `is_public` column with the correct type and default value."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL, GORM.  The migration should be idempotent.  The migration file should be named appropriately (e.g., `YYYYMMDDHHMMSS_add_is_public_to_workouts.go`)."
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-4"
+          ],
+          "id": "EPIC-3-TASK-3",
+          "epic_id": "EPIC-3",
+          "title": "feat: Add toggle to Workout creation/edition form",
+          "type": "feat",
+          "description": "As a user, I want to see a toggle on the workout creation/edition form to set my workout as public or private.",
+          "acceptance_criteria": [
+            "A toggle switch or checkbox labeled 'Public' is displayed on the workout creation and edition forms.",
+            "The toggle should be defaulted to 'private' (unchecked) when creating a new workout.",
+            "The toggle state should reflect the current 'is_public' status of the workout when editing."
+          ],
+          "tech_details": "Stack: React. Use a standard HTML checkbox or a React component like `Switch` from Material UI or similar. The toggle's value should be bound to the 'is_public' property of the workout object.  The form should submit the 'is_public' value along with the other workout data."
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-1",
+            "EPIC-3-TASK-2"
+          ],
+          "id": "EPIC-3-TASK-4",
+          "epic_id": "EPIC-3",
+          "title": "feat: Update workout creation/edition API to handle 'is_public' field",
+          "type": "feat",
+          "description": "As a developer, I need to update the workout creation and edition API endpoints to handle the 'is_public' field.",
+          "acceptance_criteria": [
+            "The API should accept the 'is_public' field in the request body.",
+            "The 'is_public' value should be saved to the database when creating or updating a workout.",
+            "If 'is_public' is not provided in the request, it should default to false."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Endpoints: POST /workouts, PUT /workouts/{id}. Schema: workouts table. Use GORM to update the database. Validation: Ensure 'is_public' is a boolean value. Error handling: Return 400 Bad Request if 'is_public' is not a valid boolean."
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-1",
+            "EPIC-3-TASK-2"
+          ],
+          "id": "EPIC-3-TASK-5",
+          "epic_id": "EPIC-3",
+          "title": "feat: Implement API endpoint to retrieve public workouts",
+          "type": "feat",
+          "description": "As a user, I want to be able to see a list of public workouts shared by other users.",
+          "acceptance_criteria": [
+            "A new API endpoint is available to retrieve public workouts.",
+            "The endpoint should return a list of workout objects, filtered to only include workouts where 'is_public' is true.",
+            "The endpoint should support pagination.",
+            "The endpoint should allow sorting by creation date (newest first, oldest first), and by popularity (number of likes/saves)."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Endpoint: GET /workouts/public. Schema: workouts table. Use GORM to query the database. Pagination: Implement using limit and offset parameters. Sorting: Allow sorting by 'created_at' and 'likes_count'. Example request: GET /workouts/public?page=1\u0026limit=20\u0026sort=created_at\u0026order=desc. Example response: `[{\"id\": 1, \"name\": \"Workout A\", \"description\": \"...\", \"is_public\": true, \"created_at\": \"...\", \"likes_count\": 10}, {\"id\": 2, \"name\": \"Workout B\", \"description\": \"...\", \"is_public\": true, \"created_at\": \"...\", \"likes_count\": 5}]`. Error handling: Return 500 Internal Server Error if there's a database error."
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-5"
+          ],
+          "id": "EPIC-3-TASK-6",
+          "epic_id": "EPIC-3",
+          "title": "feat: Display public workouts in a dedicated section on the frontend",
+          "type": "feat",
+          "description": "As a user, I want to see a dedicated section on the frontend where I can browse public workouts shared by other users.",
+          "acceptance_criteria": [
+            "A new section or page is created on the frontend to display public workouts.",
+            "The public workouts are fetched from the API endpoint (GET /workouts/public).",
+            "The workouts are displayed in a user-friendly format (e.g., cards or list items).",
+            "The section should include pagination controls to browse through the list of workouts.",
+            "The section should include sorting options (e.g., newest, oldest, most popular)."
+          ],
+          "tech_details": "Stack: React. Use a component to fetch and display the public workouts. Use pagination components from a UI library (e.g., Material UI, Ant Design). Use sorting controls (e.g., dropdown or radio buttons).  Consider using a virtualized list for performance if there are many workouts."
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-6"
+          ],
+          "id": "EPIC-3-TASK-7",
+          "epic_id": "EPIC-3",
+          "title": "feat: Add 'share' button to workout details page",
+          "type": "feat",
+          "description": "As a user, I want to be able to easily share a public workout with other users by copying a link to the workout.",
+          "acceptance_criteria": [
+            "A 'Share' button is displayed on the workout details page for public workouts.",
+            "Clicking the 'Share' button copies the workout's URL to the clipboard.",
+            "A visual confirmation is displayed to the user that the URL has been copied (e.g., a tooltip or a small notification).",
+            "If the workout is not public, the 'Share' button should not be displayed."
+          ],
+          "tech_details": "Stack: React. Use the `navigator.clipboard.writeText()` API to copy the URL to the clipboard. Use a UI library component for the 'Share' button and the visual confirmation. The workout details page should check the 'is_public' property of the workout before displaying the button."
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-5"
+          ],
+          "id": "EPIC-3-TASK-8",
+          "epic_id": "EPIC-3",
+          "title": "feat: Add filtering by sport type to public workouts",
+          "type": "feat",
+          "description": "As a user, I want to be able to filter public workouts by sport type to find workouts that are relevant to my interests.",
+          "acceptance_criteria": [
+            "A filter is added to the public workouts page to filter by sport type.",
+            "The filter should display a list of available sport types.",
+            "When a sport type is selected, the list of public workouts should be filtered to only show workouts of that type.",
+            "The filter should allow multiple sport types to be selected at once.",
+            "The filter should be optional, and all workouts should be displayed when no sport types are selected."
+          ],
+          "tech_details": "Stack: React, Go, PostgreSQL. Frontend: Add a multi-select dropdown or a list of checkboxes for sport types. Backend: Update the GET /workouts/public endpoint to accept a 'sport_types' query parameter (e.g., GET /workouts/public?sport_types=running,cycling). Database: Modify the GORM query to filter workouts by sport types using the `IN` operator. Schema: workouts table, sport_types table (assuming a many-to-many relationship between workouts and sport_types). Example request: GET /workouts/public?sport_types=running,cycling. Example response: `[{\"id\": 1, \"name\": \"Running Workout A\", \"sport_types\": [\"running\"]}, {\"id\": 2, \"name\": \"Cycling Workout B\", \"sport_types\": [\"cycling\"]}]`"
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-4"
+          ],
+          "id": "EPIC-3-TASK-9",
+          "epic_id": "EPIC-3",
+          "title": "test: Add unit tests for workout creation/edition API",
+          "type": "chore",
+          "description": "Write unit tests for the workout creation and edition API endpoints to ensure that the 'is_public' field is handled correctly.",
+          "acceptance_criteria": [
+            "Unit tests cover the following scenarios: creating a workout with 'is_public' set to true, creating a workout with 'is_public' set to false, creating a workout without 'is_public' (should default to false), updating a workout's 'is_public' status.",
+            "All unit tests pass."
+          ],
+          "tech_details": "Stack: Go. Use the `testify` library for assertions. Mock the database connection to isolate the tests. Test the following: POST /workouts, PUT /workouts/{id}"
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-3",
+            "EPIC-3-TASK-4",
+            "EPIC-3-TASK-7"
+          ],
+          "id": "EPIC-3-TASK-10",
+          "epic_id": "EPIC-3",
+          "title": "test: Add e2e tests for sharing functionality",
+          "type": "chore",
+          "description": "Write end-to-end tests to verify the sharing functionality, including setting a workout to public, copying the URL, and accessing the workout using the copied URL.",
+          "acceptance_criteria": [
+            "E2E tests cover the following scenarios: creating a public workout, copying the URL, accessing the workout using the copied URL as another user, creating a private workout, and verifying the share button is not present.",
+            "All E2E tests pass."
+          ],
+          "tech_details": "Stack: Cypress or similar E2E testing framework. Use a test user account. The tests should simulate user interactions with the frontend."
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-4"
+          ],
+          "id": "EPIC-3-TASK-11",
+          "epic_id": "EPIC-3",
+          "title": "docs: Update API documentation to include 'is_public' field",
+          "type": "chore",
+          "description": "Update the API documentation (e.g., Swagger or OpenAPI) to include the 'is_public' field in the workout creation and edition endpoints.",
+          "acceptance_criteria": [
+            "The API documentation includes the 'is_public' field in the request body schema for POST /workouts and PUT /workouts/{id}.",
+            "The documentation specifies the data type (boolean) and the default value (false) for the 'is_public' field.",
+            "The documentation includes the GET /workouts/public endpoint with its parameters (page, limit, sort, order, sport_types) and response schema."
+          ],
+          "tech_details": "Stack: Swagger or OpenAPI. Update the API definition file (e.g., `swagger.json` or `openapi.yaml`)."
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Permettre aux utilisateurs de découvrir et de suivre les programmes d'entraînement partagés par d'autres",
+      "description": "Les utilisateurs peuvent rechercher, filtrer et suivre les programmes d'entraînement créés par d'autres membres de la communauté.",
+      "goal": "50% des utilisateurs actifs suivent au moins un programme partagé par un autre utilisateur.",
+      "issues": [
+        {
+          "id": "EPIC-4-TASK-1",
+          "epic_id": "EPIC-4",
+          "title": "feat: Add database schema for workout programs",
+          "type": "feat",
+          "description": "As a developer, I want to add the database schema for workout programs so that the application can store and retrieve workout program data.",
+          "acceptance_criteria": [
+            "The `workout_programs` table is created with columns: `id`, `name`, `description`, `creator_id`, `created_at`, `updated_at`.",
+            "The `exercises` table is created with columns: `id`, `name`, `description`, `sets`, `reps`, `weight`, `workout_program_id`, `created_at`, `updated_at`.",
+            "Appropriate indexes are created for efficient querying.",
+            "Foreign key constraints are defined between `workout_programs` and `users` (creator_id) and between `exercises` and `workout_programs` (workout_program_id)."
+          ],
+          "tech_details": "Stack: PostgreSQL. Schema: workout_programs(id UUID PRIMARY KEY, name VARCHAR(255) NOT NULL, description TEXT, creator_id UUID REFERENCES users(id), created_at TIMESTAMP, updated_at TIMESTAMP), exercises(id UUID PRIMARY KEY, name VARCHAR(255) NOT NULL, description TEXT, sets INTEGER, reps INTEGER, weight DECIMAL, workout_program_id UUID REFERENCES workout_programs(id), created_at TIMESTAMP, updated_at TIMESTAMP). Migration tool: Goose."
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ],
+          "id": "EPIC-4-TASK-2",
+          "epic_id": "EPIC-4",
+          "title": "feat: Implement API endpoint for searching workout programs",
+          "type": "feat",
+          "description": "As a developer, I want to implement an API endpoint for searching workout programs so that users can find workout programs based on keywords.",
+          "acceptance_criteria": [
+            "A GET endpoint `/api/workout_programs/search` is created.",
+            "The endpoint accepts a `query` parameter for searching workout programs.",
+            "The endpoint returns a list of workout programs that match the search query.",
+            "The search is performed on the `name` and `description` fields of the `workout_programs` table.",
+            "The endpoint returns a 200 OK status code on success.",
+            "The endpoint returns a 400 Bad Request status code if the query parameter is missing."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use chi router. Endpoint: GET /api/workout_programs/search. Query parameter: query (string). Response: JSON array of workout programs. Dependency: PostgreSQL connection pool. Example request: /api/workout_programs/search?query=cardio. Example response: [{id: 'uuid', name: 'Cardio Blast', description: 'High intensity cardio workout', creator_id: 'uuid', created_at: 'timestamp', updated_at: 'timestamp'}]"
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ],
+          "id": "EPIC-4-TASK-3",
+          "epic_id": "EPIC-4",
+          "title": "feat: Implement API endpoint for filtering workout programs",
+          "type": "feat",
+          "description": "As a developer, I want to implement an API endpoint for filtering workout programs so that users can filter workout programs based on different criteria.",
+          "acceptance_criteria": [
+            "A GET endpoint `/api/workout_programs/filter` is created.",
+            "The endpoint accepts filter parameters: `creator_id` (UUID), `name` (String).",
+            "The endpoint returns a list of workout programs that match the filter criteria.",
+            "The endpoint returns a 200 OK status code on success.",
+            "The endpoint returns an empty list if no workout programs match the filter criteria.",
+            "The endpoint returns a 400 Bad Request status code if the filter parameters are invalid."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use chi router. Endpoint: GET /api/workout_programs/filter. Query parameters: creator_id (UUID), name (String). Response: JSON array of workout programs. Dependency: PostgreSQL connection pool. Example request: /api/workout_programs/filter?creator_id=uuid\u0026name=Strength. Example response: [{id: 'uuid', name: 'Strength Training', description: 'Full body strength workout', creator_id: 'uuid', created_at: 'timestamp', updated_at: 'timestamp'}]"
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ],
+          "id": "EPIC-4-TASK-4",
+          "epic_id": "EPIC-4",
+          "title": "feat: Implement API endpoint for retrieving a single workout program",
+          "type": "feat",
+          "description": "As a developer, I want to implement an API endpoint for retrieving a single workout program so that users can view the details of a workout program.",
+          "acceptance_criteria": [
+            "A GET endpoint `/api/workout_programs/{id}` is created.",
+            "The endpoint returns the workout program with the specified ID.",
+            "The endpoint returns a 200 OK status code on success.",
+            "The endpoint returns a 404 Not Found status code if the workout program does not exist.",
+            "The endpoint returns a 400 Bad Request status code if the ID is invalid."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use chi router. Endpoint: GET /api/workout_programs/{id}. Path parameter: id (UUID). Response: JSON representation of the workout program. Dependency: PostgreSQL connection pool. Example request: /api/workout_programs/uuid. Example response: {id: 'uuid', name: 'Strength Training', description: 'Full body strength workout', creator_id: 'uuid', created_at: 'timestamp', updated_at: 'timestamp', exercises: [{id: 'uuid', name: 'Bench Press', description: 'Chest exercise', sets: 3, reps: 8, weight: 100, workout_program_id: 'uuid', created_at: 'timestamp', updated_at: 'timestamp'}]}"
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-1",
+            "EPIC-1-TASK-2"
+          ],
+          "id": "EPIC-4-TASK-5",
+          "epic_id": "EPIC-4",
+          "title": "feat: Implement API endpoint for following a workout program",
+          "type": "feat",
+          "description": "As a developer, I want to implement an API endpoint for following a workout program so that users can follow workout programs created by other users.",
+          "acceptance_criteria": [
+            "A POST endpoint `/api/workout_programs/{id}/follow` is created.",
+            "The endpoint requires authentication.",
+            "The endpoint creates a record in the `user_workout_programs` table indicating that the user is following the workout program.",
+            "The endpoint returns a 201 Created status code on success.",
+            "The endpoint returns a 400 Bad Request status code if the user is already following the workout program.",
+            "The endpoint returns a 404 Not Found status code if the workout program does not exist."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use chi router. Endpoint: POST /api/workout_programs/{id}/follow. Path parameter: id (UUID). Authentication: JWT. Database table: user_workout_programs(user_id UUID REFERENCES users(id), workout_program_id UUID REFERENCES workout_programs(id), PRIMARY KEY (user_id, workout_program_id), created_at TIMESTAMP). Dependency: PostgreSQL connection pool, JWT authentication middleware. Example request: /api/workout_programs/uuid/follow. Example response: 201 Created."
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-1",
+            "EPIC-1-TASK-2"
+          ],
+          "id": "EPIC-4-TASK-6",
+          "epic_id": "EPIC-4",
+          "title": "feat: Implement API endpoint for unfollowing a workout program",
+          "type": "feat",
+          "description": "As a developer, I want to implement an API endpoint for unfollowing a workout program so that users can unfollow workout programs they are no longer interested in.",
+          "acceptance_criteria": [
+            "A DELETE endpoint `/api/workout_programs/{id}/follow` is created.",
+            "The endpoint requires authentication.",
+            "The endpoint removes the record from the `user_workout_programs` table indicating that the user is no longer following the workout program.",
+            "The endpoint returns a 204 No Content status code on success.",
+            "The endpoint returns a 404 Not Found status code if the user is not following the workout program or if the workout program does not exist."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use chi router. Endpoint: DELETE /api/workout_programs/{id}/follow. Path parameter: id (UUID). Authentication: JWT. Database table: user_workout_programs. Dependency: PostgreSQL connection pool, JWT authentication middleware. Example request: /api/workout_programs/uuid/follow. Example response: 204 No Content."
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-2"
+          ],
+          "id": "EPIC-4-TASK-7",
+          "epic_id": "EPIC-4",
+          "title": "feat: Implement frontend component for displaying workout program search results",
+          "type": "feat",
+          "description": "As a frontend developer, I want to implement a component for displaying workout program search results so that users can see the results of their searches.",
+          "acceptance_criteria": [
+            "A component is created to display a list of workout programs.",
+            "Each workout program in the list displays the name, description, and creator.",
+            "The component fetches workout programs from the `/api/workout_programs/search` endpoint.",
+            "The component displays a loading indicator while fetching data.",
+            "The component displays an error message if the API request fails.",
+            "The component allows users to navigate to the details page of a workout program."
+          ],
+          "tech_details": "Stack: React. Component: WorkoutProgramList. API endpoint: /api/workout_programs/search. State management: React Context or Redux. UI library: Material UI or similar. Example data: [{id: 'uuid', name: 'Cardio Blast', description: 'High intensity cardio workout', creator_id: 'uuid', creator_name: 'John Doe', created_at: 'timestamp', updated_at: 'timestamp'}]"
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-3"
+          ],
+          "id": "EPIC-4-TASK-8",
+          "epic_id": "EPIC-4",
+          "title": "feat: Implement frontend component for displaying workout program filters",
+          "type": "feat",
+          "description": "As a frontend developer, I want to implement a component for displaying workout program filters so that users can filter workout programs based on different criteria.",
+          "acceptance_criteria": [
+            "A component is created to display filter options.",
+            "The filter options include: Creator (dropdown), Name (text input).",
+            "The component updates the workout program list based on the selected filter options.",
+            "The component fetches workout programs from the `/api/workout_programs/filter` endpoint.",
+            "The component displays a loading indicator while fetching data.",
+            "The component displays an error message if the API request fails."
+          ],
+          "tech_details": "Stack: React. Component: WorkoutProgramFilter. API endpoint: /api/workout_programs/filter. State management: React Context or Redux. UI library: Material UI or similar. Example data: creator_id (UUID), name (String)."
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-4"
+          ],
+          "id": "EPIC-4-TASK-9",
+          "epic_id": "EPIC-4",
+          "title": "feat: Implement frontend component for displaying workout program details",
+          "type": "feat",
+          "description": "As a frontend developer, I want to implement a component for displaying workout program details so that users can view the details of a workout program.",
+          "acceptance_criteria": [
+            "A component is created to display the name, description, creator, and exercises of a workout program.",
+            "The component fetches workout program details from the `/api/workout_programs/{id}` endpoint.",
+            "The component displays a loading indicator while fetching data.",
+            "The component displays an error message if the API request fails.",
+            "The component allows users to follow/unfollow the workout program."
+          ],
+          "tech_details": "Stack: React. Component: WorkoutProgramDetails. API endpoint: /api/workout_programs/{id}. State management: React Context or Redux. UI library: Material UI or similar. Example data: {id: 'uuid', name: 'Strength Training', description: 'Full body strength workout', creator_id: 'uuid', creator_name: 'John Doe', created_at: 'timestamp', updated_at: 'timestamp', exercises: [{id: 'uuid', name: 'Bench Press', description: 'Chest exercise', sets: 3, reps: 8, weight: 100, workout_program_id: 'uuid', created_at: 'timestamp', updated_at: 'timestamp'}]}"
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-2",
+            "EPIC-4-TASK-3",
+            "EPIC-4-TASK-4",
+            "EPIC-4-TASK-5",
+            "EPIC-4-TASK-6"
+          ],
+          "id": "EPIC-4-TASK-10",
+          "epic_id": "EPIC-4",
+          "title": "chore: Add unit tests for API endpoints",
+          "type": "chore",
+          "description": "As a developer, I want to add unit tests for the API endpoints to ensure that they are working correctly.",
+          "acceptance_criteria": [
+            "Unit tests are added for the `/api/workout_programs/search` endpoint.",
+            "Unit tests are added for the `/api/workout_programs/filter` endpoint.",
+            "Unit tests are added for the `/api/workout_programs/{id}` endpoint.",
+            "Unit tests are added for the `/api/workout_programs/{id}/follow` endpoint.",
+            "The tests cover happy path and error cases.",
+            "Code coverage is above 80%."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Testing framework: Testify or similar. Mocking library: GoMock or similar. Database: Testcontainers. Test cases: Valid search query, invalid search query, valid filter parameters, invalid filter parameters, valid ID, invalid ID, user already following, user not following, workout program not found."
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-2",
+            "EPIC-4-TASK-3",
+            "EPIC-4-TASK-4",
+            "EPIC-4-TASK-5",
+            "EPIC-4-TASK-6"
+          ],
+          "id": "EPIC-4-TASK-11",
+          "epic_id": "EPIC-4",
+          "title": "chore: Add integration tests for API endpoints",
+          "type": "chore",
+          "description": "As a developer, I want to add integration tests for the API endpoints to ensure that they are working correctly with the database.",
+          "acceptance_criteria": [
+            "Integration tests are added for the `/api/workout_programs/search` endpoint.",
+            "Integration tests are added for the `/api/workout_programs/filter` endpoint.",
+            "Integration tests are added for the `/api/workout_programs/{id}` endpoint.",
+            "Integration tests are added for the `/api/workout_programs/{id}/follow` endpoint.",
+            "The tests cover happy path and error cases.",
+            "The tests verify that the data is correctly stored and retrieved from the database."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Testing framework: Testify or similar. Database: Testcontainers. Test cases: Valid search query, invalid search query, valid filter parameters, invalid filter parameters, valid ID, invalid ID, user already following, user not following, workout program not found."
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-2",
+            "EPIC-4-TASK-3",
+            "EPIC-4-TASK-4",
+            "EPIC-4-TASK-5",
+            "EPIC-4-TASK-6"
+          ],
+          "id": "EPIC-4-TASK-12",
+          "epic_id": "EPIC-4",
+          "title": "chore: Add documentation for API endpoints",
+          "type": "chore",
+          "description": "As a developer, I want to add documentation for the API endpoints so that other developers can easily understand how to use them.",
+          "acceptance_criteria": [
+            "Documentation is added for the `/api/workout_programs/search` endpoint.",
+            "Documentation is added for the `/api/workout_programs/filter` endpoint.",
+            "Documentation is added for the `/api/workout_programs/{id}` endpoint.",
+            "Documentation is added for the `/api/workout_programs/{id}/follow` endpoint.",
+            "The documentation includes the endpoint URL, request parameters, request body, response body, and error codes.",
+            "The documentation is generated using Swagger or similar tool."
+          ],
+          "tech_details": "Stack: Go. Documentation tool: Swagger or similar. Documentation format: OpenAPI/Swagger. Documentation location: /docs."
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Permettre aux utilisateurs de commenter et d'évaluer les programmes d'entraînement",
+      "description": "Les utilisateurs peuvent laisser des commentaires et des évaluations sur les programmes d'entraînement pour fournir des commentaires et aider les autres utilisateurs à choisir les meilleurs programmes.",
+      "goal": "Chaque programme populaire reçoit en moyenne 5 commentaires et une note de 4 étoiles ou plus.",
+      "issues": [
+        {
+          "id": "EPIC-5-TASK-1",
+          "epic_id": "EPIC-5",
+          "title": "feat: Add database tables for comments and ratings",
+          "type": "feat",
+          "description": "Add tables to store comments and ratings for workout programs. This will allow users to leave feedback and rate the programs.",
+          "acceptance_criteria": [
+            "Two new tables should be created: 'comments' and 'ratings'",
+            "The 'comments' table should store the comment text, user ID, workout program ID, and timestamp.",
+            "The 'ratings' table should store the user ID, workout program ID, rating value (1-5), and timestamp."
+          ],
+          "tech_details": "Stack: PostgreSQL. Schema: Create 'comments' table with columns: id (SERIAL PRIMARY KEY), user_id (INTEGER, foreign key referencing users.id), workout_program_id (INTEGER, foreign key referencing workout_programs.id), comment_text (TEXT), created_at (TIMESTAMP). Create 'ratings' table with columns: id (SERIAL PRIMARY KEY), user_id (INTEGER, foreign key referencing users.id), workout_program_id (INTEGER, foreign key referencing workout_programs.id), rating_value (INTEGER), created_at (TIMESTAMP). Add indexes on user_id and workout_program_id for both tables.  Migration script should be idempotent."
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-1",
+            "EPIC-1-TASK-2"
+          ],
+          "id": "EPIC-5-TASK-2",
+          "epic_id": "EPIC-5",
+          "title": "feat: Implement API endpoint to add a comment to a workout program",
+          "type": "feat",
+          "description": "Implement an API endpoint that allows users to add comments to workout programs. The endpoint should validate the user's authentication and the comment content.",
+          "acceptance_criteria": [
+            "The API endpoint should be '/workout_programs/{workout_program_id}/comments' (POST)",
+            "The endpoint should require user authentication.",
+            "The endpoint should validate the comment text (min length 1, max length 500 characters).",
+            "The endpoint should return a 201 Created status code on success and include the new comment in the response.",
+            "Error handling should be implemented for invalid input (400 Bad Request) and unauthorized access (401 Unauthorized)."
+          ],
+          "tech_details": "Stack: Go, Gin. Use Gin framework for routing and request handling.  Authentication middleware should be used to verify user identity.  Database interaction using PostgreSQL.  Example request body: `{\"comment_text\": \"This is a great workout program!\"}`. Example response body (201 Created): `{\"id\": 123, \"user_id\": 456, \"workout_program_id\": 789, \"comment_text\": \"This is a great workout program!\", \"created_at\": \"2024-01-01T12:00:00Z\"}`. Error response (400 Bad Request): `{\"error\": \"Invalid comment text\"}`.  Error response (401 Unauthorized): `{\"error\": \"Unauthorized\"}`."
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-1",
+            "EPIC-1-TASK-2"
+          ],
+          "id": "EPIC-5-TASK-3",
+          "epic_id": "EPIC-5",
+          "title": "feat: Implement API endpoint to add a rating to a workout program",
+          "type": "feat",
+          "description": "Implement an API endpoint that allows users to rate workout programs. The endpoint should validate the user's authentication and the rating value.",
+          "acceptance_criteria": [
+            "The API endpoint should be '/workout_programs/{workout_program_id}/ratings' (POST)",
+            "The endpoint should require user authentication.",
+            "The endpoint should validate the rating value (integer between 1 and 5).",
+            "The endpoint should return a 201 Created status code on success and include the new rating in the response.",
+            "Error handling should be implemented for invalid input (400 Bad Request), unauthorized access (401 Unauthorized), and duplicate ratings from the same user (409 Conflict).",
+            "If the user has already rated the program, update the existing rating instead of creating a new one."
+          ],
+          "tech_details": "Stack: Go, Gin. Use Gin framework for routing and request handling. Authentication middleware should be used to verify user identity. Database interaction using PostgreSQL. Example request body: `{\"rating_value\": 4}`. Example response body (201 Created): `{\"id\": 456, \"user_id\": 789, \"workout_program_id\": 123, \"rating_value\": 4, \"created_at\": \"2024-01-01T12:00:00Z\"}`. Error response (400 Bad Request): `{\"error\": \"Invalid rating value\"}`. Error response (401 Unauthorized): `{\"error\": \"Unauthorized\"}`. Error response (409 Conflict): `{\"error\": \"User has already rated this program\"}`.  On update, return 200 OK.  Check for existing rating using SELECT query before INSERT/UPDATE."
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-1"
+          ],
+          "id": "EPIC-5-TASK-4",
+          "epic_id": "EPIC-5",
+          "title": "feat: Implement API endpoint to retrieve comments for a workout program",
+          "type": "feat",
+          "description": "Implement an API endpoint that allows users to retrieve comments for a specific workout program.",
+          "acceptance_criteria": [
+            "The API endpoint should be '/workout_programs/{workout_program_id}/comments' (GET)",
+            "The endpoint should return a list of comments associated with the specified workout program.",
+            "The comments should be ordered by most recent first.",
+            "The endpoint should return a 200 OK status code on success.",
+            "The endpoint should handle the case where no comments exist for the workout program (return an empty list).",
+            "Implement pagination (e.g., limit and offset parameters)."
+          ],
+          "tech_details": "Stack: Go, Gin. Use Gin framework for routing and request handling. Database interaction using PostgreSQL. Example response body (200 OK): `[{\"id\": 123, \"user_id\": 456, \"workout_program_id\": 789, \"comment_text\": \"This is a great workout program!\", \"created_at\": \"2024-01-01T12:00:00Z\"}, {\"id\": 124, \"user_id\": 457, \"workout_program_id\": 789, \"comment_text\": \"I found this program very effective.\", \"created_at\": \"2024-01-02T10:00:00Z\"}]`. Example response body (200 OK, no comments): `[]`. Query: SELECT * FROM comments WHERE workout_program_id = {workout_program_id} ORDER BY created_at DESC LIMIT {limit} OFFSET {offset}."
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-1"
+          ],
+          "id": "EPIC-5-TASK-5",
+          "epic_id": "EPIC-5",
+          "title": "feat: Implement API endpoint to retrieve the average rating for a workout program",
+          "type": "feat",
+          "description": "Implement an API endpoint that allows users to retrieve the average rating for a specific workout program.",
+          "acceptance_criteria": [
+            "The API endpoint should be '/workout_programs/{workout_program_id}/average_rating' (GET)",
+            "The endpoint should return the average rating value for the specified workout program.",
+            "The endpoint should return a 200 OK status code on success.",
+            "The endpoint should handle the case where no ratings exist for the workout program (return null or 0).",
+            "The returned rating should be rounded to one decimal place."
+          ],
+          "tech_details": "Stack: Go, Gin. Use Gin framework for routing and request handling. Database interaction using PostgreSQL. Example response body (200 OK): `{\"average_rating\": 4.5}`. Example response body (200 OK, no ratings): `{\"average_rating\": null}`. Query: SELECT AVG(rating_value) FROM ratings WHERE workout_program_id = {workout_program_id}."
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-4",
+            "EPIC-5-TASK-5",
+            "EPIC-5-TASK-2"
+          ],
+          "id": "EPIC-5-TASK-6",
+          "epic_id": "EPIC-5",
+          "title": "feat: Display comments and average rating on workout program details page (Frontend)",
+          "type": "feat",
+          "description": "Update the workout program details page to display the comments and average rating for the program.",
+          "acceptance_criteria": [
+            "The workout program details page should display the average rating for the program.",
+            "The workout program details page should display a list of comments for the program, ordered by most recent first.",
+            "Users should be able to post new comments on the page.",
+            "The display should be responsive and visually appealing."
+          ],
+          "tech_details": "Stack: React. Fetch data from the '/workout_programs/{workout_program_id}/comments' and '/workout_programs/{workout_program_id}/average_rating' API endpoints. Use a component to display the comments. Implement a form for posting new comments, which calls the '/workout_programs/{workout_program_id}/comments' (POST) endpoint.  Implement pagination on comments (display 10 comments per page).  Use a star rating component to display the average rating."
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-2",
+            "EPIC-5-TASK-3",
+            "EPIC-5-TASK-4",
+            "EPIC-5-TASK-5"
+          ],
+          "id": "EPIC-5-TASK-7",
+          "epic_id": "EPIC-5",
+          "title": "chore: Add unit tests for comment and rating API endpoints",
+          "type": "chore",
+          "description": "Add unit tests to ensure the comment and rating API endpoints function correctly.",
+          "acceptance_criteria": [
+            "Unit tests should cover all API endpoints related to comments and ratings.",
+            "Tests should cover happy path scenarios and error cases (invalid input, unauthorized access, etc.).",
+            "Code coverage should be at least 80%."
+          ],
+          "tech_details": "Stack: Go, testing package. Use the Go testing package to write unit tests. Mock database interactions to isolate the API logic. Test cases should include: successful comment creation, invalid comment text, unauthorized access, successful rating creation, invalid rating value, duplicate ratings, retrieval of comments, retrieval of average rating, handling of no comments/ratings."
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-6"
+          ],
+          "id": "EPIC-5-TASK-8",
+          "epic_id": "EPIC-5",
+          "title": "chore: Add integration tests for comment and rating functionality",
+          "type": "chore",
+          "description": "Add integration tests to verify the interaction between the frontend and backend for comment and rating functionality.",
+          "acceptance_criteria": [
+            "Integration tests should simulate user interactions with the comment and rating features.",
+            "Tests should cover the entire flow, from user input to data persistence in the database.",
+            "Tests should verify that comments and ratings are displayed correctly on the frontend."
+          ],
+          "tech_details": "Stack: React, Cypress/Selenium. Use Cypress or Selenium to write integration tests.  Test cases should include: posting a comment and verifying it's displayed on the page, adding a rating and verifying the average rating is updated, navigating between pages and verifying comments/ratings are persisted."
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-2",
+            "EPIC-5-TASK-3",
+            "EPIC-5-TASK-4",
+            "EPIC-5-TASK-5"
+          ],
+          "id": "EPIC-5-TASK-9",
+          "epic_id": "EPIC-5",
+          "title": "fix: Prevent SQL injection in comment and rating endpoints",
+          "type": "fix",
+          "description": "Sanitize user inputs in the comment and rating API endpoints to prevent SQL injection vulnerabilities.",
+          "acceptance_criteria": [
+            "All user inputs used in SQL queries should be properly sanitized.",
+            "Static code analysis tools should be used to identify potential SQL injection vulnerabilities.",
+            "Penetration testing should be performed to verify the effectiveness of the sanitization measures."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use parameterized queries or prepared statements to prevent SQL injection.  Review all SQL queries that use user inputs.  Use a static code analysis tool like gosec to identify potential vulnerabilities."
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-2",
+            "EPIC-5-TASK-3",
+            "EPIC-5-TASK-4",
+            "EPIC-5-TASK-5"
+          ],
+          "id": "EPIC-5-TASK-10",
+          "epic_id": "EPIC-5",
+          "title": "chore: Document comment and rating API endpoints",
+          "type": "chore",
+          "description": "Document the new comment and rating API endpoints using Swagger or similar documentation tool.",
+          "acceptance_criteria": [
+            "All API endpoints related to comments and ratings should be documented.",
+            "The documentation should include request parameters, request body examples, response examples, and error codes.",
+            "The documentation should be accessible to developers and users."
+          ],
+          "tech_details": "Stack: Swagger/OpenAPI.  Use Swagger or OpenAPI to document the API endpoints.  Document the following endpoints: POST /workout_programs/{workout_program_id}/comments, POST /workout_programs/{workout_program_id}/ratings, GET /workout_programs/{workout_program_id}/comments, GET /workout_programs/{workout_program_id}/average_rating."
+        }
+      ],
+      "priority": "low"
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Permettre aux utilisateurs de suivre leur progression et leurs statistiques d'entraînement",
+      "description": "Les utilisateurs peuvent enregistrer leurs performances pour chaque exercice et suivre leur progression au fil du temps.",
+      "goal": "75% des utilisateurs enregistrent leurs performances au moins une fois par semaine.",
+      "issues": [
+        {
+          "id": "EPIC-6-TASK-1",
+          "epic_id": "EPIC-6",
+          "title": "feat: Add database schema for workout statistics",
+          "type": "feat",
+          "description": "As a developer, I want to create the database schema to store workout statistics so that users can track their progress.",
+          "acceptance_criteria": [
+            "The `workout_stats` table is created with the correct columns and data types.",
+            "Indexes are created on relevant columns for efficient querying.",
+            "Foreign key constraints are defined to ensure data integrity."
+          ],
+          "tech_details": "Stack: PostgreSQL. Schema: Tables: workout_stats. Columns: id (UUID, PK), user_id (UUID, FK to users.id), workout_id (UUID, FK to workouts.id), exercise_id (UUID, FK to exercises.id), date (DATE), sets (INTEGER), reps (INTEGER), weight (DECIMAL), created_at (TIMESTAMP), updated_at (TIMESTAMP). Indexes: user_id, workout_id, exercise_id, date. Use UUIDs for primary keys.",
+          "tests": [
+            "Test that the migration script runs successfully.",
+            "Test that the `workout_stats` table is created with the correct schema.",
+            "Test that the indexes are created on the correct columns.",
+            "Test that foreign key constraints are enforced."
+          ],
+          "definition_of_done": "The `workout_stats` table is created in the database with the specified schema, indexes, and foreign key constraints. The migration script has been tested and verified to run successfully."
+        },
+        {
+          "dependencies": [
+            "EPIC-1-TASK-2",
+            "EPIC-6-TASK-1"
+          ],
+          "id": "EPIC-6-TASK-2",
+          "epic_id": "EPIC-6",
+          "title": "feat: Implement API endpoint to record workout statistics",
+          "type": "feat",
+          "description": "As a developer, I want to implement an API endpoint to record workout statistics so that users can save their performance data.",
+          "acceptance_criteria": [
+            "The API endpoint accepts valid JSON data for workout statistics.",
+            "The API endpoint validates the input data and returns appropriate error messages for invalid data.",
+            "The API endpoint saves the workout statistics to the database.",
+            "The API endpoint returns a success response with the ID of the created workout statistic."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use chi router. Endpoint: POST /api/v1/workout_stats. Request body: JSON with fields: workout_id (UUID), exercise_id (UUID), date (YYYY-MM-DD), sets (INTEGER), reps (INTEGER), weight (DECIMAL). Response body: JSON with fields: id (UUID), created_at (TIMESTAMP).",
+          "tests": [
+            "Test that the API endpoint returns a 201 Created status code for valid data.",
+            "Test that the API endpoint saves the workout statistics to the database.",
+            "Test that the API endpoint returns a 400 Bad Request status code for invalid data.",
+            "Test that the API endpoint returns a 401 Unauthorized status code for unauthenticated users."
+          ],
+          "definition_of_done": "The API endpoint is implemented and tested. It accepts valid JSON data, validates the input, saves the data to the database, and returns a success response with the ID of the created workout statistic. Error handling is implemented for invalid data and unauthenticated users."
+        },
+        {
+          "dependencies": [
+            "EPIC-1-TASK-2",
+            "EPIC-6-TASK-1"
+          ],
+          "id": "EPIC-6-TASK-3",
+          "epic_id": "EPIC-6",
+          "title": "feat: Implement API endpoint to retrieve workout statistics for a user",
+          "type": "feat",
+          "description": "As a developer, I want to implement an API endpoint to retrieve workout statistics for a user so that users can view their progress.",
+          "acceptance_criteria": [
+            "The API endpoint retrieves workout statistics for a specific user.",
+            "The API endpoint filters workout statistics by workout, exercise, and date range.",
+            "The API endpoint returns a JSON array of workout statistics.",
+            "The API endpoint returns an empty array if no workout statistics are found for the user."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use chi router. Endpoint: GET /api/v1/workout_stats?user_id={user_id}\u0026workout_id={workout_id}\u0026exercise_id={exercise_id}\u0026start_date={start_date}\u0026end_date={end_date}. Response body: JSON array of workout statistics.",
+          "tests": [
+            "Test that the API endpoint returns a 200 OK status code for valid data.",
+            "Test that the API endpoint returns workout statistics for the specified user.",
+            "Test that the API endpoint filters workout statistics by workout, exercise, and date range.",
+            "Test that the API endpoint returns an empty array if no workout statistics are found for the user.",
+            "Test that the API endpoint returns a 400 Bad Request status code for invalid data.",
+            "Test that the API endpoint returns a 401 Unauthorized status code for unauthenticated users."
+          ],
+          "definition_of_done": "The API endpoint is implemented and tested. It retrieves workout statistics for a specific user, filters the data by workout, exercise, and date range, and returns a JSON array of workout statistics. Error handling is implemented for invalid data and unauthenticated users."
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-2"
+          ],
+          "id": "EPIC-6-TASK-4",
+          "epic_id": "EPIC-6",
+          "title": "feat: Add workout statistics recording form to the frontend",
+          "type": "feat",
+          "description": "As a frontend developer, I want to add a form to record workout statistics so that users can easily input their performance data.",
+          "acceptance_criteria": [
+            "The form allows users to select a workout, exercise, and date.",
+            "The form allows users to input the number of sets, reps, and weight.",
+            "The form validates the input data and displays appropriate error messages.",
+            "The form submits the data to the API endpoint to record workout statistics.",
+            "The form displays a success message after the data is successfully saved."
+          ],
+          "tech_details": "Stack: React. Use Formik for form management. Call POST /api/v1/workout_stats endpoint. Display success/error messages using toast notifications.",
+          "tests": [
+            "Test that the form displays correctly.",
+            "Test that the form validates the input data.",
+            "Test that the form submits the data to the API endpoint.",
+            "Test that the form displays a success message after the data is successfully saved.",
+            "Test that the form displays appropriate error messages for invalid data."
+          ],
+          "definition_of_done": "The workout statistics recording form is implemented and tested. It allows users to select a workout, exercise, and date, input the number of sets, reps, and weight, validates the input data, submits the data to the API endpoint, and displays a success or error message accordingly."
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-3"
+          ],
+          "id": "EPIC-6-TASK-5",
+          "epic_id": "EPIC-6",
+          "title": "feat: Display workout statistics on the user profile page",
+          "type": "feat",
+          "description": "As a frontend developer, I want to display workout statistics on the user profile page so that users can track their progress.",
+          "acceptance_criteria": [
+            "Workout statistics are displayed in a table or chart format.",
+            "Workout statistics are grouped by workout, exercise, and date.",
+            "Users can filter workout statistics by date range.",
+            "The display is responsive and works on different screen sizes.",
+            "If no data is available, a message is displayed to the user."
+          ],
+          "tech_details": "Stack: React. Use a charting library like Chart.js or Recharts. Call GET /api/v1/workout_stats endpoint. Display a message if no data is available.",
+          "tests": [
+            "Test that workout statistics are displayed correctly.",
+            "Test that workout statistics are grouped by workout, exercise, and date.",
+            "Test that users can filter workout statistics by date range.",
+            "Test that the display is responsive.",
+            "Test that a message is displayed if no data is available."
+          ],
+          "definition_of_done": "Workout statistics are displayed on the user profile page in a clear and organized manner. Users can filter the data by date range. The display is responsive and a message is displayed if no data is available."
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-2",
+            "EPIC-6-TASK-3"
+          ],
+          "id": "EPIC-6-TASK-6",
+          "epic_id": "EPIC-6",
+          "title": "chore: Add unit tests for workout statistics API endpoints",
+          "type": "chore",
+          "description": "As a developer, I want to add unit tests for the workout statistics API endpoints to ensure code quality and prevent regressions.",
+          "acceptance_criteria": [
+            "Unit tests cover all major functionalities of the API endpoints.",
+            "Unit tests cover positive and negative test cases.",
+            "Code coverage is above 80%.",
+            "Tests are easy to run and maintain."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use testify for assertions. Mock database dependencies. Test cases: successful data creation, invalid data handling, data retrieval with different filters, error handling.",
+          "tests": [
+            "Test successful creation of workout statistics.",
+            "Test handling of invalid workout_id.",
+            "Test handling of invalid exercise_id.",
+            "Test handling of invalid date format.",
+            "Test handling of missing required fields.",
+            "Test retrieval of workout statistics for a specific user.",
+            "Test retrieval of workout statistics filtered by workout.",
+            "Test retrieval of workout statistics filtered by exercise.",
+            "Test retrieval of workout statistics filtered by date range.",
+            "Test that an empty array is returned if no workout statistics are found for the user.",
+            "Test unauthorized access to the API endpoints."
+          ],
+          "definition_of_done": "Unit tests are added for the workout statistics API endpoints. The tests cover all major functionalities and error handling scenarios. Code coverage is above 80%."
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Permettre aux utilisateurs de rechercher des exercices spécifiques",
+      "description": "Les utilisateurs peuvent rechercher des exercices par nom, groupe musculaire ou équipement requis.",
+      "goal": "Les utilisateurs trouvent rapidement et facilement les exercices qu'ils recherchent.",
+      "issues": [
+        {
+          "id": "EPIC-7-TASK-1",
+          "epic_id": "EPIC-7",
+          "title": "feat: Add exercise search endpoint",
+          "type": "feat",
+          "description": "As a user, I want to be able to search for exercises by name, muscle group, or equipment so that I can easily find the exercises I need for my workout.",
+          "acceptance_criteria": [
+            "User can search for exercises by name.",
+            "User can search for exercises by muscle group.",
+            "User can search for exercises by equipment.",
+            "The search results are displayed in a paginated list.",
+            "The search results include the exercise name, muscle group, and equipment required."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use: gin-gonic, gorm. Endpoints: GET /exercises/search. Schema: exercises table (id, name, muscle_group, equipment).",
+          "validation": [
+            "Validate that the query parameters are not empty.",
+            "Validate that the muscle_group and equipment parameters are valid values (e.g., from a predefined list).",
+            "Limit the maximum number of results returned to prevent performance issues."
+          ],
+          "tests": [
+            "Test that the endpoint returns a 200 OK status code for valid search parameters.",
+            "Test that the endpoint returns the correct search results for different search parameters.",
+            "Test that the endpoint returns an empty list when no exercises match the search criteria.",
+            "Test that the endpoint returns a 400 Bad Request status code for invalid search parameters.",
+            "Test that the endpoint handles database connection errors gracefully."
+          ],
+          "definition_of_done": [
+            "The `/exercises/search` endpoint is implemented and returns the correct search results.",
+            "The endpoint handles invalid search parameters and database errors gracefully.",
+            "The endpoint is tested thoroughly with different search parameters and edge cases.",
+            "The code is reviewed and approved by another developer."
+          ],
+          "implementation_details": [
+            "Create a new endpoint `/exercises/search` that accepts query parameters for name, muscle_group, and equipment.",
+            "Implement a search function in the backend that queries the `exercises` table based on the provided parameters.",
+            "Use pagination to limit the number of results returned per page (e.g., 20 results per page).",
+            "Return the search results as a JSON array with the exercise name, muscle group, and equipment required.",
+            "Implement error handling for invalid search parameters or database errors."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ],
+          "id": "EPIC-7-TASK-2",
+          "epic_id": "EPIC-7",
+          "title": "chore: Add pagination to exercise search results",
+          "type": "chore",
+          "description": "Implement pagination for the exercise search results to improve performance and user experience.",
+          "acceptance_criteria": [
+            "The search results are displayed in a paginated list.",
+            "The user can navigate between pages of search results.",
+            "The number of results per page is configurable.",
+            "The total number of pages is displayed to the user."
+          ],
+          "tech_details": "Stack: Go, PostgreSQL. Use: gin-gonic, gorm. Endpoints: GET /exercises/search. Schema: exercises table (id, name, muscle_group, equipment).",
+          "validation": [
+            "Validate that the page number and page size parameters are positive integers.",
+            "Limit the maximum page size to prevent performance issues.",
+            "Return an error message if the page number is greater than the total number of pages."
+          ],
+          "tests": [
+            "Test that the endpoint returns a 200 OK status code for valid page number and page size parameters.",
+            "Test that the endpoint returns the correct search results for different page numbers and page sizes.",
+            "Test that the endpoint returns an error message for invalid page number or page size parameters.",
+            "Test that the endpoint defaults to page 1 when the page number is not provided.",
+            "Test that the endpoint defaults to a reasonable page size when the page size is not provided."
+          ],
+          "definition_of_done": [
+            "The `/exercises/search` endpoint is updated to support pagination.",
+            "The endpoint handles invalid page number and page size parameters gracefully.",
+            "The endpoint is tested thoroughly with different page numbers and page sizes.",
+            "The code is reviewed and approved by another developer."
+          ],
+          "implementation_details": [
+            "Modify the `/exercises/search` endpoint to accept query parameters for page number and page size.",
+            "Update the search function to retrieve only the exercises for the specified page.",
+            "Calculate the total number of pages based on the total number of exercises and the page size.",
+            "Return the search results as a JSON object with the exercises, current page number, and total number of pages.",
+            "Implement error handling for invalid page number or page size parameters."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ],
+          "id": "EPIC-7-TASK-3",
+          "epic_id": "EPIC-7",
+          "title": "feat: Implement frontend search functionality for exercises",
+          "type": "feat",
+          "description": "As a user, I want to be able to search for exercises on the frontend so that I can easily find the exercises I need for my workout.",
+          "acceptance_criteria": [
+            "A search bar is available on the exercises page.",
+            "The user can enter search criteria (name, muscle group, equipment) in the search bar.",
+            "The search results are displayed in a paginated list.",
+            "The user can navigate between pages of search results.",
+            "The search results include the exercise name, muscle group, and equipment required."
+          ],
+          "tech_details": "Stack: React. Use: axios, react-query. Components: ExerciseList, SearchBar. API: GET /exercises/search.",
+          "validation": [
+            "Debounce the search input to prevent excessive API calls.",
+            "Display a loading indicator while the search results are being fetched.",
+            "Display an error message if the API call fails."
+          ],
+          "tests": [
+            "Test that the search bar is displayed on the exercises page.",
+            "Test that the search results are displayed correctly when the user enters valid search criteria.",
+            "Test that the search results are paginated correctly.",
+            "Test that an error message is displayed when the API call fails.",
+            "Test that a message is displayed when no exercises match the search criteria."
+          ],
+          "definition_of_done": [
+            "The search functionality is implemented on the frontend.",
+            "The search results are displayed correctly and paginated.",
+            "Errors are handled gracefully and appropriate error messages are displayed to the user.",
+            "The code is reviewed and approved by another developer."
+          ],
+          "implementation_details": [
+            "Create a `SearchBar` component that allows the user to enter search criteria.",
+            "Use `axios` and `react-query` to call the `/exercises/search` endpoint with the search criteria.",
+            "Display the search results in the `ExerciseList` component.",
+            "Implement pagination using `react-query`'s pagination features.",
+            "Handle errors gracefully and display appropriate error messages to the user."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-7-TASK-1"
+          ],
+          "id": "EPIC-7-TASK-4",
+          "epic_id": "EPIC-7",
+          "title": "chore: Add indexes to exercises table for search",
+          "type": "chore",
+          "description": "Add indexes to the exercises table in the database to improve the performance of the search queries.",
+          "acceptance_criteria": [
+            "Indexes are added to the `name`, `muscle_group`, and `equipment` columns of the `exercises` table.",
+            "The search queries are significantly faster after the indexes are added.",
+            "The database migration is tested and verified."
+          ],
+          "tech_details": "Stack: PostgreSQL. Schema: exercises table (id, name, muscle_group, equipment).",
+          "validation": [
+            "Verify that the indexes are created successfully.",
+            "Verify that the search queries are faster after the indexes are added.",
+            "Verify that the indexes are not causing any performance issues."
+          ],
+          "tests": [
+            "Test that the migration script runs successfully.",
+            "Test that the indexes are created on the `exercises` table.",
+            "Test that the search queries are faster after the indexes are added.",
+            "Test that the indexes are not causing any performance issues."
+          ],
+          "definition_of_done": [
+            "Indexes are added to the `name`, `muscle_group`, and `equipment` columns of the `exercises` table.",
+            "The search queries are significantly faster after the indexes are added.",
+            "The database migration is tested and verified.",
+            "The code is reviewed and approved by another developer."
+          ],
+          "implementation_details": [
+            "Create a database migration script that adds indexes to the `name`, `muscle_group`, and `equipment` columns of the `exercises` table.",
+            "Run the migration script on the development, staging, and production environments.",
+            "Monitor the performance of the search queries after the indexes are added.",
+            "Verify that the indexes are being used by the query optimizer."
+          ]
+        }
+      ],
+      "priority": "medium"
+    }
+  ]
+}
