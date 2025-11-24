@@ -1,0 +1,2255 @@
+{
+  "idea": "Une application permettant aux utilisateurs de partager leur programme d'entrainement en salle de sport, les utilisateurs peuvent s'inscrire, se connecter, créer des entrainement, les partager\n",
+  "epics": [
+    {
+      "id": "1",
+      "title": "Permettre aux utilisateurs de s'inscrire et de se connecter en toute sécurité",
+      "description": "Offrir une expérience d'authentification robuste pour protéger les données des utilisateurs.",
+      "goal": "Atteindre un taux de conversion d'inscription de 70% et un taux de rétention des utilisateurs connectés de 80%.",
+      "issues": [
+        {
+          "id": "1-TASK-1",
+          "epic_id": "1",
+          "title": "chore: Créer table users avec champs email, password_hash, name, created_at, updated_at",
+          "type": "chore",
+          "description": "Créer la table `users` dans la base de données pour stocker les informations des utilisateurs.",
+          "acceptance_criteria": [
+            "La table `users` est créée avec les colonnes `id` (INT, PRIMARY KEY, AUTO_INCREMENT), `email` (VARCHAR(255), UNIQUE, NOT NULL), `password_hash` (VARCHAR(255), NOT NULL), `name` (VARCHAR(255), NOT NULL), `created_at` (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP), `updated_at` (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP).",
+            "Un index est créé sur la colonne `email` pour accélérer les recherches.",
+            "La migration est réversible (down)."
+          ],
+          "tech_details": "Utiliser l'ORM {tech_stack} pour gérer la migration. S'assurer que la migration est idempotente.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": "CREATE TABLE users (id INT PRIMARY KEY AUTO_INCREMENT, email VARCHAR(255) UNIQUE NOT NULL, password_hash VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP); CREATE INDEX idx_users_email ON users (email);",
+          "tests": [
+            "Test de création de la table : vérifier que la table `users` existe avec les colonnes spécifiées.",
+            "Test d'unicité de l'email : vérifier qu'une tentative d'insertion d'un email existant échoue.",
+            "Test de réversibilité de la migration : vérifier que la commande `down` supprime correctement la table."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests de migration DB passent (up/down)",
+            "[ ] Documentation DB ajoutée",
+            "[ ] Revue de code effectuée"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": null
+        },
+        {
+          "dependencies": [
+            "1-TASK-1"
+          ],
+          "id": "1-TASK-2",
+          "epic_id": "1",
+          "title": "feat: créer endpoint POST /api/users/register pour inscription",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir m'inscrire via un endpoint /api/users/register afin de pouvoir accéder à l'application.",
+          "acceptance_criteria": [
+            "L'endpoint POST /api/users/register accepte les champs `email`, `password`, `name` au format JSON.",
+            "L'endpoint renvoie un code 201 Created avec un corps JSON contenant `id`, `email`, `name`, `created_at`.",
+            "Le mot de passe est hashé avec bcrypt (cost 10) avant d'être stocké dans la base de données.",
+            "Si l'email existe déjà dans la base de données, l'endpoint renvoie un code 409 Conflict avec un message d'erreur approprié.",
+            "Si les données sont invalides (email incorrect, mot de passe trop court, etc.), l'endpoint renvoie un code 422 Unprocessable Entity avec une liste d'erreurs de validation."
+          ],
+          "tech_details": "Utiliser une librairie de validation pour les champs. Le mot de passe doit avoir une longueur minimale de 8 caractères.",
+          "validation": null,
+          "error_handling": "400 Bad Request (données invalides), 409 Conflict (email déjà utilisé), 422 Unprocessable Entity (erreurs de validation), 500 Internal Server Error (erreur serveur)",
+          "database_migrations": null,
+          "tests": [
+            "Test d'inscription réussie : vérifier que l'utilisateur est créé dans la base de données avec le mot de passe hashé.",
+            "Test d'email déjà existant : vérifier que l'endpoint renvoie une erreur 409 si l'email existe déjà.",
+            "Test de validation des données : vérifier que l'endpoint renvoie une erreur 422 si les données sont invalides.",
+            "Test d'email invalide : vérifier le format de l'email avec une Regex.",
+            "Test de mot de passe trop court"
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger/OpenAPI)",
+            "[ ] Revue de code effectuée"
+          ],
+          "example_request": "{ \"email\": \"test@example.com\", \"password\": \"password123\", \"name\": \"John Doe\" }",
+          "example_response_success": "{ \"id\": 123, \"email\": \"test@example.com\", \"name\": \"John Doe\", \"created_at\": \"2024-01-01T00:00:00Z\" }",
+          "example_response_error_400": "{ \"message\": \"Invalid email format\" }",
+          "example_response_error_409": "{ \"message\": \"Email already exists\" }",
+          "example_request_valid": "{ \"email\": \"test@example.com\", \"password\": \"password123\", \"name\": \"John Doe\" }",
+          "example_request_invalid": "{ \"email\": \"invalid-email\", \"password\": \"short\", \"name\": \"\" }",
+          "api_call": "POST /api/users/register",
+          "ui_design": null,
+          "implementation_details": "Utiliser {tech_stack} pour implémenter l'endpoint. Valider les données avec une librairie de validation (ex: validator.v8 pour Go). Hasher le mot de passe avec bcrypt."
+        },
+        {
+          "dependencies": [
+            "1-TASK-1"
+          ],
+          "id": "1-TASK-3",
+          "epic_id": "1",
+          "title": "feat: créer endpoint POST /api/users/login pour connexion",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir me connecter via un endpoint /api/users/login afin d'accéder à mon compte.",
+          "acceptance_criteria": [
+            "L'endpoint POST /api/users/login accepte les champs `email` et `password` au format JSON.",
+            "Si l'authentification réussit, l'endpoint renvoie un code 200 OK avec un token JWT dans le corps de la réponse.",
+            "Si l'email n'existe pas ou si le mot de passe est incorrect, l'endpoint renvoie un code 401 Unauthorized avec un message d'erreur approprié.",
+            "Le token JWT contient l'ID de l'utilisateur et expire après 1 heure.",
+            "Le token JWT est signé avec une clé secrète stockée dans les variables d'environnement."
+          ],
+          "tech_details": "Stocker la clé secrète JWT dans les variables d'environnement. Utiliser une librairie JWT pour générer et vérifier les tokens.",
+          "validation": null,
+          "error_handling": "401 Unauthorized (email ou mot de passe incorrect), 500 Internal Server Error (erreur serveur)",
+          "database_migrations": null,
+          "tests": [
+            "Test de connexion réussie : vérifier que l'endpoint renvoie un token JWT valide.",
+            "Test d'email incorrect : vérifier que l'endpoint renvoie une erreur 401 si l'email n'existe pas.",
+            "Test de mot de passe incorrect : vérifier que l'endpoint renvoie une erreur 401 si le mot de passe est incorrect.",
+            "Test de token JWT valide : vérifier que le token JWT contient l'ID de l'utilisateur et que la signature est valide."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger/OpenAPI)",
+            "[ ] Revue de code effectuée"
+          ],
+          "example_request": "{ \"email\": \"test@example.com\", \"password\": \"password123\" }",
+          "example_response_success": "{ \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\" }",
+          "example_response_error_401": "{ \"message\": \"Invalid credentials\" }",
+          "example_request_valid": "{ \"email\": \"test@example.com\", \"password\": \"password123\" }",
+          "example_request_invalid": "{ \"email\": \"test@example.com\", \"password\": \"wrongpassword\" }",
+          "api_call": "POST /api/users/login",
+          "ui_design": null,
+          "implementation_details": "Utiliser {tech_stack} pour implémenter l'endpoint. Comparer le mot de passe fourni avec le hash stocké dans la base de données (bcrypt). Générer un token JWT avec une librairie JWT."
+        },
+        {
+          "dependencies": [
+            "1-TASK-3"
+          ],
+          "id": "1-TASK-4",
+          "epic_id": "1",
+          "title": "chore: Ajouter middleware d'authentification pour protéger les routes",
+          "type": "chore",
+          "description": "Ajouter un middleware d'authentification pour vérifier la validité du token JWT et protéger les routes nécessitant une authentification.",
+          "acceptance_criteria": [
+            "Le middleware vérifie la présence du token JWT dans l'en-tête `Authorization` (Bearer \u003ctoken\u003e).",
+            "Si le token est valide, le middleware ajoute l'ID de l'utilisateur à l'objet de requête (ex: req.userId).",
+            "Si le token est invalide ou absent, le middleware renvoie une erreur 401 Unauthorized.",
+            "Le middleware peut être appliqué à des routes spécifiques."
+          ],
+          "tech_details": "Le middleware doit être configurable pour pouvoir être appliqué à des routes spécifiques.",
+          "validation": null,
+          "error_handling": "401 Unauthorized (token invalide ou absent)",
+          "database_migrations": null,
+          "tests": [
+            "Test de token valide : vérifier que le middleware ajoute l'ID de l'utilisateur à l'objet de requête.",
+            "Test de token invalide : vérifier que le middleware renvoie une erreur 401.",
+            "Test d'absence de token : vérifier que le middleware renvoie une erreur 401.",
+            "Test de route protégée : vérifier qu'une route protégée renvoie une erreur 401 si le token est absent ou invalide."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation du middleware ajoutée",
+            "[ ] Revue de code effectuée"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_401": "{ \"message\": \"Unauthorized\" }",
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser {tech_stack} pour implémenter le middleware. Vérifier le token JWT avec la librairie JWT. Extraire l'ID de l'utilisateur du token."
+        },
+        {
+          "dependencies": [
+            "1-TASK-1"
+          ],
+          "id": "1-TASK-5",
+          "epic_id": "1",
+          "title": "feat: implémenter la fonctionnalité de mot de passe oublié",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir réinitialiser mon mot de passe si je l'ai oublié.",
+          "acceptance_criteria": [
+            "Un endpoint POST /api/users/forgot-password accepte l'email de l'utilisateur.",
+            "Si l'email existe, un email de réinitialisation de mot de passe est envoyé à l'utilisateur.",
+            "L'email contient un lien unique avec un token de réinitialisation valide pendant 24 heures.",
+            "Un endpoint POST /api/users/reset-password accepte le token et le nouveau mot de passe.",
+            "Si le token est valide et le nouveau mot de passe respecte les règles, le mot de passe est mis à jour dans la base de données.",
+            "Si le token est invalide ou expiré, une erreur est renvoyée."
+          ],
+          "tech_details": "Stocker les tokens de réinitialisation dans une table dédiée avec une date d'expiration. Utiliser une librairie d'email pour envoyer les emails.",
+          "validation": null,
+          "error_handling": "400 Bad Request (données invalides), 404 Not Found (email non trouvé), 401 Unauthorized (token invalide ou expiré), 500 Internal Server Error (erreur serveur)",
+          "database_migrations": null,
+          "tests": [
+            "Test de demande de réinitialisation réussie : vérifier qu'un email est envoyé à l'utilisateur.",
+            "Test de réinitialisation réussie : vérifier que le mot de passe est mis à jour dans la base de données.",
+            "Test d'email non trouvé : vérifier qu'une erreur est renvoyée si l'email n'existe pas.",
+            "Test de token invalide : vérifier qu'une erreur est renvoyée si le token est invalide ou expiré.",
+            "Test de mot de passe non conforme : vérifier qu'une erreur est renvoyée si le nouveau mot de passe ne respecte pas les règles."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger/OpenAPI)",
+            "[ ] Revue de code effectuée"
+          ],
+          "example_request": "{ \"email\": \"test@example.com\" }, { \"token\": \"unique_token\", \"password\": \"newpassword123\" }",
+          "example_response_success": "{ \"message\": \"Password reset email sent\" }, { \"message\": \"Password reset successful\" }",
+          "example_response_error_400": "{ \"message\": \"Invalid email format\" }, { \"message\": \"Invalid token or password\" }",
+          "example_response_error_401": "{ \"message\": \"Unauthorized: Invalid or expired token\" }",
+          "example_response_error_409": null,
+          "example_request_valid": "{ \"email\": \"test@example.com\" }, { \"token\": \"unique_token\", \"password\": \"newpassword123\" }",
+          "example_request_invalid": "{ \"email\": \"invalid-email\" }, { \"token\": \"invalid_token\", \"password\": \"short\" }",
+          "api_call": "POST /api/users/forgot-password, POST /api/users/reset-password",
+          "ui_design": null,
+          "implementation_details": "Utiliser {tech_stack} pour implémenter l'endpoint. Générer un token unique pour la réinitialisation. Envoyer un email avec le lien de réinitialisation. Valider le token et le nouveau mot de passe."
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "2",
+      "title": "Permettre aux utilisateurs de créer et de gérer leurs programmes d'entraînement",
+      "description": "Fournir les outils nécessaires pour concevoir des séances d'entraînement personnalisées.",
+      "goal": "Permettre aux utilisateurs de créer au moins 3 programmes d'entraînement en moyenne par mois.",
+      "issues": [
+        {
+          "dependencies": [
+            "1-TASK-4"
+          ],
+          "id": "2-TASK-1",
+          "epic_id": "2",
+          "title": "feat: Créer endpoint POST /api/workouts pour créer un entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir créer un nouvel entraînement via un endpoint API afin de sauvegarder mes séances.",
+          "acceptance_criteria": [
+            "L'endpoint POST /api/workouts accepte un payload JSON avec les champs 'name' (string, requis), 'description' (string, optionnel), 'exercises' (array d'IDs d'exercices existants).",
+            "L'endpoint renvoie un code 201 Created avec un payload JSON contenant l'ID du nouvel entraînement, son nom, sa description et la liste des exercices.",
+            "Si le nom de l'entraînement est manquant, l'endpoint renvoie un code 400 Bad Request avec un message d'erreur approprié.",
+            "Si un des IDs d'exercices n'existe pas, l'endpoint renvoie un code 400 Bad Request avec un message d'erreur approprié.",
+            "L'utilisateur doit être authentifié pour accéder à cet endpoint (via JWT)."
+          ],
+          "tech_details": "Utiliser le framework Go pour l'API. Valider les données avec une librairie de validation (ex: go-playground/validator). Authentification via JWT.",
+          "validation": null,
+          "error_handling": "400 Bad Request si le nom est manquant ou si un exercice n'existe pas. 401 Unauthorized si l'utilisateur n'est pas authentifié.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que le nom est obligatoire.",
+            "Test unitaire: Vérifier qu'un exercice inexistant renvoie une erreur.",
+            "Test d'intégration: Créer un entraînement avec des exercices existants et vérifier qu'il est bien enregistré en base de données.",
+            "Test d'intégration: Vérifier que l'utilisateur non authentifié ne peut pas créer d'entraînement."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger)",
+            "[ ] Migration DB testée (si applicable)"
+          ],
+          "example_request": "{ \"name\": \"Séance Jambes\", \"description\": \"Grosse séance pour les cuisses\", \"exercises\": [\"exercise_id_1\", \"exercise_id_2\"] }",
+          "example_response_success": "{ \"id\": \"workout_id_1\", \"name\": \"Séance Jambes\", \"description\": \"Grosse séance pour les cuisses\", \"exercises\": [\"exercise_id_1\", \"exercise_id_2\"] }",
+          "example_response_error_400": "{ \"message\": \"Le nom de l'entraînement est obligatoire.\" }",
+          "example_response_error_401": "{ \"message\": \"Non autorisé\" }",
+          "example_response_error_409": null,
+          "example_request_valid": "{ \"name\": \"Séance Jambes\", \"description\": \"Grosse séance pour les cuisses\", \"exercises\": [\"exercise_id_1\", \"exercise_id_2\"] }",
+          "example_request_invalid": "{ \"description\": \"Grosse séance pour les cuisses\", \"exercises\": [\"exercise_id_1\", \"exercise_id_2\"] }",
+          "api_call": "POST /api/workouts",
+          "ui_design": null,
+          "implementation_details": null
+        },
+        {
+          "dependencies": [
+            "1-TASK-4"
+          ],
+          "id": "2-TASK-2",
+          "epic_id": "2",
+          "title": "feat: Créer endpoint GET /api/workouts/:id pour récupérer un entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir récupérer les détails d'un entraînement spécifique via un endpoint API afin de consulter mes séances.",
+          "acceptance_criteria": [
+            "L'endpoint GET /api/workouts/:id renvoie un code 200 OK avec un payload JSON contenant les détails de l'entraînement (ID, nom, description, exercices).",
+            "Si l'entraînement n'existe pas, l'endpoint renvoie un code 404 Not Found.",
+            "L'utilisateur doit être authentifié pour accéder à cet endpoint (via JWT).",
+            "Seul le créateur de l'entraînement peut le consulter."
+          ],
+          "tech_details": "Utiliser le framework Go pour l'API. Authentification via JWT. Vérifier que l'utilisateur est le créateur de l'entraînement.",
+          "validation": null,
+          "error_handling": "404 Not Found si l'entraînement n'existe pas. 401 Unauthorized si l'utilisateur n'est pas authentifié ou n'est pas le créateur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier qu'un entraînement inexistant renvoie une erreur 404.",
+            "Test d'intégration: Récupérer un entraînement existant et vérifier que les données sont correctes.",
+            "Test d'intégration: Vérifier qu'un utilisateur non authentifié ne peut pas accéder à l'entraînement.",
+            "Test d'intégration: Vérifier qu'un utilisateur qui n'est pas le créateur ne peut pas accéder à l'entraînement."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger)",
+            "[ ] Migration DB testée (si applicable)"
+          ],
+          "example_request": null,
+          "example_response_success": "{ \"id\": \"workout_id_1\", \"name\": \"Séance Jambes\", \"description\": \"Grosse séance pour les cuisses\", \"exercises\": [\"exercise_id_1\", \"exercise_id_2\"] }",
+          "example_response_error_400": null,
+          "example_response_error_401": "{ \"message\": \"Non autorisé\" }",
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "GET /api/workouts/:id",
+          "ui_design": null,
+          "implementation_details": null
+        },
+        {
+          "dependencies": [
+            "1-TASK-4"
+          ],
+          "id": "2-TASK-3",
+          "epic_id": "2",
+          "title": "feat: Créer endpoint PUT /api/workouts/:id pour mettre à jour un entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir mettre à jour un entraînement existant via un endpoint API afin de modifier mes séances.",
+          "acceptance_criteria": [
+            "L'endpoint PUT /api/workouts/:id accepte un payload JSON avec les champs 'name' (string, optionnel), 'description' (string, optionnel), 'exercises' (array d'IDs d'exercices existants, optionnel).",
+            "L'endpoint renvoie un code 200 OK avec un payload JSON contenant l'entraînement mis à jour.",
+            "Si l'entraînement n'existe pas, l'endpoint renvoie un code 404 Not Found.",
+            "Si un des IDs d'exercices n'existe pas, l'endpoint renvoie un code 400 Bad Request avec un message d'erreur approprié.",
+            "L'utilisateur doit être authentifié pour accéder à cet endpoint (via JWT).",
+            "Seul le créateur de l'entraînement peut le modifier."
+          ],
+          "tech_details": "Utiliser le framework Go pour l'API. Authentification via JWT. Vérifier que l'utilisateur est le créateur de l'entraînement. Gérer la mise à jour partielle des champs.",
+          "validation": null,
+          "error_handling": "404 Not Found si l'entraînement n'existe pas. 400 Bad Request si un exercice n'existe pas. 401 Unauthorized si l'utilisateur n'est pas authentifié ou n'est pas le créateur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier qu'un entraînement inexistant renvoie une erreur 404.",
+            "Test unitaire: Vérifier qu'un exercice inexistant renvoie une erreur 400.",
+            "Test d'intégration: Mettre à jour un entraînement existant et vérifier que les données sont bien mises à jour.",
+            "Test d'intégration: Vérifier qu'un utilisateur non authentifié ne peut pas modifier l'entraînement.",
+            "Test d'intégration: Vérifier qu'un utilisateur qui n'est pas le créateur ne peut pas modifier l'entraînement."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger)",
+            "[ ] Migration DB testée (si applicable)"
+          ],
+          "example_request": "{ \"name\": \"Séance Jambes Intense\", \"exercises\": [\"exercise_id_3\", \"exercise_id_4\"] }",
+          "example_response_success": "{ \"id\": \"workout_id_1\", \"name\": \"Séance Jambes Intense\", \"description\": \"Grosse séance pour les cuisses\", \"exercises\": [\"exercise_id_3\", \"exercise_id_4\"] }",
+          "example_response_error_400": "{ \"message\": \"L'exercice exercise_id_5 n'existe pas.\" }",
+          "example_response_error_401": "{ \"message\": \"Non autorisé\" }",
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "PUT /api/workouts/:id",
+          "ui_design": null,
+          "implementation_details": null
+        },
+        {
+          "dependencies": [
+            "1-TASK-4"
+          ],
+          "id": "2-TASK-4",
+          "epic_id": "2",
+          "title": "feat: Créer endpoint DELETE /api/workouts/:id pour supprimer un entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir supprimer un entraînement existant via un endpoint API afin de gérer mes séances.",
+          "acceptance_criteria": [
+            "L'endpoint DELETE /api/workouts/:id renvoie un code 204 No Content si la suppression réussit.",
+            "Si l'entraînement n'existe pas, l'endpoint renvoie un code 404 Not Found.",
+            "L'utilisateur doit être authentifié pour accéder à cet endpoint (via JWT).",
+            "Seul le créateur de l'entraînement peut le supprimer."
+          ],
+          "tech_details": "Utiliser le framework Go pour l'API. Authentification via JWT. Vérifier que l'utilisateur est le créateur de l'entraînement.",
+          "validation": null,
+          "error_handling": "404 Not Found si l'entraînement n'existe pas. 401 Unauthorized si l'utilisateur n'est pas authentifié ou n'est pas le créateur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier qu'un entraînement inexistant renvoie une erreur 404.",
+            "Test d'intégration: Supprimer un entraînement existant et vérifier qu'il est bien supprimé de la base de données.",
+            "Test d'intégration: Vérifier qu'un utilisateur non authentifié ne peut pas supprimer l'entraînement.",
+            "Test d'intégration: Vérifier qu'un utilisateur qui n'est pas le créateur ne peut pas supprimer l'entraînement."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger)",
+            "[ ] Migration DB testée (si applicable)"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": "{ \"message\": \"Non autorisé\" }",
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "DELETE /api/workouts/:id",
+          "ui_design": null,
+          "implementation_details": null
+        },
+        {
+          "dependencies": [
+            "1-TASK-4"
+          ],
+          "id": "2-TASK-5",
+          "epic_id": "2",
+          "title": "feat: Créer endpoint GET /api/workouts pour lister les entraînements de l'utilisateur",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir lister mes entraînements via un endpoint API afin de visualiser toutes mes séances.",
+          "acceptance_criteria": [
+            "L'endpoint GET /api/workouts renvoie un code 200 OK avec un payload JSON contenant une liste d'entraînements (ID, nom, description, exercices).",
+            "Si l'utilisateur n'a pas d'entraînements, l'endpoint renvoie une liste vide.",
+            "L'utilisateur doit être authentifié pour accéder à cet endpoint (via JWT).",
+            "La liste doit être paginée (ex: 10 entraînements par page)."
+          ],
+          "tech_details": "Utiliser le framework Go pour l'API. Authentification via JWT. Implémenter la pagination.",
+          "validation": null,
+          "error_handling": "401 Unauthorized si l'utilisateur n'est pas authentifié.",
+          "database_migrations": null,
+          "tests": [
+            "Test d'intégration: Récupérer la liste des entraînements d'un utilisateur et vérifier que les données sont correctes.",
+            "Test d'intégration: Vérifier qu'un utilisateur non authentifié ne peut pas accéder à la liste des entraînements.",
+            "Test d'intégration: Vérifier que la pagination fonctionne correctement."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger)",
+            "[ ] Migration DB testée (si applicable)"
+          ],
+          "example_request": null,
+          "example_response_success": "[{ \"id\": \"workout_id_1\", \"name\": \"Séance Jambes\", \"description\": \"Grosse séance pour les cuisses\", \"exercises\": [\"exercise_id_1\", \"exercise_id_2\"] }, { \"id\": \"workout_id_2\", \"name\": \"Séance Dos\", \"description\": \"Traction et rowing\", \"exercises\": [\"exercise_id_5\", \"exercise_id_6\"] }]",
+          "example_response_error_400": null,
+          "example_response_error_401": "{ \"message\": \"Non autorisé\" }",
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "GET /api/workouts",
+          "ui_design": null,
+          "implementation_details": null
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "3",
+      "title": "Permettre aux utilisateurs de partager leurs programmes d'entraînement avec d'autres",
+      "description": "Faciliter le partage de programmes pour encourager l'interaction et l'inspiration entre les utilisateurs.",
+      "goal": "Atteindre un taux de partage de programmes d'entraînement de 20% par mois.",
+      "issues": [
+        {
+          "id": "3-TASK-1",
+          "epic_id": "3",
+          "title": "feat: Ajouter un bouton 'Partager' sur la page d'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux un bouton 'Partager' sur la page de mon entraînement afin de pouvoir le partager facilement avec d'autres utilisateurs.",
+          "acceptance_criteria": [
+            "Un bouton 'Partager' est visible sur la page d'entraînement.",
+            "Le bouton est positionné de manière intuitive (ex: en haut à droite, en bas).",
+            "Au clic, une modale de partage s'ouvre (issue #2)."
+          ],
+          "tech_details": "Implémenter un composant React 'ShareButton' qui affiche une icône de partage et ouvre la modale (issue #2) au clic. Utiliser l'API de partage du navigateur si disponible, sinon utiliser une modale personnalisée.",
+          "tests": [
+            "Test unitaire: Vérifier que le bouton 'Partager' est rendu.",
+            "Test unitaire: Vérifier que le bouton appelle la fonction d'ouverture de la modale au clic.",
+            "Test d'intégration: Vérifier que la modale de partage s'ouvre bien au clic sur le bouton."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation code ajoutée",
+            "[ ] Review du code effectuée"
+          ]
+        },
+        {
+          "dependencies": [
+            "3-TASK-1"
+          ],
+          "id": "3-TASK-2",
+          "epic_id": "3",
+          "title": "feat: Créer une modale de partage avec options (lien, réseaux sociaux)",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux une modale de partage qui me propose différentes options de partage (lien direct, réseaux sociaux) afin de pouvoir partager mon entraînement de la manière la plus pratique pour moi.",
+          "acceptance_criteria": [
+            "Une modale s'ouvre au clic sur le bouton 'Partager' (issue #1).",
+            "La modale contient un champ avec un lien direct vers l'entraînement.",
+            "La modale contient des boutons de partage vers au moins 2 réseaux sociaux (ex: Facebook, Twitter).",
+            "Le lien direct est automatiquement copié dans le presse-papier au clic sur un bouton 'Copier le lien'.",
+            "Les boutons de partage vers les réseaux sociaux ouvrent une nouvelle fenêtre avec le contenu pré-rempli (titre, description, lien)."
+          ],
+          "tech_details": "Utiliser une librairie React de modale (ex: react-modal).  Générer un lien unique pour chaque entraînement (ex: /entrainements/:id).  Utiliser les API de partage des réseaux sociaux pour pré-remplir le contenu.  Implémenter la fonctionnalité de copie dans le presse-papier avec l'API 'navigator.clipboard.writeText'.",
+          "tests": [
+            "Test unitaire: Vérifier que la modale contient le champ de lien.",
+            "Test unitaire: Vérifier que la modale contient les boutons de partage vers les réseaux sociaux.",
+            "Test d'intégration: Vérifier que le lien est copié dans le presse-papier au clic sur le bouton 'Copier le lien'.",
+            "Test d'intégration: Vérifier que les boutons de partage ouvrent bien les fenêtres des réseaux sociaux avec le contenu pré-rempli."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation code ajoutée",
+            "[ ] Review du code effectuée"
+          ]
+        },
+        {
+          "dependencies": [
+            "1-TASK-4"
+          ],
+          "id": "3-TASK-3",
+          "epic_id": "3",
+          "title": "feat: Créer une API GET /api/entrainements/:id/share pour générer un lien de partage unique",
+          "type": "feat",
+          "description": "En tant que développeur, je dois créer une API qui génère un lien de partage unique pour chaque entraînement afin de pouvoir le partager sur les réseaux sociaux.",
+          "acceptance_criteria": [
+            "L'API GET /api/entrainements/:id/share existe.",
+            "L'API renvoie un code 200 OK avec un JSON contenant le lien de partage: { 'share_url': 'https://example.com/entrainements/:id' }.",
+            "Le lien de partage est unique pour chaque entraînement.",
+            "Si l'entraînement n'existe pas, l'API renvoie une erreur 404 Not Found.",
+            "L'API est sécurisée et nécessite une authentification (issue #4)."
+          ],
+          "tech_details": "Implémenter l'API en Go avec le framework choisi.  Utiliser un UUID pour générer le lien de partage unique.  Valider que l'entraînement existe avant de générer le lien.  Ajouter une couche d'authentification (middleware) pour sécuriser l'API (issue #4).",
+          "validation": "Valider que le lien de partage généré est bien un UUID valide.",
+          "tests": [
+            "Test unitaire: Vérifier que l'API renvoie un code 200 OK avec le lien de partage.",
+            "Test unitaire: Vérifier que le lien de partage est unique pour chaque entraînement.",
+            "Test unitaire: Vérifier que l'API renvoie une erreur 404 si l'entraînement n'existe pas.",
+            "Test d'intégration: Vérifier que l'API est sécurisée et nécessite une authentification.",
+            "Test d'intégration: Vérifier que le lien de partage fonctionne et redirige vers la page de l'entraînement."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger)",
+            "[ ] Review du code effectuée"
+          ]
+        },
+        {
+          "dependencies": [
+            "1-TASK-4"
+          ],
+          "id": "3-TASK-4",
+          "epic_id": "3",
+          "title": "chore: Ajouter un middleware d'authentification pour sécuriser l'API de partage",
+          "type": "chore",
+          "description": "En tant que développeur, je dois ajouter un middleware d'authentification pour sécuriser l'API de partage afin de m'assurer que seuls les utilisateurs authentifiés peuvent partager leurs entraînements.",
+          "acceptance_criteria": [
+            "Un middleware d'authentification est ajouté à l'API GET /api/entrainements/:id/share (issue #3).",
+            "Le middleware vérifie la présence d'un token JWT valide dans les headers de la requête.",
+            "Si le token est invalide ou absent, l'API renvoie une erreur 401 Unauthorized.",
+            "Si le token est valide, l'API continue son traitement normal.",
+            "Le middleware utilise la librairie d'authentification existante dans le projet."
+          ],
+          "tech_details": "Utiliser le middleware d'authentification JWT existant dans le projet (si il n'existe pas, il faut créer une epic pour le créer).  Ajouter le middleware à la route GET /api/entrainements/:id/share dans le fichier de routes.  Vérifier que le middleware fonctionne correctement en envoyant des requêtes avec et sans token JWT valide.",
+          "tests": [
+            "Test unitaire: Vérifier que le middleware renvoie une erreur 401 si le token est absent.",
+            "Test unitaire: Vérifier que le middleware renvoie une erreur 401 si le token est invalide.",
+            "Test d'intégration: Vérifier que l'API renvoie une erreur 401 si le token est absent ou invalide.",
+            "Test d'intégration: Vérifier que l'API fonctionne correctement si le token est valide."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation code ajoutée",
+            "[ ] Review du code effectuée"
+          ]
+        },
+        {
+          "dependencies": [
+            "3-TASK-6"
+          ],
+          "id": "3-TASK-5",
+          "epic_id": "3",
+          "title": "feat: Afficher les entraînements partagés sur une page dédiée (ex: 'Découvrir')",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir voir les entraînements partagés par d'autres utilisateurs sur une page dédiée afin de découvrir de nouvelles idées et de m'inspirer.",
+          "acceptance_criteria": [
+            "Une nouvelle page est créée (ex: '/decouvrir') qui affiche les entraînements partagés.",
+            "Les entraînements sont affichés avec un titre, une description et le nom de l'utilisateur qui l'a partagé.",
+            "Un système de pagination est implémenté si le nombre d'entraînements partagés est important.",
+            "Les entraînements sont classés par date de partage (les plus récents en premier).",
+            "Un bouton 'Voir l'entraînement' permet d'accéder à la page de l'entraînement complet."
+          ],
+          "tech_details": "Créer un nouveau composant React 'DiscoverPage' qui affiche les entraînements partagés.  Utiliser l'API GET /api/entrainements/shared pour récupérer les entraînements (issue #6).  Implémenter la pagination avec une librairie React (ex: react-paginate).  Afficher les informations de l'entraînement (titre, description, nom de l'utilisateur) et un bouton 'Voir l'entraînement'.",
+          "tests": [
+            "Test unitaire: Vérifier que la page 'Découvrir' est rendue.",
+            "Test unitaire: Vérifier que les entraînements sont affichés avec les informations correctes.",
+            "Test d'intégration: Vérifier que la pagination fonctionne correctement.",
+            "Test d'intégration: Vérifier que le bouton 'Voir l'entraînement' redirige vers la page de l'entraînement complet."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation code ajoutée",
+            "[ ] Review du code effectuée"
+          ]
+        },
+        {
+          "dependencies": [
+            "3-TASK-4",
+            "3-TASK-7"
+          ],
+          "id": "3-TASK-6",
+          "epic_id": "3",
+          "title": "feat: Créer une API GET /api/entrainements/shared pour récupérer les entraînements partagés",
+          "type": "feat",
+          "description": "En tant que développeur, je dois créer une API qui récupère les entraînements partagés afin de pouvoir les afficher sur la page 'Découvrir' (issue #5).",
+          "acceptance_criteria": [
+            "L'API GET /api/entrainements/shared existe.",
+            "L'API renvoie un code 200 OK avec un JSON contenant une liste d'entraînements partagés: [{ id, titre, description, utilisateur_id, date_partage }].",
+            "L'API supporte la pagination avec les paramètres 'page' et 'limit'.",
+            "L'API renvoie les entraînements classés par date de partage (les plus récents en premier).",
+            "Seuls les entraînements marqués comme 'partagés' sont retournés.",
+            "L'API est sécurisée et nécessite une authentification (issue #4)."
+          ],
+          "tech_details": "Implémenter l'API en Go avec le framework choisi.  Utiliser une requête SQL pour récupérer les entraînements partagés de la base de données.  Implémenter la pagination avec les paramètres 'page' et 'limit'.  Ajouter une condition 'WHERE partage = true' à la requête SQL.  Ajouter le middleware d'authentification (issue #4) pour sécuriser l'API.",
+          "tests": [
+            "Test unitaire: Vérifier que l'API renvoie un code 200 OK avec une liste d'entraînements partagés.",
+            "Test unitaire: Vérifier que l'API supporte la pagination.",
+            "Test unitaire: Vérifier que l'API renvoie les entraînements classés par date de partage.",
+            "Test unitaire: Vérifier que seuls les entraînements marqués comme 'partagés' sont retournés.",
+            "Test d'intégration: Vérifier que l'API est sécurisée et nécessite une authentification."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger)",
+            "[ ] Review du code effectuée"
+          ]
+        },
+        {
+          "id": "3-TASK-7",
+          "epic_id": "3",
+          "title": "chore: Ajouter un champ 'partage' (boolean) à la table 'entrainements'",
+          "type": "chore",
+          "description": "En tant que développeur, je dois ajouter un champ 'partage' (boolean) à la table 'entrainements' afin de pouvoir indiquer si un entraînement est partagé ou non.",
+          "acceptance_criteria": [
+            "Un nouveau champ 'partage' (boolean) est ajouté à la table 'entrainements'.",
+            "La valeur par défaut du champ est 'false'.",
+            "Le champ est correctement indexé pour optimiser les requêtes.",
+            "La migration est réversible (possibilité de revenir en arrière).",
+            "La migration est testée sur un environnement de développement."
+          ],
+          "tech_details": "Créer une migration SQL pour ajouter le champ 'partage' (boolean) à la table 'entrainements'.  Définir la valeur par défaut à 'false'.  Ajouter un index sur le champ 'partage'.  Tester la migration sur un environnement de développement.",
+          "validation": "Vérifier que la migration s'applique et se rollback sans erreur.",
+          "tests": [
+            "Test: Vérifier que le champ 'partage' est bien ajouté à la table 'entrainements'.",
+            "Test: Vérifier que la valeur par défaut du champ est 'false'.",
+            "Test: Vérifier que l'index sur le champ 'partage' est créé.",
+            "Test: Vérifier que la migration est réversible."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Migration DB testée (up/down)",
+            "[ ] Documentation code ajoutée",
+            "[ ] Review du code effectuée"
+          ]
+        },
+        {
+          "dependencies": [
+            "3-TASK-7"
+          ],
+          "id": "3-TASK-8",
+          "epic_id": "3",
+          "title": "feat: Ajouter un interrupteur 'Partager' sur la page d'édition d'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux un interrupteur 'Partager' sur la page d'édition de mon entraînement afin de pouvoir choisir de le partager ou non avec d'autres utilisateurs.",
+          "acceptance_criteria": [
+            "Un interrupteur 'Partager' est visible sur la page d'édition d'entraînement.",
+            "L'interrupteur permet d'activer ou de désactiver le partage de l'entraînement.",
+            "La valeur de l'interrupteur est persistée en base de données (champ 'partage' de la table 'entrainements').",
+            "L'interrupteur est initialisé avec la valeur actuelle du champ 'partage' de l'entraînement.",
+            "Un message de confirmation est affiché lorsque l'état du partage est modifié."
+          ],
+          "tech_details": "Ajouter un composant React 'ShareToggle' sur la page d'édition d'entraînement.  Utiliser un interrupteur pour activer ou désactiver le partage.  Mettre à jour le champ 'partage' de la table 'entrainements' lors du changement d'état de l'interrupteur.  Afficher un message de confirmation (ex: 'Entraînement partagé' ou 'Entraînement non partagé').",
+          "tests": [
+            "Test unitaire: Vérifier que l'interrupteur 'Partager' est rendu.",
+            "Test unitaire: Vérifier que l'interrupteur est initialisé avec la valeur correcte.",
+            "Test d'intégration: Vérifier que la valeur de l'interrupteur est persistée en base de données.",
+            "Test d'intégration: Vérifier que le message de confirmation est affiché."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation code ajoutée",
+            "[ ] Review du code effectuée"
+          ]
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "4",
+      "title": "Permettre aux utilisateurs de découvrir et de s'inspirer des programmes d'entraînement populaires",
+      "description": "Offrir une fonctionnalité de découverte pour trouver de nouveaux programmes intéressants.",
+      "goal": "Augmenter le nombre de programmes d'entraînement consultés de 50% grâce à la fonctionnalité de découverte.",
+      "issues": [
+        {
+          "dependencies": [
+            "4-TASK-2",
+            "1-TASK-4"
+          ],
+          "id": "4-TASK-1",
+          "epic_id": "4",
+          "title": "feat: Créer endpoint GET /api/workouts/popular pour récupérer les entraînements populaires",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir consulter une liste d'entraînements populaires afin de découvrir de nouvelles idées et de m'inspirer.",
+          "acceptance_criteria": [
+            "L'endpoint GET /api/workouts/popular renvoie une liste d'entraînements avec leurs informations (nom, description, auteur, nombre de likes).",
+            "La liste est triée par nombre de likes décroissant.",
+            "L'endpoint doit être paginé avec des paramètres de pagination (page, limit).",
+            "L'endpoint renvoie une erreur 500 en cas de problème de base de données."
+          ],
+          "tech_details": "Backend: Go, Database: Postgres",
+          "validation": "Valider que l'endpoint renvoie les données attendues et que la pagination fonctionne correctement.",
+          "error_handling": "Gestion des erreurs 500 en cas de problème de base de données.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que l'endpoint renvoie une liste d'entraînements.",
+            "Test unitaire: Vérifier que la liste est triée par nombre de likes décroissant.",
+            "Test d'intégration: Vérifier que la pagination fonctionne correctement.",
+            "Test d'intégration: Vérifier que l'endpoint renvoie une erreur 500 en cas de problème de base de données."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée",
+            "[ ] Migration DB testée (up/down)",
+            "[ ] Revue de code effectuée"
+          ],
+          "example_request": "GET /api/workouts/popular?page=1\u0026limit=10",
+          "example_response_success": "[{id: '1', name: 'Entraînement A', description: 'Description A', author: 'User A', likes: 100}, {id: '2', name: 'Entraînement B', description: 'Description B', author: 'User B', likes: 50}]",
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "GET /api/workouts/popular?page=2\u0026limit=20",
+          "example_request_invalid": null,
+          "api_call": "GET /api/workouts/popular?page=1\u0026limit=10",
+          "ui_design": null,
+          "implementation_details": "Utiliser une requête SQL pour récupérer les entraînements triés par nombre de likes."
+        },
+        {
+          "id": "4-TASK-2",
+          "epic_id": "4",
+          "title": "chore: Ajouter un champ 'likes' à la table 'workouts'",
+          "type": "chore",
+          "description": "Ajouter un champ 'likes' de type integer à la table 'workouts' pour stocker le nombre de likes de chaque entraînement.",
+          "acceptance_criteria": [
+            "La table 'workouts' contient un champ 'likes' de type integer.",
+            "La migration est réversible.",
+            "Le champ 'likes' est initialisé à 0 pour tous les entraînements existants."
+          ],
+          "tech_details": "Database: Postgres",
+          "validation": "Valider que le champ 'likes' a été ajouté à la table 'workouts' et qu'il est initialisé à 0 pour tous les entraînements existants.",
+          "error_handling": null,
+          "database_migrations": "ALTER TABLE workouts ADD COLUMN likes INTEGER DEFAULT 0;",
+          "tests": [
+            "Test unitaire: Vérifier que le champ 'likes' a été ajouté à la table 'workouts'.",
+            "Test unitaire: Vérifier que le champ 'likes' est initialisé à 0 pour tous les entraînements existants.",
+            "Test d'intégration: Vérifier que la migration est réversible."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée",
+            "[ ] Migration DB testée (up/down)",
+            "[ ] Revue de code effectuée"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser un outil de migration de base de données (ex: Flyway) pour appliquer la migration."
+        },
+        {
+          "dependencies": [
+            "4-TASK-1"
+          ],
+          "id": "4-TASK-3",
+          "epic_id": "4",
+          "title": "feat: Afficher la liste des entraînements populaires sur la page d'accueil",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux voir une liste d'entraînements populaires sur la page d'accueil afin d'être inspiré et de découvrir de nouveaux programmes.",
+          "acceptance_criteria": [
+            "Une section 'Entraînements populaires' est affichée sur la page d'accueil.",
+            "Cette section affiche une liste d'entraînements avec leurs informations (nom, description, auteur, nombre de likes).",
+            "La liste est triée par nombre de likes décroissant.",
+            "Un lien 'Voir plus' permet d'accéder à la page complète des entraînements populaires."
+          ],
+          "tech_details": "Frontend: React",
+          "validation": "Valider que la section 'Entraînements populaires' est affichée correctement sur la page d'accueil et que les données affichées sont correctes.",
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que le composant 'Entraînements populaires' affiche une liste d'entraînements.",
+            "Test unitaire: Vérifier que la liste est triée par nombre de likes décroissant.",
+            "Test d'intégration: Vérifier que les données affichées correspondent aux données de l'API.",
+            "Test fonctionnel: Vérifier que la section 'Entraînements populaires' est affichée sur la page d'accueil."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée",
+            "[ ] Revue de code effectuée",
+            "[ ] Tests fonctionnels effectués"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": "Maquette de la page d'accueil avec la section 'Entraînements populaires'.",
+          "implementation_details": "Récupérer les données depuis l'endpoint GET /api/workouts/popular et les afficher dans un composant React."
+        },
+        {
+          "dependencies": [
+            "4-TASK-2",
+            "1-TASK-4"
+          ],
+          "id": "4-TASK-4",
+          "epic_id": "4",
+          "title": "feat: Ajouter un bouton 'Like' sur chaque entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir liker un entraînement afin de montrer mon intérêt et de l'ajouter à mes favoris.",
+          "acceptance_criteria": [
+            "Un bouton 'Like' est affiché sur chaque entraînement.",
+            "Lorsque l'utilisateur clique sur le bouton 'Like', le nombre de likes de l'entraînement est incrémenté.",
+            "L'utilisateur doit être authentifié pour pouvoir liker un entraînement.",
+            "L'utilisateur ne peut liker un entraînement qu'une seule fois."
+          ],
+          "tech_details": "Backend: Go, Frontend: React, Database: Postgres",
+          "validation": "Valider que le bouton 'Like' fonctionne correctement et que le nombre de likes est mis à jour en temps réel.",
+          "error_handling": "Gestion des erreurs 401 si l'utilisateur n'est pas authentifié, 409 si l'utilisateur a déjà liké l'entraînement.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que l'endpoint POST /api/workouts/:id/like incrémente le nombre de likes de l'entraînement.",
+            "Test unitaire: Vérifier que l'utilisateur ne peut liker un entraînement qu'une seule fois.",
+            "Test d'intégration: Vérifier que le nombre de likes affiché sur la page d'accueil est correct.",
+            "Test fonctionnel: Vérifier que le bouton 'Like' fonctionne correctement et que le nombre de likes est mis à jour en temps réel."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée",
+            "[ ] Revue de code effectuée",
+            "[ ] Tests fonctionnels effectués"
+          ],
+          "example_request": "POST /api/workouts/1/like",
+          "example_response_success": "{\"message\": \"Workout liked successfully\"}",
+          "example_response_error_400": null,
+          "example_response_error_401": "{\"message\": \"Unauthorized\"}",
+          "example_response_error_409": "{\"message\": \"Workout already liked\"}",
+          "example_request_valid": "POST /api/workouts/2/like",
+          "example_request_invalid": null,
+          "api_call": "POST /api/workouts/:id/like",
+          "ui_design": "Maquette du bouton 'Like' et de son comportement.",
+          "implementation_details": "Créer un endpoint POST /api/workouts/:id/like qui incrémente le nombre de likes de l'entraînement et enregistre le like de l'utilisateur."
+        },
+        {
+          "dependencies": [
+            "4-TASK-2"
+          ],
+          "id": "4-TASK-5",
+          "epic_id": "4",
+          "title": "chore: Ajouter un index sur le champ 'likes' de la table 'workouts'",
+          "type": "chore",
+          "description": "Ajouter un index sur le champ 'likes' de la table 'workouts' pour améliorer les performances des requêtes de tri par nombre de likes.",
+          "acceptance_criteria": [
+            "Un index est créé sur le champ 'likes' de la table 'workouts'.",
+            "Les performances des requêtes de tri par nombre de likes sont améliorées."
+          ],
+          "tech_details": "Database: Postgres",
+          "validation": "Valider que l'index a été créé sur le champ 'likes' de la table 'workouts' et que les performances des requêtes de tri par nombre de likes sont améliorées.",
+          "error_handling": null,
+          "database_migrations": "CREATE INDEX idx_workouts_likes ON workouts (likes DESC);",
+          "tests": [
+            "Test unitaire: Vérifier que l'index a été créé sur le champ 'likes' de la table 'workouts'.",
+            "Test de performance: Mesurer les performances des requêtes de tri par nombre de likes avant et après l'ajout de l'index."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée",
+            "[ ] Migration DB testée (up/down)",
+            "[ ] Revue de code effectuée"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser un outil de migration de base de données (ex: Flyway) pour appliquer la migration."
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "5",
+      "title": "Permettre aux utilisateurs de commenter et d'évaluer les programmes d'entraînement",
+      "description": "Fournir un système de feedback pour améliorer la qualité des programmes et encourager l'engagement.",
+      "goal": "Obtenir une moyenne de 4 étoiles sur 5 pour les programmes d'entraînement les plus populaires.",
+      "issues": [
+        {
+          "id": "5-TASK-1",
+          "epic_id": "5",
+          "title": "feat: Créer la table 'comments' dans la base de données",
+          "type": "feat",
+          "description": "En tant que développeur, je dois créer une table 'comments' dans la base de données pour stocker les commentaires des utilisateurs sur les programmes d'entraînement.",
+          "acceptance_criteria": [
+            "La table 'comments' est créée avec les colonnes: id (INT, PK, AI), training_program_id (INT, FK), user_id (INT, FK), comment_text (TEXT), rating (INT), created_at (TIMESTAMP), updated_at (TIMESTAMP)",
+            "Les clés étrangères 'training_program_id' et 'user_id' référencent les tables 'training_programs' et 'users' respectivement.",
+            "La colonne 'rating' doit être un entier compris entre 1 et 5.",
+            "Un index est créé sur 'training_program_id' pour optimiser les requêtes."
+          ],
+          "tech_details": "Utiliser les migrations de {tech_stack} pour créer la table. S'assurer que les types de données correspondent aux exigences.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": "CREATE TABLE comments (id INT PRIMARY KEY AUTO_INCREMENT, training_program_id INT, user_id INT, comment_text TEXT, rating INT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, FOREIGN KEY (training_program_id) REFERENCES training_programs(id), FOREIGN KEY (user_id) REFERENCES users(id));  ALTER TABLE comments ADD INDEX (training_program_id);",
+          "tests": [
+            "Test unitaire: Vérifier que la migration s'applique et se rollback correctement.",
+            "Test d'intégration: Vérifier que la table 'comments' existe après la migration.",
+            "Test d'intégration: Vérifier que les clés étrangères sont correctement définies."
+          ],
+          "definition_of_done": [
+            "[ ] Script de migration SQL créé et testé (up et down)",
+            "[ ] La migration a été appliquée sur un environnement de test",
+            "[ ] Schéma de la base de données mis à jour",
+            "[ ] Documentation de la table 'comments' ajoutée",
+            "[ ] Code implémenté et mergé sur develop"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": null
+        },
+        {
+          "dependencies": [
+            "5-TASK-1",
+            "1-TASK-4"
+          ],
+          "id": "5-TASK-2",
+          "epic_id": "5",
+          "title": "feat: Créer endpoint POST /api/training-programs/{id}/comments pour ajouter un commentaire",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir ajouter un commentaire et une évaluation à un programme d'entraînement spécifique afin de partager mon expérience et donner mon avis.",
+          "acceptance_criteria": [
+            "L'endpoint POST /api/training-programs/{id}/comments accepte les paramètres {comment_text (string, required), rating (int, required)}",
+            "L'endpoint renvoie 201 avec les détails du commentaire créé: {id, training_program_id, user_id, comment_text, rating, created_at, updated_at}",
+            "L'endpoint renvoie 400 si les paramètres sont invalides (rating hors range 1-5, comment_text vide).",
+            "L'endpoint renvoie 404 si le programme d'entraînement n'existe pas.",
+            "L'utilisateur doit être authentifié pour pouvoir commenter."
+          ],
+          "tech_details": "L'ID de l'utilisateur authentifié est accessible via le middleware d'authentification.",
+          "validation": null,
+          "error_handling": "400: Paramètres invalides, 401: Non authentifié, 404: Programme d'entraînement non trouvé, 500: Erreur serveur",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier la validation des paramètres.",
+            "Test d'intégration: Vérifier la création du commentaire dans la base de données.",
+            "Test d'intégration: Vérifier la réponse 201 avec les détails du commentaire.",
+            "Test d'intégration: Vérifier la réponse 400 si les paramètres sont invalides.",
+            "Test d'intégration: Vérifier la réponse 404 si le programme d'entraînement n'existe pas.",
+            "Test d'intégration: Vérifier que seul un utilisateur authentifié peut commenter."
+          ],
+          "definition_of_done": [
+            "[ ] Endpoint créé et fonctionnel",
+            "[ ] Validation des données implémentée",
+            "[ ] Gestion des erreurs implémentée",
+            "[ ] Tests unitaires et d'intégration passent",
+            "[ ] Documentation API ajoutée"
+          ],
+          "example_request": "POST /api/training-programs/123/comments {comment_text: 'Super programme!', rating: 5}",
+          "example_response_success": "{id: 456, training_program_id: 123, user_id: 789, comment_text: 'Super programme!', rating: 5, created_at: '2024-01-01T12:00:00Z', updated_at: '2024-01-01T12:00:00Z'}",
+          "example_response_error_400": "{message: 'Rating doit être entre 1 et 5'}",
+          "example_response_error_401": "{message: 'Non authentifié'}",
+          "example_response_error_409": null,
+          "example_request_valid": "POST /api/training-programs/123/comments {comment_text: 'Excellent!', rating: 4}",
+          "example_request_invalid": "POST /api/training-programs/123/comments {comment_text: '', rating: 6}",
+          "api_call": "POST /api/training-programs/{id}/comments",
+          "ui_design": null,
+          "implementation_details": "Utiliser {tech_stack} pour implémenter l'endpoint. Valider l'existence du programme d'entraînement avant d'ajouter le commentaire. Récupérer l'ID de l'utilisateur authentifié."
+        },
+        {
+          "dependencies": [
+            "5-TASK-1"
+          ],
+          "id": "5-TASK-3",
+          "epic_id": "5",
+          "title": "feat: Créer endpoint GET /api/training-programs/{id}/comments pour lister les commentaires",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir voir les commentaires et évaluations d'un programme d'entraînement spécifique afin de me faire une idée de sa qualité.",
+          "acceptance_criteria": [
+            "L'endpoint GET /api/training-programs/{id}/comments renvoie une liste de commentaires: [{id, training_program_id, user_id, comment_text, rating, created_at, updated_at, user: {id, name, avatar}}]",
+            "La liste est triée par date de création (du plus récent au plus ancien).",
+            "L'endpoint renvoie 200 même si aucun commentaire n'existe pour le programme d'entraînement (liste vide).",
+            "L'endpoint renvoie 404 si le programme d'entraînement n'existe pas.",
+            "Les informations de l'utilisateur (name, avatar) doivent être incluses dans chaque commentaire."
+          ],
+          "tech_details": "Optimiser la requête SQL pour éviter les performances lentes.",
+          "validation": null,
+          "error_handling": "404: Programme d'entraînement non trouvé, 500: Erreur serveur",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier la récupération des commentaires depuis la base de données.",
+            "Test d'intégration: Vérifier la réponse 200 avec la liste des commentaires.",
+            "Test d'intégration: Vérifier la réponse 200 avec une liste vide si aucun commentaire n'existe.",
+            "Test d'intégration: Vérifier la réponse 404 si le programme d'entraînement n'existe pas.",
+            "Test d'intégration: Vérifier que les informations de l'utilisateur sont incluses dans chaque commentaire."
+          ],
+          "definition_of_done": [
+            "[ ] Endpoint créé et fonctionnel",
+            "[ ] Récupération des commentaires depuis la base de données",
+            "[ ] Tri des commentaires par date",
+            "[ ] Gestion des erreurs implémentée",
+            "[ ] Tests unitaires et d'intégration passent",
+            "[ ] Documentation API ajoutée"
+          ],
+          "example_request": "GET /api/training-programs/123/comments",
+          "example_response_success": "[{id: 456, training_program_id: 123, user_id: 789, comment_text: 'Super programme!', rating: 5, created_at: '2024-01-01T12:00:00Z', updated_at: '2024-01-01T12:00:00Z', user: {id: 789, name: 'John Doe', avatar: 'url_avatar'}}, {id: 457, training_program_id: 123, user_id: 890, comment_text: 'Très efficace!', rating: 4, created_at: '2023-12-31T18:00:00Z', updated_at: '2023-12-31T18:00:00Z', user: {id: 890, name: 'Jane Smith', avatar: 'url_avatar'}}]",
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "GET /api/training-programs/{id}/comments",
+          "ui_design": null,
+          "implementation_details": "Utiliser {tech_stack} pour implémenter l'endpoint. Joindre la table 'users' pour récupérer les informations de l'utilisateur. Gérer la pagination si nécessaire."
+        },
+        {
+          "dependencies": [
+            "5-TASK-3"
+          ],
+          "id": "5-TASK-4",
+          "epic_id": "5",
+          "title": "feat: Afficher les commentaires sur la page de détail du programme d'entraînement (Frontend)",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux voir les commentaires et évaluations d'un programme d'entraînement directement sur sa page de détail afin d'avoir un aperçu rapide des avis des autres utilisateurs.",
+          "acceptance_criteria": [
+            "Les commentaires sont affichés sous le programme d'entraînement sur sa page de détail.",
+            "Chaque commentaire affiche le nom de l'utilisateur, son avatar, le commentaire, l'évaluation (nombre d'étoiles) et la date de publication.",
+            "Les commentaires sont triés par date de publication (du plus récent au plus ancien).",
+            "Un message est affiché si aucun commentaire n'existe pour le programme d'entraînement.",
+            "Le design est responsive et s'adapte aux différents écrans."
+          ],
+          "tech_details": "Utiliser un framework CSS pour faciliter le design responsive.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier l'affichage des commentaires.",
+            "Test unitaire: Vérifier l'affichage du message si aucun commentaire n'existe.",
+            "Test d'intégration: Vérifier l'appel API pour récupérer les commentaires.",
+            "Test d'intégration: Vérifier l'affichage correct des informations de l'utilisateur.",
+            "Test d'intégration: Vérifier le design responsive."
+          ],
+          "definition_of_done": [
+            "[ ] Composant React créé et fonctionnel",
+            "[ ] Appel API pour récupérer les commentaires",
+            "[ ] Affichage des commentaires avec les informations de l'utilisateur",
+            "[ ] Gestion du cas où aucun commentaire n'existe",
+            "[ ] Tests unitaires et d'intégration passent",
+            "[ ] Design responsive",
+            "[ ] Code implémenté et mergé sur develop"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": "L'UI doit être cohérente avec le reste de l'application. Utiliser les composants existants pour assurer une expérience utilisateur homogène.",
+          "implementation_details": "Utiliser {tech_stack} pour implémenter le composant React. Appeler l'API GET /api/training-programs/{id}/comments pour récupérer les commentaires. Utiliser un composant de notation (étoiles) pour afficher l'évaluation."
+        },
+        {
+          "dependencies": [
+            "5-TASK-2"
+          ],
+          "id": "5-TASK-5",
+          "epic_id": "5",
+          "title": "feat: Ajouter un formulaire pour commenter un programme d'entraînement (Frontend)",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir ajouter facilement un commentaire et une évaluation à un programme d'entraînement directement sur sa page de détail.",
+          "acceptance_criteria": [
+            "Un formulaire est affiché sur la page de détail du programme d'entraînement pour ajouter un commentaire et une évaluation.",
+            "Le formulaire contient un champ texte pour le commentaire et un système de notation (étoiles) pour l'évaluation.",
+            "Le formulaire est validé côté client (commentaire non vide, évaluation entre 1 et 5).",
+            "Après la soumission du formulaire, le commentaire est ajouté à la liste des commentaires et affiché en temps réel.",
+            "Un message de succès est affiché après la soumission du formulaire.",
+            "Le design est responsive et s'adapte aux différents écrans."
+          ],
+          "tech_details": "Gérer l'état du formulaire avec des hooks React.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier la validation côté client.",
+            "Test d'intégration: Vérifier la soumission du formulaire.",
+            "Test d'intégration: Vérifier l'affichage du commentaire en temps réel.",
+            "Test d'intégration: Vérifier l'affichage du message de succès.",
+            "Test d'intégration: Vérifier le design responsive."
+          ],
+          "definition_of_done": [
+            "[ ] Composant React créé et fonctionnel",
+            "[ ] Formulaire avec champ texte et système de notation",
+            "[ ] Validation côté client implémentée",
+            "[ ] Appel API pour soumettre le commentaire",
+            "[ ] Affichage du commentaire en temps réel",
+            "[ ] Message de succès affiché",
+            "[ ] Tests unitaires et d'intégration passent",
+            "[ ] Design responsive",
+            "[ ] Code implémenté et mergé sur develop"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": "L'UI doit être cohérente avec le reste de l'application. Utiliser les composants existants pour assurer une expérience utilisateur homogène.",
+          "implementation_details": "Utiliser {tech_stack} pour implémenter le composant React. Utiliser un composant de notation (étoiles) existant ou en créer un. Appeler l'API POST /api/training-programs/{id}/comments pour soumettre le commentaire."
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "6",
+      "title": "Permettre aux utilisateurs de rechercher des programmes d'entraînement par critères spécifiques",
+      "description": "Offrir une fonctionnalité de recherche avancée pour trouver rapidement des programmes pertinents.",
+      "goal": "Réduire le temps moyen de recherche d'un programme d'entraînement de 30%.",
+      "issues": [
+        {
+          "dependencies": [
+            "6-TASK-2"
+          ],
+          "id": "6-TASK-1",
+          "epic_id": "6",
+          "title": "feat: Ajouter un endpoint GET /api/workouts/search pour la recherche d'entraînements",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir rechercher des entraînements par critères (nom, type, difficulté) via un endpoint API dédié afin de trouver rapidement des programmes pertinents.",
+          "acceptance_criteria": [
+            "L'endpoint GET /api/workouts/search doit exister et être accessible.",
+            "L'endpoint doit accepter les paramètres de requête: name (string), type (string), difficulty (string).",
+            "Si aucun paramètre n'est fourni, l'endpoint doit retourner tous les entraînements.",
+            "L'endpoint doit retourner une liste d'objets JSON représentant les entraînements correspondants aux critères.",
+            "Chaque objet entraînement doit contenir les champs: id, name, type, difficulty, description, created_at, updated_at, user_id.",
+            "L'endpoint doit renvoyer un code HTTP 200 en cas de succès.",
+            "L'endpoint doit renvoyer un tableau vide si aucun entraînement ne correspond aux critères.",
+            "Les paramètres de recherche doivent être optionnels."
+          ],
+          "tech_details": "Backend: Go, Database: PostgreSQL, ORM: Gorm",
+          "validation": "Valider que la recherche retourne les bons résultats en fonction des critères spécifiés. Valider que l'endpoint gère correctement les erreurs.",
+          "error_handling": "400 Bad Request si les paramètres de requête sont invalides. 500 Internal Server Error en cas d'erreur serveur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que la fonction de recherche retourne les bons résultats avec différents paramètres.",
+            "Test d'intégration: Vérifier que l'endpoint GET /api/workouts/search fonctionne correctement avec la base de données.",
+            "Test de validation: Vérifier que l'endpoint retourne une erreur 400 si les paramètres de requête sont invalides."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger/OpenAPI)",
+            "[ ] Revue de code effectuée",
+            "[ ] L'endpoint est fonctionnel et répond aux critères d'acceptation"
+          ],
+          "example_request": "GET /api/workouts/search?name=Force\u0026type=Musculation\u0026difficulty=Avancé",
+          "example_response_success": "[{\"id\": 1, \"name\": \"Force et Puissance\", \"type\": \"Musculation\", \"difficulty\": \"Avancé\", \"description\": \"Programme pour augmenter la force\", \"created_at\": \"2024-01-01T10:00:00Z\", \"updated_at\": \"2024-01-01T10:00:00Z\", \"user_id\": 1}]",
+          "example_response_error_400": "{\"error\": \"Paramètre de requête invalide\"}",
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "GET /api/workouts/search?name=Cardio",
+          "example_request_invalid": null,
+          "api_call": "GET /api/workouts/search?name=NomEntrainement\u0026type=TypeEntrainement\u0026difficulty=DifficulteEntrainement",
+          "ui_design": null,
+          "implementation_details": "Utiliser une requête SQL avec des clauses WHERE dynamiques pour filtrer les entraînements en fonction des paramètres de recherche. Utiliser un ORM pour interagir avec la base de données. Valider les paramètres de requête côté serveur."
+        },
+        {
+          "id": "6-TASK-2",
+          "epic_id": "6",
+          "title": "chore: Ajouter des index sur les colonnes 'name', 'type', 'difficulty' de la table 'workouts'",
+          "type": "chore",
+          "description": "Pour optimiser les performances de la recherche d'entraînements, ajouter des index sur les colonnes 'name', 'type' et 'difficulty' de la table 'workouts'.",
+          "acceptance_criteria": [
+            "Les index sur les colonnes 'name', 'type' et 'difficulty' de la table 'workouts' doivent être créés.",
+            "La requête de recherche d'entraînements doit être plus rapide après l'ajout des index.",
+            "La création des index ne doit pas impacter négativement les performances des autres opérations sur la table 'workouts'."
+          ],
+          "tech_details": "Database: PostgreSQL",
+          "validation": "Valider que les index sont bien créés et que les performances de la recherche sont améliorées.",
+          "error_handling": "Gérer les erreurs de migration de base de données (ex: index déjà existant).",
+          "database_migrations": "CREATE INDEX idx_workouts_name ON workouts (name); CREATE INDEX idx_workouts_type ON workouts (type); CREATE INDEX idx_workouts_difficulty ON workouts (difficulty);",
+          "tests": [
+            "Test unitaire: Vérifier que les index sont bien créés dans la base de données.",
+            "Test d'intégration: Mesurer le temps d'exécution de la requête de recherche avant et après l'ajout des index."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Migration DB appliquée avec succès",
+            "[ ] Script de migration testé (up/down)",
+            "[ ] Revue de code effectuée",
+            "[ ] Performances de la recherche améliorées"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser les commandes SQL CREATE INDEX pour ajouter les index. Tester les performances de la recherche avant et après l'ajout des index."
+        },
+        {
+          "dependencies": [
+            "6-TASK-1"
+          ],
+          "id": "6-TASK-3",
+          "epic_id": "6",
+          "title": "feat: Ajouter une pagination à l'endpoint GET /api/workouts/search",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux que les résultats de la recherche d'entraînements soient paginés afin d'améliorer les performances et l'expérience utilisateur.",
+          "acceptance_criteria": [
+            "L'endpoint GET /api/workouts/search doit accepter les paramètres de requête: page (int) et limit (int).",
+            "Le paramètre 'page' doit indiquer le numéro de la page à retourner (par défaut 1).",
+            "Le paramètre 'limit' doit indiquer le nombre d'entraînements par page (par défaut 10).",
+            "L'endpoint doit retourner une liste d'entraînements paginée en fonction des paramètres 'page' et 'limit'.",
+            "L'endpoint doit retourner un header 'X-Total-Count' contenant le nombre total d'entraînements correspondant aux critères de recherche.",
+            "L'endpoint doit renvoyer un code HTTP 200 en cas de succès.",
+            "Si 'page' ou 'limit' sont invalides, l'endpoint doit retourner une erreur 400.",
+            "Si aucun entraînement ne correspond aux critères, l'endpoint doit retourner un tableau vide avec le header 'X-Total-Count' à 0."
+          ],
+          "tech_details": "Backend: Go, Database: PostgreSQL, ORM: Gorm",
+          "validation": "Valider que la pagination fonctionne correctement et que le header 'X-Total-Count' est correctement renseigné.",
+          "error_handling": "400 Bad Request si 'page' ou 'limit' sont invalides (ex: négatifs, non numériques). 500 Internal Server Error en cas d'erreur serveur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que la fonction de recherche retourne les bons résultats avec différents paramètres de pagination.",
+            "Test d'intégration: Vérifier que l'endpoint GET /api/workouts/search fonctionne correctement avec la base de données et la pagination.",
+            "Test de validation: Vérifier que l'endpoint retourne une erreur 400 si les paramètres de pagination sont invalides.",
+            "Test de validation: Vérifier que le header 'X-Total-Count' est correctement renseigné."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger/OpenAPI)",
+            "[ ] Revue de code effectuée",
+            "[ ] La pagination fonctionne correctement"
+          ],
+          "example_request": "GET /api/workouts/search?name=Force\u0026page=2\u0026limit=10",
+          "example_response_success": "[{\"id\": 11, \"name\": \"Force et Puissance (page 2)\", \"type\": \"Musculation\", \"difficulty\": \"Avancé\", \"description\": \"Programme pour augmenter la force\", \"created_at\": \"2024-01-01T10:00:00Z\", \"updated_at\": \"2024-01-01T10:00:00Z\", \"user_id\": 1}, {\"id\": 12, \"name\": \"Force et Endurance (page 2)\", \"type\": \"Musculation\", \"difficulty\": \"Avancé\", \"description\": \"Programme pour augmenter la force et l'endurance\", \"created_at\": \"2024-01-01T10:00:00Z\", \"updated_at\": \"2024-01-01T10:00:00Z\", \"user_id\": 1}]",
+          "example_response_error_400": "{\"error\": \"Paramètre 'page' ou 'limit' invalide\"}",
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "GET /api/workouts/search?page=1\u0026limit=20",
+          "example_request_invalid": "GET /api/workouts/search?page=-1",
+          "api_call": "GET /api/workouts/search?name=NomEntrainement\u0026page=2\u0026limit=20",
+          "ui_design": null,
+          "implementation_details": "Modifier la requête SQL pour ajouter les clauses LIMIT et OFFSET en fonction des paramètres 'page' et 'limit'. Calculer le nombre total d'entraînements correspondant aux critères de recherche pour le header 'X-Total-Count'."
+        },
+        {
+          "dependencies": [
+            "6-TASK-1"
+          ],
+          "id": "6-TASK-4",
+          "epic_id": "6",
+          "title": "feat: Ajouter des filtres avancés à l'endpoint GET /api/workouts/search",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir filtrer les entraînements par d'autres critères (durée, équipement) afin de trouver des programmes encore plus pertinents.",
+          "acceptance_criteria": [
+            "L'endpoint GET /api/workouts/search doit accepter les paramètres de requête: duration (string) et equipment (string).",
+            "Le paramètre 'duration' doit permettre de filtrer les entraînements par durée (ex: '30min', '1h').",
+            "Le paramètre 'equipment' doit permettre de filtrer les entraînements par équipement requis (ex: 'haltères', 'barre').",
+            "Les paramètres 'duration' et 'equipment' doivent être optionnels.",
+            "L'endpoint doit retourner une liste d'entraînements paginée et filtrée en fonction des paramètres de recherche.",
+            "L'endpoint doit renvoyer un code HTTP 200 en cas de succès.",
+            "Si 'duration' ou 'equipment' sont invalides, l'endpoint doit retourner une erreur 400.",
+            "Si aucun entraînement ne correspond aux critères, l'endpoint doit retourner un tableau vide."
+          ],
+          "tech_details": "Backend: Go, Database: PostgreSQL, ORM: Gorm",
+          "validation": "Valider que les filtres avancés fonctionnent correctement.",
+          "error_handling": "400 Bad Request si 'duration' ou 'equipment' sont invalides. 500 Internal Server Error en cas d'erreur serveur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que la fonction de recherche retourne les bons résultats avec différents paramètres de filtres avancés.",
+            "Test d'intégration: Vérifier que l'endpoint GET /api/workouts/search fonctionne correctement avec la base de données et les filtres avancés.",
+            "Test de validation: Vérifier que l'endpoint retourne une erreur 400 si les paramètres de filtres avancés sont invalides."
+          ],
+          "definition_of_done": [
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Tests unitaires/intégration passent (coverage \u003e 80%)",
+            "[ ] Documentation API ajoutée (Swagger/OpenAPI)",
+            "[ ] Revue de code effectuée",
+            "[ ] Les filtres avancés fonctionnent correctement"
+          ],
+          "example_request": "GET /api/workouts/search?duration=45min\u0026equipment=tapis",
+          "example_response_success": "[{\"id\": 1, \"name\": \"Force et Puissance\", \"type\": \"Musculation\", \"difficulty\": \"Avancé\", \"description\": \"Programme pour augmenter la force\", \"created_at\": \"2024-01-01T10:00:00Z\", \"updated_at\": \"2024-01-01T10:00:00Z\", \"user_id\": 1}]",
+          "example_response_error_400": "{\"error\": \"Paramètre 'duration' ou 'equipment' invalide\"}",
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "GET /api/workouts/search?equipment=barre",
+          "example_request_invalid": "GET /api/workouts/search?duration=invalide",
+          "api_call": "GET /api/workouts/search?name=Force\u0026duration=30min\u0026equipment=haltères",
+          "ui_design": null,
+          "implementation_details": "Modifier la requête SQL pour ajouter les clauses WHERE en fonction des paramètres 'duration' et 'equipment'. Valider les paramètres 'duration' et 'equipment' côté serveur."
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "7",
+      "title": "Mettre en place un système de notifications pour informer les utilisateurs des nouvelles activités",
+      "description": "Informer les utilisateurs des nouveaux partages, commentaires et mises à jour importantes.",
+      "goal": "Augmenter le taux de retour des utilisateurs de 15% grâce aux notifications.",
+      "issues": [
+        {
+          "id": "7-TASK-1",
+          "epic_id": "7",
+          "title": "chore: Ajouter la librairie de gestion des notifications",
+          "type": "chore",
+          "description": "Ajouter une librairie de gestion des notifications (ex: Firebase Cloud Messaging, OneSignal) au projet.",
+          "acceptance_criteria": [
+            "La librairie est correctement installée et configurée dans le projet.",
+            "Les dépendances nécessaires sont ajoutées au fichier de configuration (ex: package.json, go.mod).",
+            "Un fichier de configuration de base pour la librairie est créé."
+          ],
+          "tech_details": "Choisir une librairie de notifications push compatible avec {tech_stack}. Configurer les clés d'API et les identifiants nécessaires.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que la librairie est correctement initialisée.",
+            "Test d'intégration: Envoyer une notification de test à un appareil simulé."
+          ],
+          "definition_of_done": [
+            "[ ] Librairie installée et configurée",
+            "[ ] Fichier de configuration créé",
+            "[ ] Dépendances mises à jour",
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Documentation ajoutée"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": null
+        },
+        {
+          "dependencies": [
+            "7-TASK-1"
+          ],
+          "id": "7-TASK-2",
+          "epic_id": "7",
+          "title": "feat: Créer la table 'notifications' dans la base de données",
+          "type": "feat",
+          "description": "En tant que développeur, je veux créer la table 'notifications' dans la base de données afin de stocker les notifications envoyées aux utilisateurs.",
+          "acceptance_criteria": [
+            "La table 'notifications' est créée avec les colonnes 'id', 'user_id', 'type', 'content', 'created_at', 'read_at'.",
+            "La colonne 'id' est une clé primaire auto-incrémentée.",
+            "La colonne 'user_id' est une clé étrangère référençant la table 'users'.",
+            "Les colonnes 'created_at' et 'read_at' sont de type timestamp."
+          ],
+          "tech_details": "Utiliser l'ORM ou le framework de migration de base de données de {tech_stack} pour créer la table.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": "CREATE TABLE notifications (id INT PRIMARY KEY AUTO_INCREMENT, user_id INT, type VARCHAR(255), content TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, read_at TIMESTAMP NULL, FOREIGN KEY (user_id) REFERENCES users(id));",
+          "tests": [
+            "Test unitaire: Vérifier que la table est créée avec les colonnes spécifiées.",
+            "Test d'intégration: Insérer et récupérer des données dans la table 'notifications'."
+          ],
+          "definition_of_done": [
+            "[ ] Migration DB créée et appliquée",
+            "[ ] Tests de migration (up/down) passent",
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Documentation ajoutée"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": null
+        },
+        {
+          "dependencies": [
+            "7-TASK-1"
+          ],
+          "id": "7-TASK-3",
+          "epic_id": "7",
+          "title": "feat: Créer un service de notification",
+          "type": "feat",
+          "description": "En tant que développeur, je veux créer un service de notification afin d'envoyer des notifications aux utilisateurs.",
+          "acceptance_criteria": [
+            "Le service de notification expose une méthode 'sendNotification' qui prend en paramètre l'ID de l'utilisateur, le type de notification et le contenu.",
+            "La méthode 'sendNotification' enregistre la notification dans la table 'notifications'.",
+            "La méthode 'sendNotification' envoie une notification push à l'utilisateur via la librairie de notifications.",
+            "Le service de notification gère les erreurs d'envoi de notification."
+          ],
+          "tech_details": "Le service de notification doit être injectable et testable.",
+          "validation": null,
+          "error_handling": "Gérer les erreurs d'envoi de notification (ex: appareil non enregistré, clé API invalide) et les enregistrer dans les logs.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que la méthode 'sendNotification' enregistre la notification dans la table 'notifications'.",
+            "Test unitaire: Vérifier que la méthode 'sendNotification' envoie une notification push à l'utilisateur.",
+            "Test d'intégration: Envoyer une notification de test à un utilisateur et vérifier qu'elle est bien reçue."
+          ],
+          "definition_of_done": [
+            "[ ] Service de notification créé",
+            "[ ] Méthode 'sendNotification' implémentée",
+            "[ ] Gestion des erreurs implémentée",
+            "[ ] Tests unitaires passent",
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Documentation ajoutée"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser la librairie de notifications installée à l'étape 1 pour envoyer les notifications push. Gérer les différents types de notifications (ex: nouveau partage, commentaire, mise à jour)."
+        },
+        {
+          "dependencies": [
+            "3-TASK-8",
+            "7-TASK-3"
+          ],
+          "id": "7-TASK-4",
+          "epic_id": "7",
+          "title": "feat: Envoyer une notification lors d'un nouveau partage d'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux recevoir une notification lorsqu'un autre utilisateur partage un entraînement avec moi afin d'être informé des nouvelles activités.",
+          "acceptance_criteria": [
+            "Lorsqu'un utilisateur partage un entraînement avec un autre utilisateur, une notification est envoyée à l'utilisateur destinataire.",
+            "La notification contient le nom de l'utilisateur qui a partagé l'entraînement et le nom de l'entraînement partagé.",
+            "La notification contient un lien vers l'entraînement partagé.",
+            "La notification est enregistrée dans la table 'notifications'."
+          ],
+          "tech_details": "Utiliser le service de notification créé à l'étape 3.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier qu'une notification est envoyée lorsqu'un entraînement est partagé.",
+            "Test d'intégration: Partager un entraînement avec un autre utilisateur et vérifier qu'il reçoit une notification."
+          ],
+          "definition_of_done": [
+            "[ ] Notification envoyée lors d'un nouveau partage",
+            "[ ] Contenu de la notification correct",
+            "[ ] Notification enregistrée dans la base de données",
+            "[ ] Tests unitaires passent",
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Documentation ajoutée"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Modifier le code de partage d'entraînement pour appeler le service de notification et envoyer une notification à l'utilisateur destinataire."
+        },
+        {
+          "dependencies": [
+            "5-TASK-2",
+            "7-TASK-3"
+          ],
+          "id": "7-TASK-5",
+          "epic_id": "7",
+          "title": "feat: Envoyer une notification lors d'un nouveau commentaire sur un entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux recevoir une notification lorsqu'un autre utilisateur commente un de mes entraînements afin d'être informé des nouvelles activités.",
+          "acceptance_criteria": [
+            "Lorsqu'un utilisateur commente un entraînement, une notification est envoyée à l'auteur de l'entraînement.",
+            "La notification contient le nom de l'utilisateur qui a commenté l'entraînement et le contenu du commentaire.",
+            "La notification contient un lien vers l'entraînement commenté.",
+            "La notification est enregistrée dans la table 'notifications'."
+          ],
+          "tech_details": "Utiliser le service de notification créé à l'étape 3.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier qu'une notification est envoyée lorsqu'un entraînement est commenté.",
+            "Test d'intégration: Commenter un entraînement et vérifier que l'auteur reçoit une notification."
+          ],
+          "definition_of_done": [
+            "[ ] Notification envoyée lors d'un nouveau commentaire",
+            "[ ] Contenu de la notification correct",
+            "[ ] Notification enregistrée dans la base de données",
+            "[ ] Tests unitaires passent",
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Documentation ajoutée"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Modifier le code de création de commentaire pour appeler le service de notification et envoyer une notification à l'auteur de l'entraînement."
+        },
+        {
+          "dependencies": [
+            "7-TASK-2"
+          ],
+          "id": "7-TASK-6",
+          "epic_id": "7",
+          "title": "feat: Ajouter un endpoint pour marquer les notifications comme lues",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir marquer les notifications comme lues afin de ne plus les voir comme nouvelles.",
+          "acceptance_criteria": [
+            "Un endpoint PUT /api/notifications/:id/read est créé pour marquer une notification comme lue.",
+            "L'endpoint nécessite une authentification.",
+            "L'endpoint met à jour la colonne 'read_at' de la table 'notifications' avec la date et l'heure actuelles.",
+            "L'endpoint renvoie un code 200 OK en cas de succès."
+          ],
+          "tech_details": "Utiliser le framework web de {tech_stack} pour créer l'endpoint.",
+          "validation": null,
+          "error_handling": "Gérer les erreurs si la notification n'existe pas (404) ou si l'utilisateur n'a pas les droits pour la marquer comme lue (403).",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que l'endpoint met à jour la colonne 'read_at' de la table 'notifications'.",
+            "Test d'intégration: Appeler l'endpoint avec un utilisateur authentifié et vérifier que la notification est marquée comme lue."
+          ],
+          "definition_of_done": [
+            "[ ] Endpoint créé",
+            "[ ] Authentification requise",
+            "[ ] Colonne 'read_at' mise à jour",
+            "[ ] Tests unitaires passent",
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Documentation API ajoutée"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "PUT /api/notifications/:id/read",
+          "ui_design": null,
+          "implementation_details": "Créer un endpoint PUT qui reçoit l'ID de la notification en paramètre et met à jour la colonne 'read_at' de la table 'notifications'."
+        },
+        {
+          "dependencies": [
+            "7-TASK-6"
+          ],
+          "id": "7-TASK-7",
+          "epic_id": "7",
+          "title": "feat: Afficher les notifications dans l'interface utilisateur",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux voir mes notifications dans l'interface utilisateur afin d'être informé des nouvelles activités.",
+          "acceptance_criteria": [
+            "Une section 'Notifications' est ajoutée à l'interface utilisateur.",
+            "La section 'Notifications' affiche la liste des notifications de l'utilisateur.",
+            "Chaque notification affiche le type, le contenu et la date de création.",
+            "Les notifications non lues sont affichées différemment (ex: en gras).",
+            "Un lien permet de marquer une notification comme lue."
+          ],
+          "tech_details": "Utiliser le framework frontend de {tech_stack} pour créer le composant React.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que le composant affiche la liste des notifications.",
+            "Test d'intégration: Afficher la section 'Notifications' et vérifier que les notifications de l'utilisateur sont affichées."
+          ],
+          "definition_of_done": [
+            "[ ] Section 'Notifications' ajoutée",
+            "[ ] Liste des notifications affichée",
+            "[ ] Style des notifications non lues correct",
+            "[ ] Lien pour marquer comme lue fonctionnel",
+            "[ ] Tests unitaires passent",
+            "[ ] Code implémenté et mergé sur develop",
+            "[ ] Documentation ajoutée"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Créer un composant React pour afficher la liste des notifications. Appeler l'API pour récupérer les notifications de l'utilisateur. Utiliser un style différent pour les notifications non lues. Ajouter un lien vers l'endpoint PUT /api/notifications/:id/read pour marquer une notification comme lue."
+        }
+      ],
+      "priority": "low"
+    },
+    {
+      "id": "8",
+      "title": "Intégrer des statistiques et des graphiques pour suivre la progression des utilisateurs",
+      "description": "Visualiser les données d'entraînement pour motiver les utilisateurs et les aider à atteindre leurs objectifs.",
+      "goal": "Augmenter l'engagement des utilisateurs de 20% grâce aux statistiques de progression.",
+      "issues": [
+        {
+          "id": "8-TASK-1",
+          "epic_id": "8",
+          "title": "chore: Ajout librairie de graphiques Recharts",
+          "type": "chore",
+          "description": "Ajouter la librairie Recharts (ou une alternative) au projet React pour la création de graphiques.",
+          "acceptance_criteria": [
+            "La librairie Recharts est installée comme dépendance du projet.",
+            "Un composant de test utilisant Recharts est créé et affiche un graphique simple.",
+            "Le composant de test est intégré dans une page existante et fonctionne correctement."
+          ],
+          "tech_details": "Installer Recharts avec `npm install recharts` ou `yarn add recharts`. Créer un composant `SampleChart.tsx` pour tester l'intégration.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que Recharts est bien installé dans les dépendances du projet.",
+            "Test d'intégration: Vérifier que le composant SampleChart s'affiche correctement avec des données statiques."
+          ],
+          "definition_of_done": [
+            "[ ] Librairie ajoutée au package.json",
+            "[ ] Composant de test créé et fonctionnel",
+            "[ ] Code mergé sur develop",
+            "[ ] Documentation de la librairie consultée et comprise"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": null
+        },
+        {
+          "dependencies": [
+            "1-TASK-4"
+          ],
+          "id": "8-TASK-2",
+          "epic_id": "8",
+          "title": "feat: Créer endpoint GET /api/users/:id/workouts/stats",
+          "type": "feat",
+          "description": "En tant que développeur backend, je veux créer un endpoint qui retourne les statistiques d'entraînement d'un utilisateur afin de pouvoir les afficher sous forme de graphiques.",
+          "acceptance_criteria": [
+            "L'endpoint GET /api/users/:id/workouts/stats existe.",
+            "L'endpoint retourne un code 200 OK avec un JSON contenant les statistiques (nombre d'entraînements par semaine, volume total soulevé par mois, etc.).",
+            "Si l'utilisateur n'existe pas, l'endpoint retourne un code 404 Not Found.",
+            "Si l'utilisateur n'a pas d'entraînements, l'endpoint retourne un code 200 OK avec un JSON contenant des statistiques vides."
+          ],
+          "tech_details": "Utiliser les fonctions `time.Now()` et `time.Parse()` pour manipuler les dates. Utiliser SQL pour interroger la base de données.",
+          "validation": null,
+          "error_handling": "Si l'utilisateur n'existe pas : 404 Not Found avec message 'Utilisateur non trouvé'. Si erreur serveur : 500 Internal Server Error avec message d'erreur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que l'endpoint retourne un code 200 OK avec des statistiques valides pour un utilisateur existant.",
+            "Test unitaire: Vérifier que l'endpoint retourne un code 404 Not Found pour un utilisateur inexistant.",
+            "Test d'intégration: Vérifier que l'endpoint fonctionne correctement avec une base de données réelle."
+          ],
+          "definition_of_done": [
+            "[ ] Endpoint créé et fonctionnel",
+            "[ ] Tests unitaires implémentés et passant",
+            "[ ] Documentation API mise à jour",
+            "[ ] Code mergé sur develop"
+          ],
+          "example_request": "GET /api/users/123/workouts/stats",
+          "example_response_success": "{ \"weekly_workouts\": [{\"week\": \"2024-W10\", \"count\": 3}, {\"week\": \"2024-W11\", \"count\": 4}], \"monthly_volume\": [{\"month\": \"2024-02\", \"volume\": 1500}, {\"month\": \"2024-03\", \"volume\": 2000}] }",
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "GET /api/users/:id/workouts/stats",
+          "ui_design": null,
+          "implementation_details": "Utiliser le framework Go pour créer l'endpoint. Accéder à la base de données pour récupérer les données d'entraînement de l'utilisateur. Calculer les statistiques nécessaires (nombre d'entraînements par semaine, volume total soulevé par mois, etc.)."
+        },
+        {
+          "dependencies": [
+            "8-TASK-1",
+            "8-TASK-2"
+          ],
+          "id": "8-TASK-3",
+          "epic_id": "8",
+          "title": "feat: Afficher graphique du nombre d'entraînements par semaine",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux voir un graphique du nombre d'entraînements que j'ai effectués chaque semaine afin de suivre ma régularité.",
+          "acceptance_criteria": [
+            "Un graphique affichant le nombre d'entraînements par semaine est affiché sur la page de profil de l'utilisateur.",
+            "Le graphique utilise les données retournées par l'endpoint GET /api/users/:id/workouts/stats.",
+            "Le graphique est clair et facile à comprendre.",
+            "Le graphique est responsif et s'adapte à la taille de l'écran."
+          ],
+          "tech_details": "Utiliser le composant `BarChart` de Recharts pour afficher le graphique. Utiliser la fonction `useEffect` de React pour faire l'appel à l'API lors du montage du composant.",
+          "validation": null,
+          "error_handling": "Si l'appel à l'API échoue, afficher un message d'erreur à l'utilisateur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que le composant de graphique s'affiche correctement avec des données statiques.",
+            "Test d'intégration: Vérifier que le graphique affiche les données correctes provenant de l'API.",
+            "Test fonctionnel: Vérifier que le graphique est responsif et s'adapte à la taille de l'écran."
+          ],
+          "definition_of_done": [
+            "[ ] Graphique affiché sur la page de profil",
+            "[ ] Données du graphique provenant de l'API",
+            "[ ] Graphique clair et responsif",
+            "[ ] Code mergé sur develop"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser le framework React et la librairie Recharts pour créer le graphique. Faire un appel à l'endpoint GET /api/users/:id/workouts/stats pour récupérer les données."
+        },
+        {
+          "dependencies": [
+            "8-TASK-1",
+            "8-TASK-2"
+          ],
+          "id": "8-TASK-4",
+          "epic_id": "8",
+          "title": "feat: Afficher graphique du volume total soulevé par mois",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux voir un graphique du volume total que j'ai soulevé chaque mois afin de suivre ma progression en force.",
+          "acceptance_criteria": [
+            "Un graphique affichant le volume total soulevé par mois est affiché sur la page de profil de l'utilisateur.",
+            "Le graphique utilise les données retournées par l'endpoint GET /api/users/:id/workouts/stats.",
+            "Le graphique est clair et facile à comprendre.",
+            "Le graphique est responsif et s'adapte à la taille de l'écran."
+          ],
+          "tech_details": "Utiliser le composant `LineChart` de Recharts pour afficher le graphique. Utiliser la fonction `useEffect` de React pour faire l'appel à l'API lors du montage du composant.",
+          "validation": null,
+          "error_handling": "Si l'appel à l'API échoue, afficher un message d'erreur à l'utilisateur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que le composant de graphique s'affiche correctement avec des données statiques.",
+            "Test d'intégration: Vérifier que le graphique affiche les données correctes provenant de l'API.",
+            "Test fonctionnel: Vérifier que le graphique est responsif et s'adapte à la taille de l'écran."
+          ],
+          "definition_of_done": [
+            "[ ] Graphique affiché sur la page de profil",
+            "[ ] Données du graphique provenant de l'API",
+            "[ ] Graphique clair et responsif",
+            "[ ] Code mergé sur develop"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser le framework React et la librairie Recharts pour créer le graphique. Faire un appel à l'endpoint GET /api/users/:id/workouts/stats pour récupérer les données."
+        },
+        {
+          "dependencies": [
+            "8-TASK-2"
+          ],
+          "id": "8-TASK-5",
+          "epic_id": "8",
+          "title": "docs: Documenter l'endpoint GET /api/users/:id/workouts/stats",
+          "type": "docs",
+          "description": "Documenter l'endpoint GET /api/users/:id/workouts/stats avec Swagger ou un outil similaire.",
+          "acceptance_criteria": [
+            "L'endpoint est documenté avec son URL, ses paramètres, ses réponses possibles et des exemples.",
+            "La documentation est accessible via Swagger ou un outil similaire.",
+            "La documentation est claire et facile à comprendre."
+          ],
+          "tech_details": "Utiliser les annotations Swagger pour documenter l'endpoint directement dans le code Go.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire: Vérifier que la documentation est générée correctement par Swagger.",
+            "Test fonctionnel: Vérifier que la documentation est accessible via l'interface Swagger et qu'elle est complète et correcte."
+          ],
+          "definition_of_done": [
+            "[ ] Documentation de l'endpoint créée",
+            "[ ] Documentation accessible via Swagger",
+            "[ ] Documentation claire et complète",
+            "[ ] Code mergé sur develop"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser Swagger pour documenter l'endpoint. Définir les paramètres, les réponses possibles et des exemples pour chaque réponse."
+        }
+      ],
+      "priority": "low"
+    },
+    {
+      "id": "9",
+      "title": "Permettre aux utilisateurs de personnaliser leur profil avec des informations pertinentes",
+      "description": "Offrir une page de profil complète pour présenter les informations et les objectifs de chaque utilisateur.",
+      "goal": "Atteindre un taux de complétion des profils utilisateurs de 80%.",
+      "issues": [
+        {
+          "id": "9-TASK-1",
+          "epic_id": "9",
+          "title": "chore: Créer table `user_profiles`",
+          "type": "chore",
+          "description": "Créer la table `user_profiles` pour stocker les informations additionnelles des utilisateurs (bio, objectifs, etc.).",
+          "acceptance_criteria": [
+            "La table `user_profiles` est créée avec les colonnes `id` (UUID, PK), `user_id` (UUID, FK vers `users`), `bio` (TEXT), `objectifs` (TEXT), `photo_url` (VARCHAR(255), nullable), `created_at` (TIMESTAMP), `updated_at` (TIMESTAMP)",
+            "La colonne `user_id` a une contrainte de clé étrangère vers la table `users`",
+            "Un index est créé sur la colonne `user_id` pour optimiser les requêtes"
+          ],
+          "tech_details": "Utiliser l'ORM (ex: GORM) pour définir le schéma de la table et générer la migration.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": "Créer une migration pour ajouter la table `user_profiles` avec les colonnes spécifiées.",
+          "tests": [
+            "Test de migration up : vérifie que la table est créée avec le bon schéma",
+            "Test de migration down : vérifie que la table est supprimée",
+            "Test d'intégrité des données : vérifie que la clé étrangère fonctionne correctement"
+          ],
+          "definition_of_done": [
+            "[ ] Migration créée et appliquée avec succès",
+            "[ ] Table `user_profiles` créée avec les colonnes et contraintes correctes",
+            "[ ] Tests unitaires pour la migration (up/down)",
+            "[ ] Documentation de la migration ajoutée",
+            "[ ] Code implémenté et mergé sur develop"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": null
+        },
+        {
+          "dependencies": [
+            "9-TASK-1"
+          ],
+          "id": "9-TASK-2",
+          "epic_id": "9",
+          "title": "feat: Créer endpoint GET /api/profiles/:user_id",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir récupérer les informations de profil d'un autre utilisateur afin de consulter son parcours et ses objectifs.",
+          "acceptance_criteria": [
+            "L'endpoint GET /api/profiles/:user_id renvoie un code 200 OK si le profil existe",
+            "Le corps de la réponse contient les informations du profil : `id`, `user_id`, `bio`, `objectifs`, `photo_url`, `created_at`, `updated_at`",
+            "Si le profil n'existe pas, l'endpoint renvoie un code 404 Not Found avec un message d'erreur clair",
+            "L'endpoint est protégé par authentification (nécessite un token valide)",
+            "L'endpoint gère les erreurs de base de données et renvoie un code 500 Internal Server Error en cas de problème"
+          ],
+          "tech_details": "Valider que l'user_id est un UUID valide.",
+          "validation": null,
+          "error_handling": "404 Not Found si le profil n'existe pas. 500 Internal Server Error en cas d'erreur de base de données.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire : profil existant -\u003e retourne les informations du profil",
+            "Test unitaire : profil inexistant -\u003e retourne une erreur 404",
+            "Test d'intégration : vérifie que l'endpoint est accessible avec un token valide",
+            "Test de performance : vérifie que l'endpoint répond en moins de 200ms"
+          ],
+          "definition_of_done": [
+            "[ ] Endpoint créé et fonctionnel",
+            "[ ] Tests unitaires couvrant les cas de succès et d'erreur",
+            "[ ] Documentation API mise à jour (Swagger/OpenAPI)",
+            "[ ] Gestion d'erreurs implémentée",
+            "[ ] Code implémenté et mergé sur develop"
+          ],
+          "example_request": "GET /api/profiles/a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          "example_response_success": "{ \"id\": \"b1c2d3e4-f5a6-8901-2345-67890abcdef0\", \"user_id\": \"a1b2c3d4-e5f6-7890-1234-567890abcdef\", \"bio\": \"Passionné de musculation depuis 5 ans.\", \"objectifs\": \"Prise de masse et amélioration de la force.\", \"photo_url\": \"https://example.com/avatar.jpg\", \"created_at\": \"2024-01-01T12:00:00Z\", \"updated_at\": \"2024-01-01T12:00:00Z\" }",
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "GET /api/profiles/:user_id",
+          "ui_design": null,
+          "implementation_details": "Utiliser le framework (ex: Echo, Gin) pour définir la route et le handler. Récupérer le profil depuis la base de données en utilisant l'ORM."
+        },
+        {
+          "dependencies": [
+            "9-TASK-1",
+            "1-TASK-4"
+          ],
+          "id": "9-TASK-3",
+          "epic_id": "9",
+          "title": "feat: Créer endpoint PUT /api/profiles/:user_id pour modifier le profil",
+          "type": "feat",
+          "description": "En tant qu'utilisateur authentifié, je veux pouvoir modifier mon profil (bio, objectifs, photo) afin de le maintenir à jour et de le personnaliser.",
+          "acceptance_criteria": [
+            "L'endpoint PUT /api/profiles/:user_id permet de modifier les informations du profil (bio, objectifs, photo_url)",
+            "Seul l'utilisateur authentifié correspondant au `user_id` peut modifier le profil",
+            "L'endpoint renvoie un code 200 OK si la modification est réussie",
+            "Le corps de la requête contient les informations à modifier au format JSON",
+            "Si l'utilisateur n'est pas authentifié, l'endpoint renvoie un code 401 Unauthorized",
+            "Si l'utilisateur tente de modifier un profil qui ne lui appartient pas, l'endpoint renvoie un code 403 Forbidden",
+            "L'endpoint valide les données entrantes (ex: taille maximale de la bio, format de l'URL de la photo)",
+            "L'endpoint gère les erreurs de base de données et renvoie un code 500 Internal Server Error en cas de problème"
+          ],
+          "tech_details": "Utiliser un middleware d'authentification pour vérifier le token. Utiliser une librairie de validation pour valider les données entrantes.",
+          "validation": "Valider la taille maximale de la bio (ex: 255 caractères). Valider le format de l'URL de la photo (ex: URL valide, taille maximale de l'image).",
+          "error_handling": "400 Bad Request si les données sont invalides. 401 Unauthorized si l'utilisateur n'est pas authentifié. 403 Forbidden si l'utilisateur tente de modifier un profil qui ne lui appartient pas. 500 Internal Server Error en cas d'erreur de base de données.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire : modification réussie -\u003e retourne le profil modifié",
+            "Test unitaire : utilisateur non authentifié -\u003e retourne une erreur 401",
+            "Test unitaire : utilisateur tente de modifier un profil qui ne lui appartient pas -\u003e retourne une erreur 403",
+            "Test unitaire : données invalides -\u003e retourne une erreur 400",
+            "Test d'intégration : vérifie que l'endpoint est accessible avec un token valide et que les modifications sont persistées en base de données."
+          ],
+          "definition_of_done": [
+            "[ ] Endpoint créé et fonctionnel",
+            "[ ] Tests unitaires couvrant les cas de succès et d'erreur",
+            "[ ] Documentation API mise à jour (Swagger/OpenAPI)",
+            "[ ] Gestion d'erreurs implémentée (400, 401, 403, 500)",
+            "[ ] Validation des données entrantes implémentée",
+            "[ ] Code implémenté et mergé sur develop"
+          ],
+          "example_request": "PUT /api/profiles/a1b2c3d4-e5f6-7890-1234-567890abcdef {\"bio\": \"Nouvelle bio\", \"objectifs\": \"Nouveaux objectifs\", \"photo_url\": \"https://example.com/new_avatar.jpg\"}",
+          "example_response_success": "{ \"id\": \"b1c2d3e4-f5a6-8901-2345-67890abcdef0\", \"user_id\": \"a1b2c3d4-e5f6-7890-1234-567890abcdef\", \"bio\": \"Nouvelle bio\", \"objectifs\": \"Nouveaux objectifs\", \"photo_url\": \"https://example.com/new_avatar.jpg\", \"created_at\": \"2024-01-01T12:00:00Z\", \"updated_at\": \"2024-01-02T10:00:00Z\" }",
+          "example_response_error_400": "{\"message\": \"La bio est trop longue\"}",
+          "example_response_error_401": "{\"message\": \"Unauthorized\"}",
+          "example_response_error_409": null,
+          "example_request_valid": "PUT /api/profiles/a1b2c3d4-e5f6-7890-1234-567890abcdef {\"bio\": \"Nouvelle bio\", \"objectifs\": \"Nouveaux objectifs\", \"photo_url\": \"https://example.com/new_avatar.jpg\"}",
+          "example_request_invalid": "PUT /api/profiles/a1b2c3d4-e5f6-7890-1234-567890abcdef {\"bio\": \"... (bio trop longue) ...\"}",
+          "api_call": "PUT /api/profiles/:user_id",
+          "ui_design": null,
+          "implementation_details": "Utiliser le framework (ex: Echo, Gin) pour définir la route et le handler. Récupérer le profil depuis la base de données en utilisant l'ORM. Valider que l'utilisateur authentifié correspond au `user_id`."
+        },
+        {
+          "dependencies": [
+            "9-TASK-2"
+          ],
+          "id": "9-TASK-4",
+          "epic_id": "9",
+          "title": "feat: Afficher les informations du profil sur la page de profil (Frontend)",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux voir mes informations de profil affichées sur ma page de profil afin de vérifier qu'elles sont correctes.",
+          "acceptance_criteria": [
+            "La page de profil affiche la bio de l'utilisateur",
+            "La page de profil affiche les objectifs de l'utilisateur",
+            "La page de profil affiche la photo de profil de l'utilisateur",
+            "Les informations sont récupérées depuis l'endpoint GET /api/profiles/:user_id",
+            "Si l'utilisateur n'a pas encore de profil, un message l'invite à en créer un",
+            "La page de profil est accessible uniquement aux utilisateurs authentifiés"
+          ],
+          "tech_details": "Utiliser une librairie de gestion d'état (ex: Redux, Zustand) pour stocker les informations du profil.",
+          "validation": null,
+          "error_handling": "Afficher un message d'erreur clair si la récupération du profil échoue.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire : affiche la bio, les objectifs et la photo de profil si le profil existe",
+            "Test unitaire : affiche un message invitant à créer un profil si le profil n'existe pas",
+            "Test d'intégration : vérifie que la page de profil est accessible uniquement aux utilisateurs authentifiés"
+          ],
+          "definition_of_done": [
+            "[ ] Composant React créé et fonctionnel",
+            "[ ] Tests unitaires couvrant les cas de succès et d'erreur",
+            "[ ] Intégration avec l'API backend",
+            "[ ] Gestion d'erreurs implémentée",
+            "[ ] Code implémenté et mergé sur develop"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "GET /api/profiles/:user_id",
+          "ui_design": "Design de la page de profil avec les informations de l'utilisateur.",
+          "implementation_details": "Utiliser React pour créer le composant de la page de profil. Utiliser `useEffect` pour récupérer les informations du profil lors du montage du composant."
+        },
+        {
+          "dependencies": [
+            "9-TASK-3"
+          ],
+          "id": "9-TASK-5",
+          "epic_id": "9",
+          "title": "feat: Créer un formulaire de modification du profil (Frontend)",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir modifier mes informations de profil via un formulaire afin de les mettre à jour facilement.",
+          "acceptance_criteria": [
+            "Un formulaire de modification du profil est affiché sur la page de profil",
+            "Le formulaire contient des champs pour modifier la bio, les objectifs et la photo de profil",
+            "Les champs sont pré-remplis avec les informations actuelles du profil",
+            "Un bouton \"Enregistrer\" permet de soumettre les modifications",
+            "Lors de la soumission, une requête PUT est envoyée à l'endpoint /api/profiles/:user_id",
+            "Un message de succès est affiché si la modification est réussie",
+            "Un message d'erreur est affiché si la modification échoue",
+            "Le formulaire valide les données entrantes (ex: taille maximale de la bio, format de l'URL de la photo)"
+          ],
+          "tech_details": "Utiliser une librairie de validation pour valider les données entrantes (ex: Yup, Zod).",
+          "validation": "Valider la taille maximale de la bio (ex: 255 caractères). Valider le format de l'URL de la photo (ex: URL valide, taille maximale de l'image).",
+          "error_handling": "Afficher un message d'erreur clair si la modification échoue. Afficher les erreurs de validation du formulaire.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire : affiche le formulaire avec les champs pré-remplis",
+            "Test unitaire : soumet le formulaire avec des données valides -\u003e affiche un message de succès",
+            "Test unitaire : soumet le formulaire avec des données invalides -\u003e affiche un message d'erreur",
+            "Test d'intégration : vérifie que la modification est persistée en base de données."
+          ],
+          "definition_of_done": [
+            "[ ] Composant React créé et fonctionnel",
+            "[ ] Tests unitaires couvrant les cas de succès et d'erreur",
+            "[ ] Intégration avec l'API backend",
+            "[ ] Validation des données entrantes implémentée",
+            "[ ] Gestion d'erreurs implémentée",
+            "[ ] Code implémenté et mergé sur develop"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "PUT /api/profiles/:user_id",
+          "ui_design": "Design du formulaire de modification du profil.",
+          "implementation_details": "Utiliser React pour créer le formulaire de modification du profil. Utiliser une librairie de gestion de formulaire (ex: Formik, React Hook Form) pour gérer les données du formulaire et la validation."
+        }
+      ],
+      "priority": "low"
+    }
+  ],
+  "model": "google/gemini-2.0-flash-001",
+  "number_token": 36757,
+  "marketing": {
+    "analyse_marketing": {
+      "synthese_executive": {
+        "potentiel_global": {
+          "note": 4,
+          "echelle": 5
+        },
+        "forces_principales": [
+          "Réponse à un besoin de partage et de motivation dans le sport",
+          "Potentiel de création de communauté et d'engagement",
+          "Possibilité de monétisation via abonnements premium ou partenariats"
+        ],
+        "risques_majeurs": [
+          "Concurrence forte des applications de fitness existantes",
+          "Difficulté à acquérir et fidéliser les utilisateurs",
+          "Nécessité de modération et de gestion des contenus partagés"
+        ]
+      },
+      "analyse_marche": {
+        "taille_marche": {
+          "valeur": "Plusieurs milliards",
+          "unite": "USD",
+          "tendance": "Croissance forte"
+        },
+        "segments_cibles": [
+          {
+            "nom": "Passionnés de fitness",
+            "description": "Individus qui s'entraînent régulièrement en salle de sport et qui sont à la recherche de nouveaux programmes et de motivation.",
+            "priorite": "Primaire"
+          },
+          {
+            "nom": "Entraîneurs personnels",
+            "description": "Professionnels du fitness qui cherchent à partager leurs programmes d'entraînement et à gagner en visibilité.",
+            "priorite": "Secondaire"
+          },
+          {
+            "nom": "Débutants en salle de sport",
+            "description": "Personnes qui débutent en salle de sport et qui ont besoin de conseils et de programmes adaptés.",
+            "priorite": "Tertiaire"
+          }
+        ],
+        "positionnement": {
+          "concurrents_principaux": [
+            "Applications de suivi d'entraînement (ex: Strava, Nike Training Club)",
+            "Plateformes de partage de contenu fitness (ex: Instagram, YouTube)"
+          ],
+          "avantage_concurrentiel": "Plateforme dédiée au partage de programmes d'entraînement, avec une forte dimension communautaire et des fonctionnalités spécifiques pour les salles de sport."
+        }
+      },
+      "proposition_valeur": {
+        "probleme_resolu": "Manque de motivation et de programmes d'entraînement personnalisés pour les personnes qui s'entraînent en salle de sport.",
+        "benefices_uniques": [
+          "Accès à une large variété de programmes d'entraînement partagés par d'autres utilisateurs et des professionnels",
+          "Possibilité de créer et de partager ses propres programmes",
+          "Suivi des progrès et motivation grâce à la communauté",
+          "Connexion avec d'autres membres de sa salle de sport"
+        ],
+        "differentiation": "Plateforme axée sur le partage de programmes d'entraînement et la communauté, avec des fonctionnalités spécifiques pour les salles de sport et les entraîneurs personnels."
+      },
+      "faisabilite": {
+        "ressources_necessaires": {
+          "equipe": [
+            "Développeurs d'applications mobiles",
+            "Designers UI/UX",
+            "Experts en marketing digital",
+            "Modérateurs de contenu"
+          ],
+          "technologies": [
+            "Plateforme de développement mobile (ex: React Native, Flutter)",
+            "Base de données",
+            "API de partage de contenu",
+            "Système de paiement sécurisé"
+          ]
+        },
+        "barrieres_entree": [
+          "Coût de développement et de maintenance de l'application",
+          "Acquisition et fidélisation des utilisateurs",
+          "Concurrence des applications de fitness existantes",
+          "Gestion de la modération et de la qualité des contenus partagés"
+        ]
+      },
+      "strategie_go_to_market": {
+        "canaux_acquisition": [
+          {
+            "canal": "Publicités sur les réseaux sociaux (Facebook, Instagram)",
+            "priorite": "Élevée",
+            "cout_estime": "Variable, dépend du ciblage et du budget"
+          },
+          {
+            "canal": "Partenariats avec des salles de sport et des entraîneurs personnels",
+            "priorite": "Moyenne",
+            "cout_estime": "Négociation de commissions ou d'accords de partage de revenus"
+          },
+          {
+            "canal": "Optimisation du référencement (SEO) sur les moteurs de recherche",
+            "priorite": "Moyenne",
+            "cout_estime": "Temps et ressources pour la création de contenu et l'optimisation du site web"
+          },
+          {
+            "canal": "Marketing d'influence avec des influenceurs fitness",
+            "priorite": "Faible",
+            "cout_estime": "Variable, dépend de la notoriété de l'influenceur"
+          }
+        ],
+        "pricing": {
+          "modele": "Freemium",
+          "fourchette": {
+            "min": 0,
+            "max": 9.99,
+            "devise": "EUR"
+          }
+        },
+        "tactiques_lancement": [
+          "Campagne de pré-lancement sur les réseaux sociaux",
+          "Offre de lancement avec des fonctionnalités premium gratuites",
+          "Concours et challenges pour encourager le partage de programmes d'entraînement"
+        ]
+      },
+      "metriques_cles": {
+        "kpis": [
+          {
+            "nom": "Nombre d'utilisateurs actifs mensuels (MAU)",
+            "objectif_6_mois": "10 000",
+            "objectif_12_mois": "50 000"
+          },
+          {
+            "nom": "Nombre de programmes d'entraînement partagés",
+            "objectif_6_mois": "1 000",
+            "objectif_12_mois": "5 000"
+          },
+          {
+            "nom": "Taux de conversion des utilisateurs gratuits en utilisateurs payants",
+            "objectif_6_mois": "2%",
+            "objectif_12_mois": "5%"
+          },
+          {
+            "nom": "Taux de rétention des utilisateurs",
+            "objectif_6_mois": "30%",
+            "objectif_12_mois": "50%"
+          }
+        ]
+      },
+      "recommandations": {
+        "actions_prioritaires": [
+          {
+            "action": "Développer un prototype de l'application et le tester auprès d'un groupe d'utilisateurs cibles.",
+            "delai": "Court terme",
+            "impact": "Élevé"
+          },
+          {
+            "action": "Mettre en place une stratégie de contenu pour attirer et engager les utilisateurs.",
+            "delai": "Moyen terme",
+            "impact": "Élevé"
+          },
+          {
+            "action": "Établir des partenariats avec des salles de sport et des entraîneurs personnels.",
+            "delai": "Moyen terme",
+            "impact": "Moyen"
+          }
+        ],
+        "quick_wins": [
+          "Créer une communauté sur les réseaux sociaux et partager du contenu inspirant et motivant.",
+          "Organiser des concours et des challenges pour encourager l'engagement des utilisateurs.",
+          "Offrir des fonctionnalités premium gratuites aux premiers utilisateurs."
+        ],
+        "points_attention": [
+          "Assurer la qualité et la sécurité des contenus partagés.",
+          "Gérer la modération et les éventuels conflits entre utilisateurs.",
+          "S'adapter aux évolutions du marché et aux besoins des utilisateurs."
+        ]
+      },
+      "metadata": {
+        "date_analyse": "2025-11-24",
+        "niveau_confiance": "Moyen",
+        "hypotheses_cles": [
+          "Les utilisateurs sont à la recherche de programmes d'entraînement personnalisés et de motivation.",
+          "Les salles de sport et les entraîneurs personnels sont intéressés par une plateforme pour partager leurs programmes et gagner en visibilité.",
+          "Le modèle freemium est adapté à ce type d'application."
+        ]
+      }
+    }
+  }
+}
