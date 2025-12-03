@@ -1,0 +1,1321 @@
+{
+  "idea": "Une application permettant aux utilisateurs de partager leur programme d'entrainement en salle de sport, les utilisateurs peuvent s'inscrire, se connecter, créer des entrainement, les partager\n",
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Permettre aux utilisateurs de s'inscrire et de se connecter à l'application",
+      "description": "Les utilisateurs peuvent créer un compte et se connecter en toute sécurité afin d'accéder aux fonctionnalités de l'application.",
+      "goal": "Augmenter le nombre d'utilisateurs actifs en facilitant l'accès à l'application.",
+      "issues": [
+        {
+          "id": "EPIC-1-TASK-1",
+          "epic_id": "EPIC-1",
+          "title": "feat: Ajouter l'endpoint d'inscription utilisateur",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir m'inscrire avec une adresse e-mail et un mot de passe afin d'accéder à l'application.",
+          "acceptance_criteria": [
+            "Un utilisateur peut s'inscrire avec une adresse e-mail valide, un mot de passe d'au moins 8 caractères et un nom d'utilisateur unique.",
+            "L'adresse e-mail doit être unique.",
+            "Le mot de passe doit être haché et stocké de manière sécurisée dans la base de données.",
+            "Un e-mail de confirmation est envoyé à l'utilisateur après l'inscription.",
+            "Un message de succès est renvoyé au client après l'inscription réussie."
+          ],
+          "tech_details": "Stack: [Backend - Python/Flask, DB - PostgreSQL]. Utiliser [bcrypt pour le hachage des mots de passe, Flask-Mail pour l'envoi d'e-mails]. Endpoint: [POST /api/register]. Schema: [Table 'users' avec colonnes 'id', 'username', 'email', 'password_hash', 'is_active'].",
+          "definition_of_done": [
+            "Endpoint /api/register implémenté.",
+            "Validation des données d'entrée (email, password, username) effectuée.",
+            "Mot de passe haché et stocké dans la base de données.",
+            "Email de confirmation envoyé.",
+            "Tests unitaires et d'intégration réussis."
+          ],
+          "example_request": {
+            "username": "john.doe",
+            "email": "john.doe@example.com",
+            "password": "securePassword123"
+          },
+          "example_response_success": {
+            "message": "Inscription réussie. Veuillez vérifier votre e-mail pour confirmer votre compte."
+          }
+        },
+        {
+          "dependencies": [
+            "EPIC-1-TASK-1"
+          ],
+          "id": "EPIC-1-TASK-2",
+          "epic_id": "EPIC-1",
+          "title": "feat: Ajouter l'endpoint de connexion utilisateur",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir me connecter avec mon adresse e-mail et mon mot de passe afin d'accéder à l'application.",
+          "acceptance_criteria": [
+            "Un utilisateur peut se connecter avec une adresse e-mail et un mot de passe valides.",
+            "Un token JWT est renvoyé à l'utilisateur après la connexion réussie.",
+            "Un message d'erreur est renvoyé si les informations d'identification sont incorrectes."
+          ],
+          "tech_details": "Stack: [Backend - Python/Flask, DB - PostgreSQL]. Utiliser [bcrypt pour la vérification des mots de passe, Flask-JWT-Extended pour la gestion des tokens JWT]. Endpoint: [POST /api/login]. Schema: [Table 'users' avec colonnes 'id', 'username', 'email', 'password_hash', 'is_active'].",
+          "definition_of_done": [
+            "Endpoint /api/login implémenté.",
+            "Vérification des informations d'identification par rapport à la base de données.",
+            "Génération et renvoi d'un token JWT.",
+            "Tests unitaires et d'intégration réussis."
+          ],
+          "example_request": {
+            "email": "john.doe@example.com",
+            "password": "securePassword123"
+          },
+          "example_response_success": {
+            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3ODg4MzIzNiwianRpIjoiNzEwMzE5NjYtY2U3Mi00ZjQ5LWE5NDUtNjFhN2Q4ZDQ5YjY2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwibmJmIjoxNjc4ODgzMjM2LCJleHAiOjE2Nzg4ODY4MzZ9.nZTg7Nf9wZqI7y49-T9dI3v8VqI5v9wZqI7y49-T9dI",
+            "token_type": "bearer",
+            "expires_in": 3600
+          }
+        },
+        {
+          "dependencies": [
+            "EPIC-1-TASK-1"
+          ],
+          "id": "EPIC-1-TASK-3",
+          "epic_id": "EPIC-1",
+          "title": "chore: Ajouter la configuration de Flask-JWT-Extended",
+          "type": "chore",
+          "description": "Configurer Flask-JWT-Extended pour la gestion des tokens JWT.",
+          "acceptance_criteria": [
+            "Flask-JWT-Extended est configuré avec une clé secrète.",
+            "Les tokens JWT expirent après une heure.",
+            "La configuration est placée dans un fichier de configuration distinct."
+          ],
+          "tech_details": "Stack: [Backend - Python/Flask]. Utiliser [Flask-JWT-Extended].",
+          "definition_of_done": [
+            "Flask-JWT-Extended est configuré dans l'application.",
+            "La clé secrète est stockée dans une variable d'environnement.",
+            "La durée de validité des tokens est configurée."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-1-TASK-1"
+          ],
+          "id": "EPIC-1-TASK-4",
+          "epic_id": "EPIC-1",
+          "title": "fix: Corriger le bug d'envoi d'email de confirmation",
+          "type": "fix",
+          "description": "Corriger le bug qui empêche l'envoi d'emails de confirmation lors de l'inscription.",
+          "acceptance_criteria": [
+            "Les emails de confirmation sont envoyés correctement après l'inscription.",
+            "Les logs indiquent que l'email a été envoyé avec succès."
+          ],
+          "tech_details": "Stack: [Backend - Python/Flask]. Utiliser [Flask-Mail].",
+          "definition_of_done": [
+            "Le bug d'envoi d'email est corrigé.",
+            "Les emails de confirmation sont envoyés et reçus.",
+            "Tests unitaires et d'intégration réussis."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-1-TASK-1",
+            "EPIC-1-TASK-2"
+          ],
+          "id": "EPIC-1-TASK-5",
+          "epic_id": "EPIC-1",
+          "title": "chore: Ajouter les tests unitaires pour l'inscription et la connexion",
+          "type": "chore",
+          "description": "Ajouter les tests unitaires pour les endpoints d'inscription et de connexion.",
+          "acceptance_criteria": [
+            "Les tests unitaires couvrent tous les cas d'utilisation (succès, erreurs).",
+            "La couverture de code est d'au moins 80%.",
+            "Tous les tests passent."
+          ],
+          "tech_details": "Stack: [Backend - Python/Flask]. Utiliser [pytest].",
+          "definition_of_done": [
+            "Tests unitaires ajoutés pour l'inscription et la connexion.",
+            "Couverture de code vérifiée.",
+            "Tous les tests passent."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-1-TASK-1"
+          ],
+          "id": "EPIC-1-TASK-6",
+          "epic_id": "EPIC-1",
+          "title": "feat: Implémenter la fonctionnalité de réinitialisation du mot de passe",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir réinitialiser mon mot de passe si je l'ai oublié.",
+          "acceptance_criteria": [
+            "Un utilisateur peut demander une réinitialisation de mot de passe en entrant son adresse e-mail.",
+            "Un e-mail contenant un lien de réinitialisation est envoyé à l'utilisateur.",
+            "L'utilisateur peut réinitialiser son mot de passe en cliquant sur le lien et en entrant un nouveau mot de passe.",
+            "Le nouveau mot de passe est haché et stocké de manière sécurisée dans la base de données."
+          ],
+          "tech_details": "Stack: [Backend - Python/Flask, DB - PostgreSQL]. Utiliser [Flask-Mail pour l'envoi d'e-mails, bcrypt pour le hachage des mots de passe]. Endpoints: [POST /api/reset_password_request, POST /api/reset_password]. Schema: [Table 'users' avec colonnes 'id', 'username', 'email', 'password_hash', 'is_active']. Ajouter une table 'password_reset_tokens' avec colonnes 'user_id', 'token', 'expiration_date'.",
+          "definition_of_done": [
+            "Endpoint /api/reset_password_request implémenté.",
+            "Endpoint /api/reset_password implémenté.",
+            "Email de réinitialisation envoyé.",
+            "Nouveau mot de passe haché et stocké dans la base de données.",
+            "Tests unitaires et d'intégration réussis."
+          ]
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Permettre aux utilisateurs de créer et de gérer leurs programmes d'entraînement",
+      "description": "Les utilisateurs peuvent créer des programmes d'entraînement personnalisés en définissant les exercices, les séries, les répétitions et le repos.",
+      "goal": "Offrir aux utilisateurs la possibilité de structurer leurs séances de sport.",
+      "issues": [
+        {
+          "id": "EPIC-2-TASK-1",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer le modèle de données 'Entraînement'",
+          "type": "feat",
+          "description": "En tant que développeur backend, je veux créer le modèle de données pour représenter un entraînement afin de pouvoir stocker les informations relatives à un entraînement dans la base de données.",
+          "acceptance_criteria": [
+            "Le modèle 'Entraînement' doit être créé dans la base de données.",
+            "Le modèle doit inclure les champs suivants : id (UUID), nom (string, max 255 caractères), description (text), date_creation (timestamp), utilisateur_id (UUID, clé étrangère vers le modèle Utilisateur).",
+            "Les contraintes de validation doivent être appliquées (taille max des champs, type de données)."
+          ],
+          "tech_details": "Stack: Python/Django. Utiliser Django ORM. Schema: Table 'entrainements'.",
+          "definition_of_done": [
+            "Migration Django créée et appliquée avec succès.",
+            "Le modèle 'Entraînement' est défini dans `entrainement/models.py`.",
+            "Tests unitaires vérifiant la création, la lecture, la mise à jour et la suppression d'un entraînement.",
+            "Les validations de champs sont implémentées dans le modèle Django."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-2-TASK-2",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer l'API pour créer un entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir créer un nouvel entraînement via une API afin de pouvoir enregistrer mes programmes d'entraînement.",
+          "acceptance_criteria": [
+            "Un endpoint POST `/api/entrainements/` doit être créé.",
+            "L'API doit valider les données entrantes (nom, description).",
+            "L'API doit créer un nouvel entraînement dans la base de données avec l'utilisateur authentifié comme auteur.",
+            "L'API doit retourner un code 201 Created en cas de succès, avec les détails de l'entraînement créé.",
+            "L'API doit retourner un code 400 Bad Request en cas d'erreur de validation, avec un message d'erreur clair.",
+            "L'API doit retourner un code 401 Unauthorized si l'utilisateur n'est pas authentifié.",
+            "Le champ 'nom' doit être obligatoire et avoir une longueur maximale de 255 caractères.",
+            "Le champ 'description' doit être une chaîne de caractères."
+          ],
+          "tech_details": "Stack: Python/Django, Django REST Framework. Endpoints: `POST /api/entrainements/`. Serializer: `EntrainementSerializer`. Authentication: JWT.",
+          "definition_of_done": [
+            "Endpoint `POST /api/entrainements/` créé.",
+            "Serializer `EntrainementSerializer` créé et validant les données.",
+            "Tests unitaires vérifiant la création d'un entraînement avec données valides et invalides.",
+            "Gestion des erreurs (400, 401) implémentée.",
+            "Documentation Swagger mise à jour."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-2-TASK-3",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer l'API pour récupérer les entraînements d'un utilisateur",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir récupérer la liste de mes entraînements via une API afin de pouvoir les consulter.",
+          "acceptance_criteria": [
+            "Un endpoint GET `/api/entrainements/` doit être créé.",
+            "L'API doit retourner une liste d'entraînements appartenant à l'utilisateur authentifié.",
+            "L'API doit retourner un code 200 OK en cas de succès, avec une liste d'entraînements au format JSON.",
+            "L'API doit retourner un code 401 Unauthorized si l'utilisateur n'est pas authentifié.",
+            "La liste doit être paginée (10 entraînements par page par défaut).",
+            "Un paramètre de requête `page` doit permettre de naviguer entre les pages."
+          ],
+          "tech_details": "Stack: Python/Django, Django REST Framework. Endpoints: `GET /api/entrainements/`. Serializer: `EntrainementSerializer`. Authentication: JWT. Pagination: Django REST Framework pagination.",
+          "definition_of_done": [
+            "Endpoint `GET /api/entrainements/` créé.",
+            "La liste des entraînements est filtrée par l'utilisateur authentifié.",
+            "Pagination implémentée.",
+            "Tests unitaires vérifiant la récupération de la liste des entraînements.",
+            "Gestion des erreurs (401) implémentée.",
+            "Documentation Swagger mise à jour."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-2-TASK-4",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer l'API pour récupérer un entraînement spécifique",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir récupérer les détails d'un entraînement spécifique via une API afin de pouvoir le consulter.",
+          "acceptance_criteria": [
+            "Un endpoint GET `/api/entrainements/{id}/` doit être créé.",
+            "L'API doit retourner les détails de l'entraînement correspondant à l'ID fourni.",
+            "L'API doit retourner un code 200 OK en cas de succès, avec les détails de l'entraînement au format JSON.",
+            "L'API doit retourner un code 404 Not Found si l'entraînement n'existe pas ou n'appartient pas à l'utilisateur.",
+            "L'API doit retourner un code 401 Unauthorized si l'utilisateur n'est pas authentifié.",
+            "Seul l'utilisateur propriétaire de l'entraînement peut le consulter."
+          ],
+          "tech_details": "Stack: Python/Django, Django REST Framework. Endpoints: `GET /api/entrainements/{id}/`. Serializer: `EntrainementSerializer`. Authentication: JWT.",
+          "definition_of_done": [
+            "Endpoint `GET /api/entrainements/{id}/` créé.",
+            "L'accès à l'entraînement est vérifié (propriétaire uniquement).",
+            "Tests unitaires vérifiant la récupération d'un entraînement existant et inexistant.",
+            "Gestion des erreurs (401, 404) implémentée.",
+            "Documentation Swagger mise à jour."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-2-TASK-5",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer l'API pour mettre à jour un entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir mettre à jour un entraînement existant via une API afin de pouvoir le modifier.",
+          "acceptance_criteria": [
+            "Un endpoint PUT `/api/entrainements/{id}/` doit être créé.",
+            "L'API doit valider les données entrantes (nom, description).",
+            "L'API doit mettre à jour l'entraînement correspondant à l'ID fourni avec les nouvelles données.",
+            "L'API doit retourner un code 200 OK en cas de succès, avec les détails de l'entraînement mis à jour au format JSON.",
+            "L'API doit retourner un code 400 Bad Request en cas d'erreur de validation, avec un message d'erreur clair.",
+            "L'API doit retourner un code 404 Not Found si l'entraînement n'existe pas ou n'appartient pas à l'utilisateur.",
+            "L'API doit retourner un code 401 Unauthorized si l'utilisateur n'est pas authentifié.",
+            "Seul l'utilisateur propriétaire de l'entraînement peut le modifier."
+          ],
+          "tech_details": "Stack: Python/Django, Django REST Framework. Endpoints: `PUT /api/entrainements/{id}/`. Serializer: `EntrainementSerializer`. Authentication: JWT.",
+          "definition_of_done": [
+            "Endpoint `PUT /api/entrainements/{id}/` créé.",
+            "La mise à jour de l'entraînement est implémentée.",
+            "Les validations sont appliquées.",
+            "L'accès à l'entraînement est vérifié (propriétaire uniquement).",
+            "Tests unitaires vérifiant la mise à jour d'un entraînement avec données valides et invalides.",
+            "Gestion des erreurs (400, 401, 404) implémentée.",
+            "Documentation Swagger mise à jour."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-2-TASK-6",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer l'API pour supprimer un entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir supprimer un entraînement via une API afin de pouvoir le retirer de ma liste.",
+          "acceptance_criteria": [
+            "Un endpoint DELETE `/api/entrainements/{id}/` doit être créé.",
+            "L'API doit supprimer l'entraînement correspondant à l'ID fourni.",
+            "L'API doit retourner un code 204 No Content en cas de succès.",
+            "L'API doit retourner un code 404 Not Found si l'entraînement n'existe pas ou n'appartient pas à l'utilisateur.",
+            "L'API doit retourner un code 401 Unauthorized si l'utilisateur n'est pas authentifié.",
+            "Seul l'utilisateur propriétaire de l'entraînement peut le supprimer."
+          ],
+          "tech_details": "Stack: Python/Django, Django REST Framework. Endpoints: `DELETE /api/entrainements/{id}/`. Authentication: JWT.",
+          "definition_of_done": [
+            "Endpoint `DELETE /api/entrainements/{id}/` créé.",
+            "La suppression de l'entraînement est implémentée.",
+            "L'accès à l'entraînement est vérifié (propriétaire uniquement).",
+            "Tests unitaires vérifiant la suppression d'un entraînement existant et inexistant.",
+            "Gestion des erreurs (401, 404) implémentée.",
+            "Documentation Swagger mise à jour."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1"
+          ],
+          "id": "EPIC-2-TASK-7",
+          "epic_id": "EPIC-2",
+          "title": "feat: Ajouter un champ 'visible' au modèle Entraînement",
+          "type": "feat",
+          "description": "En tant que développeur backend, je veux ajouter un champ 'visible' au modèle Entraînement afin de pouvoir gérer la visibilité des entraînements (privé/public).",
+          "acceptance_criteria": [
+            "Un champ 'visible' de type BooleanField doit être ajouté au modèle 'Entraînement'.",
+            "La valeur par défaut du champ 'visible' doit être False (privé).",
+            "Une migration doit être créée et appliquée pour ajouter le champ à la base de données."
+          ],
+          "tech_details": "Stack: Python/Django. Utiliser Django ORM. Schema: Table 'entrainements'.",
+          "definition_of_done": [
+            "Migration Django créée et appliquée avec succès.",
+            "Le champ 'visible' est ajouté au modèle `entrainement/models.py`.",
+            "Tests unitaires vérifiant la création d'un entraînement avec le champ 'visible' à True et False."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-7",
+            "EPIC-2-TASK-2",
+            "EPIC-2-TASK-5"
+          ],
+          "id": "EPIC-2-TASK-8",
+          "epic_id": "EPIC-2",
+          "title": "feat: Mettre à jour les APIs pour gérer le champ 'visible'",
+          "type": "feat",
+          "description": "En tant que développeur backend, je veux mettre à jour les APIs de création et de mise à jour d'entraînements pour gérer le champ 'visible'.",
+          "acceptance_criteria": [
+            "L'API de création d'entraînement (POST `/api/entrainements/`) doit permettre de spécifier la valeur du champ 'visible'.",
+            "L'API de mise à jour d'entraînement (PUT `/api/entrainements/{id}/`) doit permettre de modifier la valeur du champ 'visible'.",
+            "Le champ 'visible' doit être inclus dans le Serializer."
+          ],
+          "tech_details": "Stack: Python/Django, Django REST Framework. Endpoints: `POST /api/entrainements/`, `PUT /api/entrainements/{id}/`. Serializer: `EntrainementSerializer`. Authentication: JWT.",
+          "definition_of_done": [
+            "Les APIs de création et de mise à jour d'entraînements sont mises à jour pour gérer le champ 'visible'.",
+            "Le champ 'visible' est inclus dans le Serializer.",
+            "Tests unitaires vérifiant la création et la mise à jour d'un entraînement avec le champ 'visible'."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-1"
+          ],
+          "id": "EPIC-2-TASK-9",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer le modèle de données 'Exercice'",
+          "type": "feat",
+          "description": "En tant que développeur backend, je veux créer le modèle de données pour représenter un exercice afin de pouvoir stocker les informations relatives à un exercice dans la base de données.",
+          "acceptance_criteria": [
+            "Le modèle 'Exercice' doit être créé dans la base de données.",
+            "Le modèle doit inclure les champs suivants : id (UUID), nom (string, max 255 caractères), description (text), series (integer), repetitions (integer), repos (integer), entrainement_id (UUID, clé étrangère vers le modèle Entraînement).",
+            "Les contraintes de validation doivent être appliquées (taille max des champs, type de données).",
+            "Les champs series, repetitions, repos doivent être positifs."
+          ],
+          "tech_details": "Stack: Python/Django. Utiliser Django ORM. Schema: Table 'exercices'.",
+          "definition_of_done": [
+            "Migration Django créée et appliquée avec succès.",
+            "Le modèle 'Exercice' est défini dans `entrainement/models.py`.",
+            "Tests unitaires vérifiant la création, la lecture, la mise à jour et la suppression d'un exercice.",
+            "Les validations de champs sont implémentées dans le modèle Django."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-2-TASK-9",
+            "EPIC-2-TASK-2",
+            "EPIC-2-TASK-3",
+            "EPIC-2-TASK-4",
+            "EPIC-2-TASK-5",
+            "EPIC-2-TASK-6",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-2-TASK-10",
+          "epic_id": "EPIC-2",
+          "title": "feat: Créer les APIs pour gérer les exercices d'un entraînement",
+          "type": "feat",
+          "description": "En tant que développeur backend, je veux créer les APIs pour gérer les exercices d'un entraînement (création, lecture, mise à jour, suppression).",
+          "acceptance_criteria": [
+            "Un endpoint POST `/api/entrainements/{entrainement_id}/exercices/` doit être créé pour créer un exercice.",
+            "Un endpoint GET `/api/entrainements/{entrainement_id}/exercices/` doit être créé pour lister les exercices d'un entraînement.",
+            "Un endpoint GET `/api/entrainements/{entrainement_id}/exercices/{exercice_id}/` doit être créé pour récupérer un exercice spécifique.",
+            "Un endpoint PUT `/api/entrainements/{entrainement_id}/exercices/{exercice_id}/` doit être créé pour mettre à jour un exercice.",
+            "Un endpoint DELETE `/api/entrainements/{entrainement_id}/exercices/{exercice_id}/` doit être créé pour supprimer un exercice.",
+            "Les APIs doivent valider les données entrantes (nom, description, series, repetitions, repos).",
+            "Les APIs doivent retourner les codes HTTP appropriés en cas de succès et d'erreur.",
+            "Seul l'utilisateur propriétaire de l'entraînement peut gérer ses exercices."
+          ],
+          "tech_details": "Stack: Python/Django, Django REST Framework. Endpoints: `POST /api/entrainements/{entrainement_id}/exercices/`, `GET /api/entrainements/{entrainement_id}/exercices/`, `GET /api/entrainements/{entrainement_id}/exercices/{exercice_id}/`, `PUT /api/entrainements/{entrainement_id}/exercices/{exercice_id}/`, `DELETE /api/entrainements/{entrainement_id}/exercices/{exercice_id}/`. Serializer: `ExerciceSerializer`. Authentication: JWT.",
+          "definition_of_done": [
+            "Les APIs pour gérer les exercices sont créées et fonctionnent correctement.",
+            "Les validations sont appliquées.",
+            "L'accès aux exercices est vérifié (propriétaire de l'entraînement uniquement).",
+            "Tests unitaires vérifiant la création, la lecture, la mise à jour et la suppression d'exercices.",
+            "Gestion des erreurs implémentée.",
+            "Documentation Swagger mise à jour."
+          ]
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Permettre aux utilisateurs de partager leurs programmes d'entraînement avec d'autres utilisateurs",
+      "description": "Les utilisateurs peuvent rendre leurs programmes d'entraînement publics et les partager avec d'autres utilisateurs de l'application.",
+      "goal": "Favoriser le partage de connaissances et l'inspiration entre les utilisateurs.",
+      "issues": [
+        {
+          "id": "EPIC-3-TASK-1",
+          "epic_id": "EPIC-3",
+          "title": "feat: Ajouter un champ 'isPublic' aux entrainements",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir rendre mon programme d'entraînement public afin que d'autres utilisateurs puissent le voir.",
+          "acceptance_criteria": [
+            "Un champ `isPublic` de type booléen est ajouté au modèle d'entraînement.",
+            "Par défaut, la valeur de `isPublic` est `false` lors de la création d'un nouvel entraînement.",
+            "L'utilisateur peut modifier la valeur de `isPublic` via l'interface utilisateur."
+          ],
+          "tech_details": "Stack: [Backend: Node.js, Database: MongoDB]. Utiliser [Mongoose]. Schema: [Entrainement].",
+          "definition_of_done": [
+            "Migration DB appliquée avec succès.",
+            "Champ `isPublic` ajouté au modèle Entrainement.",
+            "Valeur par défaut de `isPublic` est `false` lors de la création.",
+            "Tests unitaires et d'intégration réussis pour la création et la modification d'entraînements avec le champ `isPublic`."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-1"
+          ],
+          "id": "EPIC-3-TASK-2",
+          "epic_id": "EPIC-3",
+          "title": "chore: Créer une migration pour ajouter le champ 'isPublic' à la collection 'entrainements'",
+          "type": "chore",
+          "description": "Ajouter un champ 'isPublic' de type booléen à la collection 'entrainements' dans MongoDB.",
+          "acceptance_criteria": [
+            "La migration est exécutable et réversible.",
+            "Le champ 'isPublic' est ajouté à tous les documents existants dans la collection 'entrainements' avec la valeur par défaut `false`."
+          ],
+          "tech_details": "Stack: [Backend: Node.js, Database: MongoDB]. Utiliser [Mongoose migration].",
+          "definition_of_done": [
+            "La migration est créée et versionnée.",
+            "La migration ajoute le champ `isPublic` avec la valeur par défaut `false`.",
+            "La migration est testée sur un environnement de développement.",
+            "La migration est réversible."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-4"
+          ],
+          "id": "EPIC-3-TASK-3",
+          "epic_id": "EPIC-3",
+          "title": "feat: Ajouter un bouton 'Partager' sur la page de l'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux un bouton 'Partager' sur la page de l'entraînement pour rendre mon entraînement public ou privé.",
+          "acceptance_criteria": [
+            "Un bouton 'Partager' est visible sur la page de l'entraînement.",
+            "Le bouton 'Partager' change d'état (Public/Privé) en fonction de la valeur du champ `isPublic`.",
+            "Cliquer sur le bouton 'Partager' inverse la valeur du champ `isPublic` et met à jour l'entraînement dans la base de données."
+          ],
+          "tech_details": "Stack: [Frontend: React]. Utiliser [Redux/Context pour la gestion d'état]. Endpoints: [PUT /api/entrainements/:id].",
+          "definition_of_done": [
+            "Bouton 'Partager' visible et fonctionnel.",
+            "Changement d'état du bouton en fonction de la valeur de `isPublic`.",
+            "Appel API pour mettre à jour la valeur de `isPublic`.",
+            "Tests unitaires et d'intégration réussis pour le bouton 'Partager'."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-2",
+            "EPIC-3-TASK-1"
+          ],
+          "id": "EPIC-3-TASK-4",
+          "epic_id": "EPIC-3",
+          "title": "feat: Mettre à jour l'API PUT /api/entrainements/:id pour gérer le champ 'isPublic'",
+          "type": "feat",
+          "description": "Mettre à jour l'API PUT /api/entrainements/:id pour permettre la modification du champ 'isPublic'.",
+          "acceptance_criteria": [
+            "L'API PUT /api/entrainements/:id accepte le champ `isPublic` dans le corps de la requête.",
+            "L'API met à jour correctement le champ `isPublic` dans la base de données.",
+            "L'API renvoie une erreur appropriée si l'utilisateur essaie de modifier un entraînement qui ne lui appartient pas."
+          ],
+          "tech_details": "Stack: [Backend: Node.js, Database: MongoDB]. Utiliser [Mongoose]. Endpoints: [PUT /api/entrainements/:id]. Schema: [Entrainement].",
+          "definition_of_done": [
+            "L'API PUT /api/entrainements/:id accepte le champ `isPublic`.",
+            "Le champ `isPublic` est mis à jour correctement dans la base de données.",
+            "Gestion des erreurs si l'utilisateur n'est pas autorisé à modifier l'entraînement.",
+            "Tests unitaires et d'intégration réussis pour l'API PUT."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-6"
+          ],
+          "id": "EPIC-3-TASK-5",
+          "epic_id": "EPIC-3",
+          "title": "feat: Afficher uniquement les entraînements publics dans la liste des entraînements",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux voir uniquement les entraînements publics des autres utilisateurs dans la liste des entraînements.",
+          "acceptance_criteria": [
+            "La liste des entraînements affiche uniquement les entraînements dont le champ `isPublic` est `true`.",
+            "L'utilisateur peut filtrer la liste des entraînements par d'autres critères (nom, type, etc.)."
+          ],
+          "tech_details": "Stack: [Frontend: React, Backend: Node.js, Database: MongoDB]. Utiliser [Redux/Context pour la gestion d'état, Mongoose]. Endpoints: [GET /api/entrainements].",
+          "definition_of_done": [
+            "La liste des entraînements affiche uniquement les entraînements publics.",
+            "Possibilité de filtrer les entraînements.",
+            "Tests unitaires et d'intégration réussis pour l'affichage des entraînements publics."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-2",
+            "EPIC-3-TASK-1"
+          ],
+          "id": "EPIC-3-TASK-6",
+          "epic_id": "EPIC-3",
+          "title": "feat: Mettre à jour l'API GET /api/entrainements pour filtrer par 'isPublic'",
+          "type": "feat",
+          "description": "Mettre à jour l'API GET /api/entrainements pour filtrer les entraînements publics (isPublic = true).",
+          "acceptance_criteria": [
+            "L'API GET /api/entrainements accepte un paramètre de requête `isPublic`.",
+            "Si `isPublic=true`, l'API renvoie uniquement les entraînements dont le champ `isPublic` est `true`.",
+            "Si `isPublic` n'est pas spécifié, l'API renvoie tous les entraînements (ou les entraînements de l'utilisateur courant)."
+          ],
+          "tech_details": "Stack: [Backend: Node.js, Database: MongoDB]. Utiliser [Mongoose]. Endpoints: [GET /api/entrainements]. Schema: [Entrainement].",
+          "definition_of_done": [
+            "L'API GET /api/entrainements accepte le paramètre `isPublic`.",
+            "Filtrage correct des entraînements en fonction de la valeur de `isPublic`.",
+            "Tests unitaires et d'intégration réussis pour l'API GET."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-3",
+            "EPIC-3-TASK-4",
+            "EPIC-3-TASK-5",
+            "EPIC-3-TASK-6"
+          ],
+          "id": "EPIC-3-TASK-7",
+          "epic_id": "EPIC-3",
+          "title": "test: Ajouter des tests unitaires et d'intégration pour le champ 'isPublic'",
+          "type": "chore",
+          "description": "Ajouter des tests unitaires et d'intégration pour vérifier le comportement du champ 'isPublic' dans les différentes parties de l'application.",
+          "acceptance_criteria": [
+            "Les tests unitaires couvrent la création, la modification et la récupération des entraînements avec le champ `isPublic`.",
+            "Les tests d'intégration vérifient l'interaction entre le frontend et le backend pour le champ `isPublic`."
+          ],
+          "tech_details": "Stack: [Frontend: React, Backend: Node.js, Database: MongoDB]. Utiliser [Jest, Mocha/Chai].",
+          "definition_of_done": [
+            "Tests unitaires et d'intégration ajoutés.",
+            "Tous les tests passent avec succès.",
+            "Couverture de code suffisante pour le champ `isPublic`."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-3-TASK-4",
+            "EPIC-3-TASK-6"
+          ],
+          "id": "EPIC-3-TASK-8",
+          "epic_id": "EPIC-3",
+          "title": "docs: Mettre à jour la documentation de l'API avec le champ 'isPublic'",
+          "type": "chore",
+          "description": "Mettre à jour la documentation de l'API pour inclure le champ 'isPublic' dans les requêtes et les réponses.",
+          "acceptance_criteria": [
+            "La documentation de l'API est à jour avec la description du champ `isPublic`.",
+            "Des exemples de requêtes et de réponses sont fournis pour les différents endpoints qui utilisent le champ `isPublic`."
+          ],
+          "tech_details": "Stack: [Swagger/OpenAPI].",
+          "definition_of_done": [
+            "Documentation de l'API mise à jour.",
+            "Exemples de requêtes et de réponses inclus.",
+            "La documentation est accessible et compréhensible."
+          ]
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Permettre aux utilisateurs de rechercher et de découvrir des programmes d'entraînement partagés par d'autres",
+      "description": "Les utilisateurs peuvent rechercher des programmes d'entraînement en fonction de différents critères (type d'entraînement, niveau de difficulté, etc.).",
+      "goal": "Faciliter la découverte de nouveaux programmes d'entraînement et l'inspiration.",
+      "issues": [
+        {
+          "id": "EPIC-4-TASK-1",
+          "epic_id": "EPIC-4",
+          "title": "feat: Ajouter endpoint de recherche d'entraînements",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je souhaite pouvoir rechercher des programmes d'entraînement partagés par d'autres en utilisant différents critères.",
+          "acceptance_criteria": [
+            "Un endpoint `/api/v1/workouts/search` doit être disponible pour la recherche.",
+            "L'endpoint doit accepter des paramètres de requête pour filtrer les résultats (type, difficulté, mots-clés).",
+            "L'endpoint doit renvoyer une liste paginée de programmes d'entraînement correspondant aux critères de recherche.",
+            "L'endpoint doit renvoyer un code d'état 200 OK avec les résultats si la recherche réussit.",
+            "L'endpoint doit renvoyer un code d'état 400 Bad Request si les paramètres de requête sont invalides.",
+            "L'endpoint doit renvoyer une réponse JSON avec les informations de chaque entraînement (id, titre, description, type, difficulté, créateur, date de création)."
+          ],
+          "tech_details": "Stack: Python, Flask, SQLAlchemy. Utiliser Flask-RESTful pour l'API. Base de données PostgreSQL.  L'endpoint `/api/v1/workouts/search` doit accepter les paramètres `type`, `difficulty`, `keywords`, `page`, `per_page`.  Schéma de la table `workouts`: `id`, `title`, `description`, `type`, `difficulty`, `creator_id`, `created_at`.",
+          "definition_of_done": [
+            "Endpoint `/api/v1/workouts/search` implémenté et fonctionnel.",
+            "Tests unitaires et d'intégration pour l'endpoint de recherche.",
+            "Documentation de l'API mise à jour avec les nouveaux paramètres et le format de réponse.",
+            "Gestion des erreurs implémentée (validation des paramètres, gestion des erreurs de base de données)."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ],
+          "id": "EPIC-4-TASK-2",
+          "epic_id": "EPIC-4",
+          "title": "chore: Ajouter index de recherche full-text sur la table workouts",
+          "type": "chore",
+          "description": "Ajouter un index full-text sur les colonnes `title` et `description` de la table `workouts` pour améliorer les performances de la recherche.",
+          "acceptance_criteria": [
+            "Un index full-text est créé sur les colonnes `title` et `description` de la table `workouts`.",
+            "La recherche avec des mots-clés utilise l'index full-text.",
+            "Les performances de la recherche avec des mots-clés sont améliorées."
+          ],
+          "tech_details": "Stack: PostgreSQL. Utiliser l'extension `pg_trgm` pour la recherche full-text. Créer un index GIN sur la combinaison des colonnes `title` et `description`.  Commande SQL: `CREATE INDEX workouts_title_description_idx ON workouts USING GIN (to_tsvector('french', title || ' ' || description));`.",
+          "definition_of_done": [
+            "Index full-text créé sur la table `workouts`.",
+            "Requêtes de recherche optimisées pour utiliser l'index full-text.",
+            "Vérification des performances de la recherche avant et après l'ajout de l'index."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ],
+          "id": "EPIC-4-TASK-3",
+          "epic_id": "EPIC-4",
+          "title": "feat: Implémenter la pagination des résultats de recherche",
+          "type": "feat",
+          "description": "Implémenter la pagination des résultats de recherche pour éviter de renvoyer un trop grand nombre d'enregistrements à la fois.",
+          "acceptance_criteria": [
+            "L'endpoint de recherche renvoie les résultats paginés.",
+            "Les paramètres `page` et `per_page` sont utilisés pour contrôler la pagination.",
+            "Les résultats incluent les métadonnées de pagination (nombre total de résultats, page actuelle, nombre de pages)."
+          ],
+          "tech_details": "Stack: Python, Flask, SQLAlchemy. Utiliser SQLAlchemy pour la pagination. Ajouter les paramètres `page` et `per_page` à l'endpoint `/api/v1/workouts/search`.  La réponse JSON doit inclure les clés `items` (liste des résultats), `page`, `per_page`, `total_items`, `total_pages`.",
+          "definition_of_done": [
+            "Pagination implémentée sur l'endpoint de recherche.",
+            "Tests unitaires pour la pagination.",
+            "Documentation de l'API mise à jour avec les paramètres de pagination et le format de réponse."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ],
+          "id": "EPIC-4-TASK-4",
+          "epic_id": "EPIC-4",
+          "title": "feat: Ajouter des filtres de recherche avancés",
+          "type": "feat",
+          "description": "Ajouter des filtres de recherche avancés pour permettre aux utilisateurs de filtrer les résultats par niveau de difficulté (débutant, intermédiaire, avancé) et type d'entraînement (force, cardio, endurance).",
+          "acceptance_criteria": [
+            "Les filtres de recherche avancés sont disponibles sur l'endpoint de recherche.",
+            "Les utilisateurs peuvent filtrer par niveau de difficulté et type d'entraînement.",
+            "Les filtres sont appliqués correctement aux résultats de recherche."
+          ],
+          "tech_details": "Stack: Python, Flask, SQLAlchemy. Ajouter les paramètres `difficulty` et `type` à l'endpoint `/api/v1/workouts/search`.  Les valeurs possibles pour `difficulty` sont `beginner`, `intermediate`, `advanced`. Les valeurs possibles pour `type` sont `strength`, `cardio`, `endurance`. Valider les paramètres d'entrée.  Modifier la requête SQLAlchemy pour inclure les filtres de recherche.",
+          "definition_of_done": [
+            "Filtres de recherche avancés implémentés.",
+            "Tests unitaires pour les filtres de recherche.",
+            "Documentation de l'API mise à jour avec les nouveaux paramètres."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-1"
+          ],
+          "id": "EPIC-4-TASK-5",
+          "epic_id": "EPIC-4",
+          "title": "fix: Gérer les erreurs de recherche (aucun résultat, erreurs de base de données)",
+          "type": "fix",
+          "description": "Gérer les erreurs potentielles lors de la recherche, telles que l'absence de résultats ou les erreurs de base de données.",
+          "acceptance_criteria": [
+            "L'endpoint de recherche renvoie un code d'état 200 OK avec une liste vide si aucun résultat n'est trouvé.",
+            "L'endpoint de recherche renvoie un code d'état 500 Internal Server Error si une erreur de base de données se produit.",
+            "Les erreurs sont correctement enregistrées dans les journaux (logs)."
+          ],
+          "tech_details": "Stack: Python, Flask. Ajouter la gestion des exceptions pour les erreurs de base de données.  Utiliser un logger pour enregistrer les erreurs.  Retourner un code d'état 500 avec un message d'erreur JSON en cas d'erreur de base de données.",
+          "definition_of_done": [
+            "Gestion des erreurs implémentée.",
+            "Tests unitaires pour les cas d'erreur.",
+            "Vérification des journaux pour les erreurs."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-1",
+            "EPIC-4-TASK-2",
+            "EPIC-4-TASK-3",
+            "EPIC-4-TASK-4",
+            "EPIC-4-TASK-5"
+          ],
+          "id": "EPIC-4-TASK-6",
+          "epic_id": "EPIC-4",
+          "title": "chore: Ajouter des tests unitaires pour l'endpoint de recherche",
+          "type": "chore",
+          "description": "Ajouter des tests unitaires pour l'endpoint de recherche afin de garantir son bon fonctionnement.",
+          "acceptance_criteria": [
+            "Les tests unitaires couvrent tous les cas d'utilisation de l'endpoint de recherche.",
+            "Les tests unitaires vérifient le comportement de l'endpoint avec différents paramètres et données.",
+            "Les tests unitaires vérifient la gestion des erreurs."
+          ],
+          "tech_details": "Stack: Python, pytest. Utiliser pytest pour les tests unitaires.  Créer des tests pour les cas suivants : recherche avec des mots-clés, recherche par type, recherche par difficulté, pagination, aucun résultat, erreurs de base de données.",
+          "definition_of_done": [
+            "Tests unitaires implémentés.",
+            "Tous les tests unitaires passent.",
+            "Couverture de code des tests unitaires supérieure à 80%."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-4-TASK-1",
+            "EPIC-4-TASK-3",
+            "EPIC-4-TASK-4"
+          ],
+          "id": "EPIC-4-TASK-7",
+          "epic_id": "EPIC-4",
+          "title": "chore: Documenter l'endpoint de recherche dans Swagger",
+          "type": "chore",
+          "description": "Documenter l'endpoint de recherche dans Swagger pour faciliter son utilisation par les développeurs frontend.",
+          "acceptance_criteria": [
+            "L'endpoint de recherche est correctement documenté dans Swagger.",
+            "La documentation inclut la description de l'endpoint, les paramètres, les exemples de requêtes et de réponses.",
+            "La documentation est à jour."
+          ],
+          "tech_details": "Stack: Python, Flask, Flask-RESTful, Swagger. Utiliser Flask-RESTful pour générer la documentation Swagger.  Ajouter la documentation pour l'endpoint `/api/v1/workouts/search` avec les paramètres `type`, `difficulty`, `keywords`, `page`, `per_page` et le format de réponse JSON.",
+          "definition_of_done": [
+            "Documentation Swagger mise à jour.",
+            "La documentation est correcte et complète.",
+            "La documentation est accessible via l'interface Swagger."
+          ]
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Permettre aux utilisateurs de sauvegarder les programmes d'entraînement favoris",
+      "description": "Les utilisateurs peuvent sauvegarder les programmes d'entraînement qu'ils apprécient afin de pouvoir les retrouver facilement.",
+      "goal": "Faciliter l'accès aux programmes d'entraînement les plus pertinents pour chaque utilisateur.",
+      "issues": [
+        {
+          "id": "EPIC-5-TASK-1",
+          "epic_id": "EPIC-5",
+          "title": "feat: Ajouter une table 'favorites' pour stocker les programmes favoris",
+          "type": "feat",
+          "description": "Créer une table dans la base de données pour stocker les relations entre les utilisateurs et leurs programmes d'entraînement favoris.",
+          "acceptance_criteria": [
+            "Une nouvelle table 'favorites' est créée dans la base de données.",
+            "La table 'favorites' contient les colonnes user_id (INT, clé étrangère vers users.id), program_id (INT, clé étrangère vers programs.id), et created_at (TIMESTAMP)."
+          ],
+          "tech_details": "Stack: PostgreSQL. Schema: Création d'une table 'favorites' avec les colonnes user_id, program_id, created_at. Utiliser une migration SQL pour créer la table.",
+          "definition_of_done": [
+            "Script de migration SQL créé et appliqué avec succès.",
+            "La table 'favorites' existe dans la base de données avec les colonnes spécifiées.",
+            "Les contraintes de clé étrangère sont correctement définies."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-5-TASK-2",
+          "epic_id": "EPIC-5",
+          "title": "feat: Ajouter un endpoint API pour ajouter un programme aux favoris",
+          "type": "feat",
+          "description": "Développer un endpoint API pour permettre à un utilisateur d'ajouter un programme d'entraînement à sa liste de favoris.",
+          "acceptance_criteria": [
+            "Un endpoint POST /api/favorites est disponible.",
+            "L'endpoint nécessite une authentification JWT.",
+            "L'endpoint prend un program_id dans le corps de la requête.",
+            "L'endpoint ajoute une entrée dans la table 'favorites' avec l'user_id de l'utilisateur authentifié et le program_id fourni.",
+            "L'endpoint renvoie un code 201 Created en cas de succès.",
+            "L'endpoint renvoie un code 400 Bad Request si le program_id n'est pas valide ou si le programme n'existe pas.",
+            "L'endpoint renvoie un code 409 Conflict si le programme est déjà dans les favoris de l'utilisateur."
+          ],
+          "tech_details": "Stack: Node.js, Express.js, PostgreSQL, JWT. Endpoint: POST /api/favorites. Utiliser Sequelize pour interagir avec la base de données. Middleware d'authentification JWT.",
+          "definition_of_done": [
+            "Endpoint POST /api/favorites implémenté et fonctionnel.",
+            "Gestion des erreurs implémentée (400, 401, 409).",
+            "Tests unitaires et d'intégration pour l'endpoint."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-5-TASK-3",
+          "epic_id": "EPIC-5",
+          "title": "feat: Ajouter un endpoint API pour supprimer un programme des favoris",
+          "type": "feat",
+          "description": "Développer un endpoint API pour permettre à un utilisateur de supprimer un programme d'entraînement de sa liste de favoris.",
+          "acceptance_criteria": [
+            "Un endpoint DELETE /api/favorites/:program_id est disponible.",
+            "L'endpoint nécessite une authentification JWT.",
+            "L'endpoint supprime l'entrée correspondante dans la table 'favorites' pour l'utilisateur authentifié et le program_id fourni.",
+            "L'endpoint renvoie un code 204 No Content en cas de succès.",
+            "L'endpoint renvoie un code 404 Not Found si le programme n'est pas dans les favoris de l'utilisateur."
+          ],
+          "tech_details": "Stack: Node.js, Express.js, PostgreSQL, JWT. Endpoint: DELETE /api/favorites/:program_id. Utiliser Sequelize pour interagir avec la base de données. Middleware d'authentification JWT.",
+          "definition_of_done": [
+            "Endpoint DELETE /api/favorites/:program_id implémenté et fonctionnel.",
+            "Gestion des erreurs implémentée (401, 404).",
+            "Tests unitaires et d'intégration pour l'endpoint."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-5-TASK-4",
+          "epic_id": "EPIC-5",
+          "title": "feat: Ajouter un endpoint API pour lister les programmes favoris d'un utilisateur",
+          "type": "feat",
+          "description": "Développer un endpoint API pour permettre à un utilisateur de récupérer la liste de ses programmes d'entraînement favoris.",
+          "acceptance_criteria": [
+            "Un endpoint GET /api/favorites est disponible.",
+            "L'endpoint nécessite une authentification JWT.",
+            "L'endpoint renvoie une liste de programmes d'entraînement au format JSON.",
+            "Chaque programme d'entraînement dans la liste contient les informations nécessaires (nom, description, etc.).",
+            "L'endpoint renvoie un code 200 OK en cas de succès.",
+            "L'endpoint renvoie une liste vide si l'utilisateur n'a aucun programme favori."
+          ],
+          "tech_details": "Stack: Node.js, Express.js, PostgreSQL, JWT. Endpoint: GET /api/favorites. Utiliser Sequelize pour interagir avec la base de données. Middleware d'authentification JWT. Joindre les tables 'favorites' et 'programs' pour récupérer les informations des programmes.",
+          "definition_of_done": [
+            "Endpoint GET /api/favorites implémenté et fonctionnel.",
+            "Gestion des erreurs implémentée (401).",
+            "Tests unitaires et d'intégration pour l'endpoint.",
+            "La réponse contient les informations du programme (nom, description, etc.)"
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-2"
+          ],
+          "id": "EPIC-5-TASK-5",
+          "epic_id": "EPIC-5",
+          "title": "feat: Intégrer le bouton 'Ajouter aux favoris' sur la page de détail du programme (Frontend)",
+          "type": "feat",
+          "description": "Ajouter un bouton 'Ajouter aux favoris' sur la page de détail de chaque programme d'entraînement.",
+          "acceptance_criteria": [
+            "Un bouton 'Ajouter aux favoris' est visible sur la page de détail du programme.",
+            "Le bouton est désactivé si l'utilisateur n'est pas connecté.",
+            "Lorsque l'utilisateur clique sur le bouton, une requête POST est envoyée à l'endpoint /api/favorites avec l'ID du programme.",
+            "Un feedback visuel est donné à l'utilisateur après l'ajout du programme aux favoris (ex: changement de texte du bouton, notification).",
+            "Le bouton change d'état (ex: 'Supprimer des favoris') si le programme est déjà dans les favoris de l'utilisateur."
+          ],
+          "tech_details": "Stack: React.js. Utiliser Axios pour les requêtes API. Gérer l'état du bouton (ajouté/non ajouté aux favoris).",
+          "definition_of_done": [
+            "Bouton 'Ajouter aux favoris' intégré sur la page de détail du programme.",
+            "Fonctionnalité d'ajout aux favoris fonctionnelle.",
+            "Feedback visuel pour l'utilisateur.",
+            "Gestion de l'état du bouton (ajouté/non ajouté)."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-3"
+          ],
+          "id": "EPIC-5-TASK-6",
+          "epic_id": "EPIC-5",
+          "title": "feat: Intégrer le bouton 'Supprimer des favoris' sur la page de détail du programme (Frontend)",
+          "type": "feat",
+          "description": "Ajouter un bouton 'Supprimer des favoris' sur la page de détail de chaque programme d'entraînement.",
+          "acceptance_criteria": [
+            "Un bouton 'Supprimer des favoris' est visible sur la page de détail du programme si celui-ci est dans les favoris.",
+            "Lorsque l'utilisateur clique sur le bouton, une requête DELETE est envoyée à l'endpoint /api/favorites/:program_id.",
+            "Un feedback visuel est donné à l'utilisateur après la suppression du programme des favoris (ex: changement de texte du bouton, notification).",
+            "Le bouton change d'état (ex: 'Ajouter aux favoris') si le programme n'est plus dans les favoris de l'utilisateur."
+          ],
+          "tech_details": "Stack: React.js. Utiliser Axios pour les requêtes API. Gérer l'état du bouton (ajouté/non ajouté aux favoris).",
+          "definition_of_done": [
+            "Bouton 'Supprimer des favoris' intégré sur la page de détail du programme.",
+            "Fonctionnalité de suppression des favoris fonctionnelle.",
+            "Feedback visuel pour l'utilisateur.",
+            "Gestion de l'état du bouton (ajouté/non ajouté)."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-4"
+          ],
+          "id": "EPIC-5-TASK-7",
+          "epic_id": "EPIC-5",
+          "title": "feat: Afficher la liste des programmes favoris sur la page de profil de l'utilisateur (Frontend)",
+          "type": "feat",
+          "description": "Afficher la liste des programmes d'entraînement favoris de l'utilisateur sur sa page de profil.",
+          "acceptance_criteria": [
+            "Une section 'Programmes favoris' est visible sur la page de profil de l'utilisateur.",
+            "La liste des programmes favoris est affichée dans cette section.",
+            "Chaque programme dans la liste contient un lien vers sa page de détail.",
+            "Un message est affiché si l'utilisateur n'a aucun programme favori."
+          ],
+          "tech_details": "Stack: React.js. Utiliser Axios pour récupérer la liste des programmes favoris depuis l'endpoint /api/favorites. Gérer l'état de chargement et d'erreur.",
+          "definition_of_done": [
+            "Liste des programmes favoris affichée sur la page de profil de l'utilisateur.",
+            "Gestion des cas où l'utilisateur n'a aucun programme favori.",
+            "Liens vers les pages de détail des programmes."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-2",
+            "EPIC-5-TASK-3",
+            "EPIC-5-TASK-4"
+          ],
+          "id": "EPIC-5-TASK-8",
+          "epic_id": "EPIC-5",
+          "title": "chore: Ajouter des tests unitaires pour les endpoints /api/favorites",
+          "type": "chore",
+          "description": "Ajouter des tests unitaires pour les endpoints API liés à la gestion des favoris.",
+          "acceptance_criteria": [
+            "Tests unitaires couvrant les cas d'ajout, de suppression et de récupération des favoris.",
+            "Tests couvrant les cas de succès et d'erreur (validation des données, utilisateur non authentifié, programme inexistant, etc.).",
+            "Couverture de code suffisante pour garantir la qualité et la robustesse des endpoints."
+          ],
+          "tech_details": "Stack: Jest, Supertest. Tester les endpoints /api/favorites (POST, DELETE, GET). Mock des dépendances (base de données, authentification).",
+          "definition_of_done": [
+            "Tests unitaires implémentés et passant avec succès.",
+            "Couverture de code suffisante (à définir en fonction des outils de couverture).",
+            "Intégration des tests dans le pipeline CI/CD."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-5-TASK-2",
+            "EPIC-5-TASK-3",
+            "EPIC-5-TASK-4"
+          ],
+          "id": "EPIC-5-TASK-9",
+          "epic_id": "EPIC-5",
+          "title": "chore: Ajouter de la documentation API pour les endpoints /api/favorites",
+          "type": "chore",
+          "description": "Mettre à jour la documentation API pour inclure les endpoints liés à la gestion des favoris.",
+          "acceptance_criteria": [
+            "Documentation Swagger/OpenAPI mise à jour avec les endpoints /api/favorites (POST, DELETE, GET).",
+            "Description des paramètres, des corps de requêtes et des réponses pour chaque endpoint.",
+            "Exemples de requêtes et de réponses JSON.",
+            "Documentation claire et concise pour faciliter l'utilisation des endpoints par les développeurs frontend."
+          ],
+          "tech_details": "Stack: Swagger/OpenAPI. Mettre à jour le fichier de définition de l'API avec les informations des endpoints /api/favorites.",
+          "definition_of_done": [
+            "Documentation Swagger/OpenAPI mise à jour.",
+            "Validation de la documentation avec un outil de validation Swagger/OpenAPI.",
+            "Publication de la documentation mise à jour."
+          ]
+        }
+      ],
+      "priority": "low"
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Permettre aux utilisateurs de commenter et d'évaluer les programmes d'entraînement",
+      "description": "Les utilisateurs peuvent donner leur avis sur les programmes d'entraînement et les évaluer afin d'aider les autres utilisateurs à faire leur choix.",
+      "goal": "Améliorer la qualité des programmes d'entraînement partagés et faciliter la prise de décision.",
+      "issues": [
+        {
+          "id": "EPIC-6-TASK-1",
+          "epic_id": "EPIC-6",
+          "title": "feat: Add database schema for comments and ratings",
+          "type": "feat",
+          "description": "As a developer, I want to add the database schema for comments and ratings so that users can leave feedback on workout programs.",
+          "acceptance_criteria": [
+            "Two new tables should be created: `comments` and `ratings`.",
+            "The `comments` table should store the comment text, user ID, workout program ID, and timestamp.",
+            "The `ratings` table should store the user ID, workout program ID, and rating value (1-5).",
+            "Foreign key constraints should be added to link comments and ratings to the `users` and `workout_programs` tables."
+          ],
+          "tech_details": "Stack: PostgreSQL, SQLAlchemy. Schema: `comments` (id SERIAL PRIMARY KEY, workout_program_id INTEGER REFERENCES workout_programs(id), user_id INTEGER REFERENCES users(id), comment TEXT, created_at TIMESTAMP), `ratings` (workout_program_id INTEGER REFERENCES workout_programs(id), user_id INTEGER REFERENCES users(id), rating INTEGER, PRIMARY KEY (workout_program_id, user_id))",
+          "definition_of_done": [
+            "SQL migration script created and applied successfully.",
+            "New tables `comments` and `ratings` exist in the database with the correct schema and constraints.",
+            "Data can be inserted and retrieved from the new tables."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-6-TASK-2",
+          "epic_id": "EPIC-6",
+          "title": "feat: Implement API endpoint for creating comments",
+          "type": "feat",
+          "description": "As a backend developer, I want to implement an API endpoint for creating comments on workout programs so that users can provide feedback.",
+          "acceptance_criteria": [
+            "A POST endpoint `/workout_programs/{workout_program_id}/comments` should be created.",
+            "The endpoint should require authentication.",
+            "The request body should contain the comment text.",
+            "The comment should be saved in the database with the user ID, workout program ID, and timestamp.",
+            "The endpoint should return the newly created comment.",
+            "Input validation: workout_program_id must be a valid integer. comment text must be between 1 and 500 characters"
+          ],
+          "tech_details": "Stack: Python, Flask, SQLAlchemy. Endpoint: POST /workout_programs/\u003cint:workout_program_id\u003e/comments. Request body: { \"comment\": \"This is a great workout!\" }. Response body: { \"id\": 123, \"workout_program_id\": 456, \"user_id\": 789, \"comment\": \"This is a great workout!\", \"created_at\": \"2024-01-01T12:00:00Z\" }",
+          "definition_of_done": [
+            "API endpoint created and documented.",
+            "Comments are successfully saved in the database.",
+            "Input validation is implemented.",
+            "Error handling is implemented (e.g., invalid workout program ID, missing comment text)."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-6-TASK-3",
+          "epic_id": "EPIC-6",
+          "title": "feat: Implement API endpoint for retrieving comments for a workout program",
+          "type": "feat",
+          "description": "As a backend developer, I want to implement an API endpoint for retrieving comments for a workout program so that users can see the feedback.",
+          "acceptance_criteria": [
+            "A GET endpoint `/workout_programs/{workout_program_id}/comments` should be created.",
+            "The endpoint should not require authentication.",
+            "The endpoint should return a list of comments for the specified workout program.",
+            "The comments should be sorted by creation date in descending order.",
+            "If no comments exist for the workout program, an empty list should be returned."
+          ],
+          "tech_details": "Stack: Python, Flask, SQLAlchemy. Endpoint: GET /workout_programs/\u003cint:workout_program_id\u003e/comments. Response body: [ { \"id\": 123, \"workout_program_id\": 456, \"user_id\": 789, \"comment\": \"This is a great workout!\", \"created_at\": \"2024-01-01T12:00:00Z\" }, { \"id\": 124, \"workout_program_id\": 456, \"user_id\": 790, \"comment\": \"Needs more variety.\", \"created_at\": \"2023-12-31T12:00:00Z\" } ]",
+          "definition_of_done": [
+            "API endpoint created and documented.",
+            "Comments are successfully retrieved from the database.",
+            "Comments are sorted correctly.",
+            "Error handling is implemented (e.g., invalid workout program ID)."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-6-TASK-4",
+          "epic_id": "EPIC-6",
+          "title": "feat: Implement API endpoint for creating ratings",
+          "type": "feat",
+          "description": "As a backend developer, I want to implement an API endpoint for creating ratings on workout programs so that users can rate them.",
+          "acceptance_criteria": [
+            "A POST endpoint `/workout_programs/{workout_program_id}/ratings` should be created.",
+            "The endpoint should require authentication.",
+            "The request body should contain the rating value (1-5).",
+            "The rating should be saved in the database with the user ID and workout program ID.",
+            "If a user has already rated the workout program, the existing rating should be updated.",
+            "The endpoint should return the average rating for the workout program.",
+            "Input validation: workout_program_id must be a valid integer. rating must be an integer between 1 and 5."
+          ],
+          "tech_details": "Stack: Python, Flask, SQLAlchemy. Endpoint: POST /workout_programs/\u003cint:workout_program_id\u003e/ratings. Request body: { \"rating\": 4 }. Response body: { \"average_rating\": 4.5 }",
+          "definition_of_done": [
+            "API endpoint created and documented.",
+            "Ratings are successfully saved in the database.",
+            "Existing ratings are updated correctly.",
+            "Average rating is calculated and returned correctly.",
+            "Input validation is implemented.",
+            "Error handling is implemented (e.g., invalid workout program ID, invalid rating value)."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-1",
+            "EPIC-1-TASK-3"
+          ],
+          "id": "EPIC-6-TASK-5",
+          "epic_id": "EPIC-6",
+          "title": "feat: Implement API endpoint for retrieving average rating for a workout program",
+          "type": "feat",
+          "description": "As a backend developer, I want to implement an API endpoint for retrieving the average rating for a workout program so that users can see the overall rating.",
+          "acceptance_criteria": [
+            "A GET endpoint `/workout_programs/{workout_program_id}/ratings/average` should be created.",
+            "The endpoint should not require authentication.",
+            "The endpoint should return the average rating for the specified workout program.",
+            "If no ratings exist for the workout program, the endpoint should return 0."
+          ],
+          "tech_details": "Stack: Python, Flask, SQLAlchemy. Endpoint: GET /workout_programs/\u003cint:workout_program_id\u003e/ratings/average. Response body: { \"average_rating\": 4.2 }",
+          "definition_of_done": [
+            "API endpoint created and documented.",
+            "Average rating is successfully retrieved from the database.",
+            "Correct average rating is returned.",
+            "Error handling is implemented (e.g., invalid workout program ID)."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-3"
+          ],
+          "id": "EPIC-6-TASK-6",
+          "epic_id": "EPIC-6",
+          "title": "feat: Display comments on workout program details page (Frontend)",
+          "type": "feat",
+          "description": "As a frontend developer, I want to display comments on the workout program details page so that users can read feedback from others.",
+          "acceptance_criteria": [
+            "The workout program details page should display a list of comments.",
+            "Each comment should display the user's name, comment text, and creation date.",
+            "The comments should be sorted by creation date in descending order.",
+            "A loading indicator should be displayed while the comments are being fetched.",
+            "An error message should be displayed if the comments cannot be fetched."
+          ],
+          "tech_details": "Stack: React, Redux. Fetch comments from API endpoint `/workout_programs/{workout_program_id}/comments`. Display user's name using user ID.",
+          "definition_of_done": [
+            "Comments are displayed correctly on the workout program details page.",
+            "Loading indicator and error message are displayed correctly.",
+            "Styling matches the design guidelines."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-2"
+          ],
+          "id": "EPIC-6-TASK-7",
+          "epic_id": "EPIC-6",
+          "title": "feat: Implement comment submission form (Frontend)",
+          "type": "feat",
+          "description": "As a frontend developer, I want to implement a comment submission form on the workout program details page so that users can leave their own comments.",
+          "acceptance_criteria": [
+            "The workout program details page should display a comment submission form.",
+            "The form should contain a text area for the comment text.",
+            "The form should be submitted to the API endpoint `/workout_programs/{workout_program_id}/comments`.",
+            "The form should be validated to ensure that the comment text is not empty and within the allowed length.",
+            "After submitting the form, the comments list should be refreshed.",
+            "A loading indicator should be displayed while the comment is being submitted.",
+            "An error message should be displayed if the comment cannot be submitted."
+          ],
+          "tech_details": "Stack: React, Redux. Submit comment to API endpoint `/workout_programs/{workout_program_id}/comments`. Use form validation library.  Max comment length: 500 chars.",
+          "definition_of_done": [
+            "Comment submission form is displayed correctly on the workout program details page.",
+            "Form is validated correctly.",
+            "Comments list is refreshed after submission.",
+            "Loading indicator and error message are displayed correctly.",
+            "Styling matches the design guidelines."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-5"
+          ],
+          "id": "EPIC-6-TASK-8",
+          "epic_id": "EPIC-6",
+          "title": "feat: Display average rating on workout program details page (Frontend)",
+          "type": "feat",
+          "description": "As a frontend developer, I want to display the average rating on the workout program details page so that users can see the overall rating.",
+          "acceptance_criteria": [
+            "The workout program details page should display the average rating.",
+            "The average rating should be fetched from the API endpoint `/workout_programs/{workout_program_id}/ratings/average`.",
+            "A loading indicator should be displayed while the average rating is being fetched.",
+            "An error message should be displayed if the average rating cannot be fetched.",
+            "If there are no ratings, display 'No ratings yet'."
+          ],
+          "tech_details": "Stack: React, Redux. Fetch average rating from API endpoint `/workout_programs/{workout_program_id}/ratings/average`. Use a star rating component to display the rating.",
+          "definition_of_done": [
+            "Average rating is displayed correctly on the workout program details page.",
+            "Loading indicator and error message are displayed correctly.",
+            "Styling matches the design guidelines.",
+            "'No ratings yet' is displayed correctly."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-4"
+          ],
+          "id": "EPIC-6-TASK-9",
+          "epic_id": "EPIC-6",
+          "title": "feat: Implement rating submission component (Frontend)",
+          "type": "feat",
+          "description": "As a frontend developer, I want to implement a rating submission component on the workout program details page so that users can rate the workout program.",
+          "acceptance_criteria": [
+            "The workout program details page should display a rating submission component.",
+            "The component should allow users to select a rating from 1 to 5.",
+            "The rating should be submitted to the API endpoint `/workout_programs/{workout_program_id}/ratings`.",
+            "After submitting the rating, the average rating should be refreshed.",
+            "A loading indicator should be displayed while the rating is being submitted.",
+            "An error message should be displayed if the rating cannot be submitted.",
+            "The component should only be visible to authenticated users."
+          ],
+          "tech_details": "Stack: React, Redux. Submit rating to API endpoint `/workout_programs/{workout_program_id}/ratings`. Use a star rating component for input. Only allow logged-in users to rate.",
+          "definition_of_done": [
+            "Rating submission component is displayed correctly on the workout program details page.",
+            "Rating is submitted correctly.",
+            "Average rating is refreshed after submission.",
+            "Loading indicator and error message are displayed correctly.",
+            "Styling matches the design guidelines.",
+            "Only logged-in users can rate."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-2"
+          ],
+          "id": "EPIC-6-TASK-10",
+          "epic_id": "EPIC-6",
+          "title": "chore: Add unit tests for comment creation endpoint",
+          "type": "chore",
+          "description": "As a developer, I want to add unit tests for the comment creation endpoint to ensure its functionality.",
+          "acceptance_criteria": [
+            "Unit tests should cover successful comment creation.",
+            "Unit tests should cover error cases (e.g., invalid workout program ID, missing comment text, unauthorized user).",
+            "Test database should be cleaned after each test."
+          ],
+          "tech_details": "Stack: Python, pytest, Flask. Test API endpoint POST /workout_programs/\u003cint:workout_program_id\u003e/comments. Mock database interactions.",
+          "definition_of_done": [
+            "Unit tests are written and pass.",
+            "Code coverage is above 80% for the comment creation endpoint."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-4"
+          ],
+          "id": "EPIC-6-TASK-11",
+          "epic_id": "EPIC-6",
+          "title": "chore: Add unit tests for rating creation endpoint",
+          "type": "chore",
+          "description": "As a developer, I want to add unit tests for the rating creation endpoint to ensure its functionality.",
+          "acceptance_criteria": [
+            "Unit tests should cover successful rating creation.",
+            "Unit tests should cover rating updates.",
+            "Unit tests should cover error cases (e.g., invalid workout program ID, invalid rating value, unauthorized user).",
+            "Test database should be cleaned after each test."
+          ],
+          "tech_details": "Stack: Python, pytest, Flask. Test API endpoint POST /workout_programs/\u003cint:workout_program_id\u003e/ratings. Mock database interactions.",
+          "definition_of_done": [
+            "Unit tests are written and pass.",
+            "Code coverage is above 80% for the rating creation endpoint."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-6",
+            "EPIC-6-TASK-7",
+            "EPIC-6-TASK-8",
+            "EPIC-6-TASK-9"
+          ],
+          "id": "EPIC-6-TASK-12",
+          "epic_id": "EPIC-6",
+          "title": "chore: Add e2e tests for commenting and rating features",
+          "type": "chore",
+          "description": "As a QA engineer, I want to add end-to-end tests for the commenting and rating features to ensure they work correctly from the user's perspective.",
+          "acceptance_criteria": [
+            "E2E tests should cover creating a comment and verifying that it is displayed correctly.",
+            "E2E tests should cover submitting a rating and verifying that the average rating is updated correctly.",
+            "E2E tests should cover edge cases (e.g., submitting an empty comment, submitting an invalid rating value).",
+            "Tests should run on multiple browsers."
+          ],
+          "tech_details": "Stack: Cypress, Playwright (choose one). Test commenting and rating features on the frontend.",
+          "definition_of_done": [
+            "E2E tests are written and pass.",
+            "Tests cover all acceptance criteria."
+          ]
+        },
+        {
+          "dependencies": [
+            "EPIC-6-TASK-2",
+            "EPIC-6-TASK-3",
+            "EPIC-6-TASK-4",
+            "EPIC-6-TASK-5"
+          ],
+          "id": "EPIC-6-TASK-13",
+          "epic_id": "EPIC-6",
+          "title": "chore: Update API documentation with comment and rating endpoints",
+          "type": "chore",
+          "description": "As a developer, I want to update the API documentation with the new comment and rating endpoints so that other developers can easily use them.",
+          "acceptance_criteria": [
+            "The API documentation should include the new endpoints for creating comments, retrieving comments, creating ratings, and retrieving the average rating.",
+            "The documentation should include the request and response schemas for each endpoint.",
+            "The documentation should include example requests and responses.",
+            "The documentation should be up-to-date and accurate."
+          ],
+          "tech_details": "Stack: Swagger, OpenAPI. Document API endpoints: POST /workout_programs/\u003cint:workout_program_id\u003e/comments, GET /workout_programs/\u003cint:workout_program_id\u003e/comments, POST /workout_programs/\u003cint:workout_program_id\u003e/ratings, GET /workout_programs/\u003cint:workout_program_id\u003e/ratings/average.",
+          "definition_of_done": [
+            "API documentation is updated with the new endpoints.",
+            "Documentation is accurate and complete."
+          ]
+        }
+      ],
+      "priority": "low"
+    }
+  ],
+  "model": "google/gemini-2.0-flash-001",
+  "number_token": 21759
+}

@@ -1,0 +1,1770 @@
+{
+  "idea": "Une application permettant aux utilisateurs de partager leur programme d'entrainement en salle de sport, les utilisateurs peuvent s'inscrire, se connecter, créer des entrainement, les partager\n",
+  "epics": [
+    {
+      "id": "1",
+      "title": "Permettre aux utilisateurs de s'inscrire et de se connecter à l'application",
+      "description": "Les utilisateurs peuvent créer un compte et se connecter pour accéder aux fonctionnalités de l'application.",
+      "goal": "Augmenter le nombre d'utilisateurs actifs en facilitant l'accès à l'application.",
+      "issues": [
+        {
+          "id": "1-TASK-1",
+          "epic_id": "1",
+          "title": "Implémenter l'endpoint d'inscription utilisateur",
+          "type": "feat",
+          "description": "Créer un endpoint API pour permettre aux nouveaux utilisateurs de s'inscrire en fournissant un nom d'utilisateur, une adresse e-mail et un mot de passe. Valider les données saisies et hacher le mot de passe avant de stocker l'utilisateur dans la base de données.",
+          "acceptance_criteria": [
+            "L'API doit valider la présence et le format correct des champs (nom d'utilisateur, email, mot de passe).",
+            "L'API doit retourner une erreur si l'email est déjà utilisé.",
+            "Le mot de passe doit être haché avant d'être stocké dans la base de données.",
+            "L'API doit retourner un code de succès et un message confirmant l'inscription."
+          ],
+          "tech_details": "Utiliser un ORM pour interagir avec la base de données (GORM).",
+          "validation": "Vérifier manuellement l'inscription via l'API avec différents scénarios (données valides, invalides, email existant).",
+          "error_handling": "Retourner des erreurs HTTP appropriées (400 pour les erreurs de validation, 409 pour les conflits d'email).",
+          "database_migrations": "Ajouter une table 'users' avec les colonnes 'id', 'username', 'email', 'password_hash', 'created_at', 'updated_at'.",
+          "tests": [
+            "Test unitaire pour valider le format de l'email.",
+            "Test unitaire pour vérifier que l'email est unique.",
+            "Test unitaire pour vérifier le hachage du mot de passe.",
+            "Test d'intégration pour l'ensemble du processus d'inscription."
+          ],
+          "definition_of_done": [
+            "Code review approuvé.",
+            "Tests unitaires couvrant la validation des données et l'enregistrement de l'utilisateur.",
+            "Documentation API mise à jour."
+          ],
+          "example_request": "{ \"username\": \"testuser\", \"email\": \"test@example.com\", \"password\": \"P@sswOrd123\" }",
+          "example_response_success": "{ \"message\": \"User registered successfully\" }",
+          "example_response_error_400": "{ \"error\": \"Invalid email format\" }",
+          "example_response_error_409": "{ \"error\": \"Email already exists\" }",
+          "example_request_valid": "{ \"username\": \"validuser\", \"email\": \"valid@example.com\", \"password\": \"ValidP@sswOrd\" }",
+          "example_request_invalid": "{ \"username\": \"testuser\", \"email\": \"invalid-email\", \"password\": \"pass\" }",
+          "api_call": "POST /register",
+          "ui_design": null,
+          "implementation_details": "Utiliser une bibliothèque de hachage de mot de passe robuste (bcrypt, argon2)."
+        },
+        {
+          "dependencies": [
+            "1-TASK-1"
+          ],
+          "id": "1-TASK-2",
+          "epic_id": "1",
+          "title": "Implémenter l'endpoint de connexion utilisateur",
+          "type": "feat",
+          "description": "Créer un endpoint API pour permettre aux utilisateurs enregistrés de se connecter en fournissant leur email et mot de passe. Vérifier les informations d'identification et retourner un token d'authentification JWT en cas de succès.",
+          "acceptance_criteria": [
+            "L'API doit valider la présence de l'email et du mot de passe.",
+            "L'API doit vérifier les informations d'identification par rapport à la base de données.",
+            "L'API doit retourner un token JWT en cas de succès.",
+            "L'API doit retourner une erreur en cas d'informations d'identification incorrectes."
+          ],
+          "tech_details": "Configurer la durée de validité du token JWT.",
+          "validation": "Vérifier manuellement la connexion via l'API avec différents scénarios (informations d'identification valides, invalides).",
+          "error_handling": "Retourner une erreur HTTP 401 (Unauthorized) en cas d'informations d'identification incorrectes.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour valider les informations d'identification.",
+            "Test unitaire pour vérifier la génération du token JWT.",
+            "Test d'intégration pour l'ensemble du processus de connexion."
+          ],
+          "definition_of_done": [
+            "Code review approuvé.",
+            "Tests unitaires couvrant la validation des informations d'identification et la génération du token JWT.",
+            "Documentation API mise à jour."
+          ],
+          "example_request": "{ \"email\": \"test@example.com\", \"password\": \"P@sswOrd123\" }",
+          "example_response_success": "{ \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\" }",
+          "example_response_error_401": "{ \"error\": \"Invalid credentials\" }",
+          "example_request_valid": "{ \"email\": \"test@example.com\", \"password\": \"P@sswOrd123\" }",
+          "example_request_invalid": "{ \"email\": \"test@example.com\", \"password\": \"wrongpassword\" }",
+          "api_call": "POST /login",
+          "ui_design": null,
+          "implementation_details": "Utiliser une bibliothèque JWT pour générer et valider les tokens."
+        },
+        {
+          "dependencies": [
+            "1-TASK-1",
+            "1-TASK-2"
+          ],
+          "id": "1-TASK-3",
+          "epic_id": "1",
+          "title": "Ajouter la validation des entrées utilisateur (inscription et connexion)",
+          "type": "feat",
+          "description": "Implémenter une validation robuste des entrées utilisateur pour les endpoints d'inscription et de connexion afin de prévenir les attaques par injection et d'assurer l'intégrité des données. Cela inclut la validation des formats d'email, la force des mots de passe et la longueur des champs.",
+          "acceptance_criteria": [
+            "L'API doit valider le format de l'adresse email (RFC 5322).",
+            "L'API doit exiger un mot de passe d'une certaine longueur et complexité (ex: au moins 8 caractères, avec des lettres majuscules, minuscules et chiffres).",
+            "L'API doit limiter la longueur maximale des champs (nom d'utilisateur, email, mot de passe).",
+            "Les messages d'erreur doivent être clairs et informatifs."
+          ],
+          "tech_details": "Définir des règles de validation réutilisables pour les différents champs.",
+          "validation": "Vérifier manuellement la validation avec différents scénarios (champs vides, formats invalides, mots de passe faibles).",
+          "error_handling": "Retourner des erreurs HTTP 400 (Bad Request) avec des messages d'erreur détaillés pour chaque champ invalide.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour valider le format de l'email.",
+            "Test unitaire pour valider la force du mot de passe.",
+            "Test unitaire pour valider la longueur des champs.",
+            "Test d'intégration pour vérifier que la validation est appliquée correctement dans les endpoints d'inscription et de connexion."
+          ],
+          "definition_of_done": [
+            "Code review approuvé.",
+            "Tests unitaires couvrant tous les scénarios de validation.",
+            "Documentation API mise à jour avec les exigences de validation."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": "{ \"errors\": { \"email\": \"Invalid email format\", \"password\": \"Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter and one number\" } }",
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser une bibliothèque de validation (validator.v10)."
+        },
+        {
+          "id": "1-TASK-4",
+          "epic_id": "1",
+          "title": "Implémenter la gestion des erreurs",
+          "type": "feat",
+          "description": "Mettre en place une gestion centralisée des erreurs pour capturer et traiter les exceptions non gérées, en enregistrant les informations pertinentes (ex: stack trace, contexte de la requête) dans les journaux et en retournant des réponses d'erreur standardisées aux clients.",
+          "acceptance_criteria": [
+            "Toutes les exceptions non gérées doivent être capturées et enregistrées dans les journaux.",
+            "Les réponses d'erreur doivent être au format JSON et inclure un code d'erreur et un message d'erreur descriptif.",
+            "Les informations sensibles (ex: mots de passe, clés API) ne doivent pas être incluses dans les journaux.",
+            "La gestion des erreurs doit être configurable (ex: niveau de journalisation, activation/désactivation de l'enregistrement des erreurs)."
+          ],
+          "tech_details": "Configurer un système d'alerte pour les erreurs critiques.",
+          "validation": "Simuler des erreurs dans les endpoints d'inscription et de connexion et vérifier que les erreurs sont correctement enregistrées et retournées.",
+          "error_handling": "Utiliser des middleware pour capturer les exceptions et formater les réponses d'erreur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour vérifier la capture des exceptions.",
+            "Test unitaire pour vérifier le format des réponses d'erreur.",
+            "Test d'intégration pour vérifier que la gestion des erreurs fonctionne correctement dans les endpoints d'inscription et de connexion."
+          ],
+          "definition_of_done": [
+            "Code review approuvé.",
+            "Tests unitaires pour vérifier la capture et l'enregistrement des exceptions.",
+            "Documentation technique mise à jour avec la description de la gestion des erreurs."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": "{ \"code\": \"INVALID_REQUEST\", \"message\": \"Invalid request data\" }",
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser une bibliothèque de journalisation (logrus, zap)."
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "2",
+      "title": "Permettre aux utilisateurs de créer et de gérer leurs entraînements",
+      "description": "Les utilisateurs peuvent créer des programmes d'entraînement personnalisés avec des exercices, des séries et des répétitions.",
+      "goal": "Offrir aux utilisateurs la possibilité de suivre leurs progrès et d'adapter leurs entraînements.",
+      "issues": [
+        {
+          "id": "2-TASK-1",
+          "epic_id": "2",
+          "title": "Créer l'interface utilisateur pour la création d'entraînement",
+          "type": "feat",
+          "description": "Développer l'interface utilisateur permettant aux utilisateurs de créer un nouvel entraînement. Cette interface doit inclure des champs pour le nom de l'entraînement, la description (optionnelle), et une liste d'exercices.",
+          "acceptance_criteria": [
+            "L'utilisateur peut accéder à un écran de création d'entraînement depuis son profil ou un menu principal.",
+            "L'utilisateur peut saisir un nom pour l'entraînement.",
+            "L'utilisateur peut saisir une description pour l'entraînement.",
+            "L'utilisateur peut ajouter des exercices à l'entraînement.",
+            "L'interface est responsive et fonctionne sur différents appareils (desktop, mobile)."
+          ],
+          "tech_details": "React, HTML, CSS",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour vérifier que les champs sont validés correctement.",
+            "Test d'intégration pour vérifier que l'interface utilisateur fonctionne avec le backend."
+          ],
+          "definition_of_done": [
+            "L'interface utilisateur est développée et fonctionne comme prévu.",
+            "Le code est propre et bien documenté.",
+            "Les tests unitaires sont passés."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": "Lien vers les maquettes Figma",
+          "implementation_details": "Utiliser React pour le frontend.  Consider using a form library like Formik or React Hook Form for easier form management."
+        },
+        {
+          "dependencies": [
+            "2-TASK-1"
+          ],
+          "id": "2-TASK-2",
+          "epic_id": "2",
+          "title": "Implémenter l'API pour créer un entraînement",
+          "type": "feat",
+          "description": "Développer l'API permettant de créer un nouvel entraînement en base de données. L'API doit recevoir le nom de l'entraînement, la description (optionnelle), et une liste d'exercices avec leurs séries et répétitions.",
+          "acceptance_criteria": [
+            "L'API peut recevoir une requête de création d'entraînement avec les données nécessaires.",
+            "L'API crée un nouvel entraînement en base de données.",
+            "L'API renvoie une réponse de succès avec l'ID du nouvel entraînement.",
+            "L'API gère les erreurs de validation des données (ex: nom manquant)."
+          ],
+          "tech_details": "Node.js, Express, MongoDB/PostgreSQL",
+          "validation": null,
+          "error_handling": "Retourner des erreurs 400 pour les requêtes invalides, 500 pour les erreurs serveur.",
+          "database_migrations": "Créer une table 'workouts' avec les colonnes 'id', 'name', 'description', 'user_id', 'created_at', 'updated_at'.",
+          "tests": [
+            "Test unitaire pour vérifier la validation des données.",
+            "Test d'intégration pour vérifier la création de l'entraînement en base de données.",
+            "Test d'API pour vérifier la réponse de l'API."
+          ],
+          "definition_of_done": [
+            "L'API est développée et fonctionne comme prévu.",
+            "Le code est propre et bien documenté.",
+            "Les tests unitaires et d'intégration sont passés."
+          ],
+          "example_request": "{ \"name\": \"Mon entraînement\", \"description\": \"Entraînement de musculation\", \"exercises\": [ { \"name\": \"Squat\", \"sets\": 3, \"reps\": 10 }, { \"name\": \"Bench press\", \"sets\": 3, \"reps\": 8 } ] }",
+          "example_response_success": "{ \"id\": 123, \"name\": \"Mon entraînement\", \"description\": \"Entraînement de musculation\", \"exercises\": [ { \"name\": \"Squat\", \"sets\": 3, \"reps\": 10 }, { \"name\": \"Bench press\", \"sets\": 3, \"reps\": 8 } ] }",
+          "example_response_error_400": "{ \"error\": \"Le nom de l'entraînement est obligatoire.\" }",
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "{ \"name\": \"Mon entraînement\", \"description\": \"Entraînement de musculation\", \"exercises\": [ { \"name\": \"Squat\", \"sets\": 3, \"reps\": 10 }, { \"name\": \"Bench press\", \"sets\": 3, \"reps\": 8 } ] }",
+          "example_request_invalid": "{ \"description\": \"Entraînement de musculation\", \"exercises\": [ { \"name\": \"Squat\", \"sets\": 3, \"reps\": 10 } ] }",
+          "api_call": "/api/workouts (POST)",
+          "ui_design": null,
+          "implementation_details": "Utiliser Node.js avec Express pour le backend.  Valider les données avec Joi ou express-validator.  Assurer l'authentification de l'utilisateur avant de créer l'entraînement."
+        },
+        {
+          "dependencies": [
+            "2-TASK-2"
+          ],
+          "id": "2-TASK-3",
+          "epic_id": "2",
+          "title": "Créer l'interface utilisateur pour afficher et modifier un entraînement",
+          "type": "feat",
+          "description": "Développer l'interface utilisateur permettant aux utilisateurs de voir les détails d'un entraînement et de le modifier.  L'utilisateur doit être capable de modifier le nom, la description et les exercices.",
+          "acceptance_criteria": [
+            "L'utilisateur peut accéder à l'écran de détails d'un entraînement.",
+            "L'utilisateur peut voir le nom et la description de l'entraînement.",
+            "L'utilisateur peut voir la liste des exercices avec leurs séries et répétitions.",
+            "L'utilisateur peut modifier le nom et la description de l'entraînement.",
+            "L'utilisateur peut ajouter, modifier ou supprimer des exercices.",
+            "L'interface est responsive et fonctionne sur différents appareils (desktop, mobile)."
+          ],
+          "tech_details": "React, HTML, CSS",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour vérifier que les champs sont validés correctement.",
+            "Test d'intégration pour vérifier que l'interface utilisateur fonctionne avec le backend."
+          ],
+          "definition_of_done": [
+            "L'interface utilisateur est développée et fonctionne comme prévu.",
+            "Le code est propre et bien documenté.",
+            "Les tests unitaires sont passés."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": "Lien vers les maquettes Figma",
+          "implementation_details": "Utiliser React pour le frontend.  Réutiliser les composants de FEAT-1.  Utiliser un state management library like Redux or Zustand if complexity warrants it."
+        },
+        {
+          "dependencies": [
+            "2-TASK-2"
+          ],
+          "id": "2-TASK-4",
+          "epic_id": "2",
+          "title": "Implémenter l'API pour récupérer, modifier et supprimer un entraînement",
+          "type": "feat",
+          "description": "Développer les API permettant de récupérer, modifier et supprimer un entraînement en base de données.",
+          "acceptance_criteria": [
+            "L'API peut récupérer un entraînement par son ID.",
+            "L'API peut modifier un entraînement.",
+            "L'API peut supprimer un entraînement.",
+            "L'API renvoie une erreur 404 si l'entraînement n'existe pas.",
+            "L'API gère les erreurs de validation des données."
+          ],
+          "tech_details": "Node.js, Express, MongoDB/PostgreSQL",
+          "validation": null,
+          "error_handling": "Retourner des erreurs 400 pour les requêtes invalides, 404 si l'entraînement n'existe pas, 500 pour les erreurs serveur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour vérifier la validation des données.",
+            "Test d'intégration pour vérifier la modification et la suppression de l'entraînement en base de données.",
+            "Test d'API pour vérifier la réponse de l'API."
+          ],
+          "definition_of_done": [
+            "L'API est développée et fonctionne comme prévu.",
+            "Le code est propre et bien documenté.",
+            "Les tests unitaires et d'intégration sont passés."
+          ],
+          "example_request": "{ \"name\": \"Mon entraînement modifié\", \"description\": \"Entraînement de musculation modifié\", \"exercises\": [ { \"name\": \"Squat\", \"sets\": 4, \"reps\": 12 } ] }",
+          "example_response_success": "{ \"id\": 123, \"name\": \"Mon entraînement modifié\", \"description\": \"Entraînement de musculation modifié\", \"exercises\": [ { \"name\": \"Squat\", \"sets\": 4, \"reps\": 12 } ] }",
+          "example_response_error_400": "{ \"error\": \"Le nom de l'entraînement est obligatoire.\" }",
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "{ \"name\": \"Mon entraînement modifié\", \"description\": \"Entraînement de musculation modifié\", \"exercises\": [ { \"name\": \"Squat\", \"sets\": 4, \"reps\": 12 } ] }",
+          "example_request_invalid": "{ \"description\": \"Entraînement de musculation modifié\", \"exercises\": [ { \"name\": \"Squat\", \"sets\": 4, \"reps\": 12 } ] }",
+          "api_call": "/api/workouts/:id (GET, PUT, DELETE)",
+          "ui_design": null,
+          "implementation_details": "Utiliser Node.js avec Express pour le backend.  Valider les données avec Joi ou express-validator.  Assurer l'authentification de l'utilisateur avant de modifier ou supprimer l'entraînement."
+        },
+        {
+          "dependencies": [
+            "2-TASK-2"
+          ],
+          "id": "2-TASK-5",
+          "epic_id": "2",
+          "title": "Implémenter la gestion des exercices",
+          "type": "feat",
+          "description": "Permettre aux utilisateurs de rechercher et d'ajouter des exercices à leurs entraînements à partir d'une liste prédéfinie.  Si l'exercice n'existe pas, l'utilisateur doit pouvoir le créer.",
+          "acceptance_criteria": [
+            "L'utilisateur peut rechercher des exercices.",
+            "L'utilisateur peut ajouter des exercices existants à son entraînement.",
+            "L'utilisateur peut créer un nouvel exercice si celui-ci n'existe pas.",
+            "Les exercices sont persistés en base de données."
+          ],
+          "tech_details": "Node.js, Express, MongoDB/PostgreSQL, React",
+          "validation": null,
+          "error_handling": "Retourner des erreurs 400 pour les requêtes invalides, 500 pour les erreurs serveur.",
+          "database_migrations": "Créer une table 'exercises' avec les colonnes 'id', 'name', 'description' (optionnelle).",
+          "tests": [
+            "Test unitaire pour vérifier la validation des données.",
+            "Test d'intégration pour vérifier la création de l'exercice en base de données.",
+            "Test d'API pour vérifier la réponse de l'API."
+          ],
+          "definition_of_done": [
+            "La gestion des exercices est implémentée et fonctionne comme prévu.",
+            "Le code est propre et bien documenté.",
+            "Les tests unitaires et d'intégration sont passés."
+          ],
+          "example_request": "{ \"name\": \"Nouveau exercice\", \"description\": \"Description de l'exercice\" }",
+          "example_response_success": "{ \"id\": 456, \"name\": \"Nouveau exercice\", \"description\": \"Description de l'exercice\" }",
+          "example_response_error_400": "{ \"error\": \"Le nom de l'exercice est obligatoire.\" }",
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "{ \"name\": \"Nouveau exercice\", \"description\": \"Description de l'exercice\" }",
+          "example_request_invalid": "{ \"description\": \"Description de l'exercice\" }",
+          "api_call": "/api/exercises (GET, POST)",
+          "ui_design": "Lien vers les maquettes Figma",
+          "implementation_details": "Utiliser Node.js avec Express pour le backend.  Valider les données avec Joi ou express-validator.  Créer une interface utilisateur pour la recherche et la création d'exercices (réutiliser les composants de FEAT-1 et FEAT-3). Consider using a dedicated search index like Algolia for better search performance."
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "3",
+      "title": "Permettre aux utilisateurs de partager leurs entraînements avec d'autres",
+      "description": "Les utilisateurs peuvent partager leurs programmes d'entraînement avec leurs amis ou la communauté.",
+      "goal": "Favoriser l'engagement et la collaboration entre les utilisateurs.",
+      "issues": [
+        {
+          "id": "3-TASK-1",
+          "epic_id": "3",
+          "title": "Add 'Share' button to workout details view",
+          "type": "feat",
+          "description": "Implement a 'Share' button on the workout details page.  Clicking this button should open a modal/dialogue allowing the user to choose how to share the workout (e.g., copy link, share to friends within the app, share to social media).",
+          "acceptance_criteria": [
+            "A 'Share' button is visible on the workout details page.",
+            "Clicking the 'Share' button opens a modal/dialogue with sharing options.",
+            "Sharing options include: Copy Link, Share to Friends (within the app), Share to Social Media (Facebook, Twitter).",
+            "The 'Copy Link' option copies a unique URL to the workout to the clipboard.",
+            "Sharing to Friends (within the app) allows users to select friends to send the workout to.",
+            "Sharing to Social Media pre-populates a post with a link to the workout and a default message (which the user can edit)."
+          ],
+          "tech_details": "Use platform-specific sharing APIs (e.g., `navigator.share` in web, `UIActivityViewController` in iOS, `Intent.ACTION_SEND` in Android).",
+          "validation": "Manually test sharing functionality on different devices and platforms. Verify that shared links work correctly.",
+          "error_handling": "Handle cases where sharing to social media fails (e.g., user not logged in).  Display appropriate error messages to the user.",
+          "database_migrations": null,
+          "tests": [
+            "Unit tests for the 'Share' button click handler.",
+            "Integration tests to verify sharing functionality (copy link, share to friends, share to social media).",
+            "UI tests to ensure the sharing modal/dialogue is displayed correctly."
+          ],
+          "definition_of_done": [
+            "Share button is implemented and functional on workout details page",
+            "Sharing options are implemented as described in acceptance criteria",
+            "UI is responsive and visually appealing",
+            "Code is reviewed and merged"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": "Refer to the mockup for the 'Share' button and sharing modal/dialogue design.",
+          "implementation_details": "Consider using a share sheet component provided by the platform (if available) for native sharing capabilities. For in-app sharing, leverage existing friend list functionality.  Implement URL shortener for shared links."
+        },
+        {
+          "dependencies": [
+            "2-TASK-4"
+          ],
+          "id": "3-TASK-2",
+          "epic_id": "3",
+          "title": "Implement workout sharing via unique URL",
+          "type": "feat",
+          "description": "Generate a unique, shareable URL for each workout.  When a user visits this URL, they should be able to view the workout details (even if they are not the owner).",
+          "acceptance_criteria": [
+            "Each workout has a unique, shareable URL.",
+            "Visiting the workout URL displays the workout details to any user.",
+            "Workout details include: Workout name, exercises, sets, reps, weight, and any associated notes.",
+            "If the user is not logged in, they should be prompted to log in or sign up to save the workout to their account.",
+            "If the user is logged in, they should have the option to save the workout to their account."
+          ],
+          "tech_details": "Use a UUID for workout IDs to ensure uniqueness. Implement caching to improve performance when retrieving workout details.",
+          "validation": "Manually test workout sharing by generating a URL and visiting it in different browsers and devices. Verify that the workout details are displayed correctly and that the user can save the workout to their account.",
+          "error_handling": "Handle cases where the workout ID is invalid (e.g., workout does not exist).  Display a 'Workout not found' error message.",
+          "database_migrations": null,
+          "tests": [
+            "Unit tests for the route handler.",
+            "Integration tests to verify workout details are displayed correctly.",
+            "Integration tests to verify user authentication and authorization.",
+            "End-to-end tests to simulate a user visiting the workout URL and saving the workout to their account."
+          ],
+          "definition_of_done": [
+            "Unique workout URLs are generated and functional.",
+            "Workout details are displayed correctly when visiting the URL.",
+            "User is prompted to log in/sign up if not authenticated.",
+            "User can save the workout to their account if logged in.",
+            "Code is reviewed and merged."
+          ],
+          "example_request": null,
+          "example_response_success": "{ \"id\": \"123e4567-e89b-12d3-a456-426614174000\", \"name\": \"My Workout\", \"exercises\": [{\"name\": \"Bench Press\", \"sets\": 3, \"reps\": 8, \"weight\": 100}] }",
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "GET /workouts/123e4567-e89b-12d3-a456-426614174000",
+          "example_request_invalid": "GET /workouts/invalid-workout-id",
+          "api_call": "GET /workouts/{workoutId}",
+          "ui_design": "Ensure the workout details page is responsive and visually appealing when accessed via the shared URL.",
+          "implementation_details": "Implement a route handler to retrieve workout details by ID. Ensure proper authorization checks are in place to prevent unauthorized access to other users' workouts. Implement logic to handle saving the workout to the user's account."
+        },
+        {
+          "dependencies": [
+            "3-TASK-2"
+          ],
+          "id": "3-TASK-3",
+          "epic_id": "3",
+          "title": "Implement in-app workout sharing with friends",
+          "type": "feat",
+          "description": "Allow users to share workouts directly with their friends within the app.  The recipient should receive a notification and be able to view and save the workout to their account.",
+          "acceptance_criteria": [
+            "Users can select friends to share a workout with.",
+            "Recipients receive a notification when a workout is shared with them.",
+            "Recipients can view the shared workout details.",
+            "Recipients can save the shared workout to their account.",
+            "Sharing is tracked (e.g., who shared the workout with whom)."
+          ],
+          "tech_details": "Use a message queue (e.g., RabbitMQ, Kafka) to handle notifications asynchronously. Implement rate limiting to prevent abuse of the sharing feature.",
+          "validation": "Manually test workout sharing with different friends. Verify that notifications are delivered correctly and that recipients can save the shared workouts.",
+          "error_handling": "Handle cases where the recipient is not a valid friend.  Display an error message to the user.",
+          "database_migrations": "Add a table to track workout sharing events (sharer_id, recipient_id, workout_id, timestamp).",
+          "tests": [
+            "Unit tests for the route handler.",
+            "Integration tests to verify workout sharing and notifications.",
+            "End-to-end tests to simulate a user sharing a workout with a friend and the friend receiving the notification and saving the workout."
+          ],
+          "definition_of_done": [
+            "Users can share workouts with friends.",
+            "Recipients receive notifications.",
+            "Recipients can view and save shared workouts.",
+            "Sharing events are tracked.",
+            "Code is reviewed and merged."
+          ],
+          "example_request": "{ \"recipient_ids\": [\"user123\", \"user456\"] }",
+          "example_response_success": "{ \"message\": \"Workout shared successfully with selected friends.\" }",
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "{ \"recipient_ids\": [\"user789\"] }",
+          "example_request_invalid": "{ \"recipient_ids\": [\"invalid-user-id\"] }",
+          "api_call": "POST /workouts/{workoutId}/share",
+          "ui_design": "Design the notification UI. Design the UI for selecting friends to share with.",
+          "implementation_details": "Implement a route handler to handle workout sharing requests. Implement notification system to notify recipients. Implement logic to track sharing events."
+        },
+        {
+          "dependencies": [
+            "3-TASK-2"
+          ],
+          "id": "3-TASK-4",
+          "epic_id": "3",
+          "title": "Implement workout sharing to Social Media (Facebook, Twitter)",
+          "type": "feat",
+          "description": "Allow users to share workouts on social media platforms like Facebook and Twitter.  The shared post should include a link to the workout and a default message (which the user can edit).",
+          "acceptance_criteria": [
+            "Users can share workouts to Facebook and Twitter.",
+            "Shared posts include a link to the workout.",
+            "Shared posts include a default message (which the user can edit).",
+            "Sharing respects the privacy settings of the user on each platform.",
+            "Sharing uses the platform's native sharing dialogs (if available)."
+          ],
+          "tech_details": "Use the platform's SDKs for sharing functionality (e.g., Facebook SDK, Twitter SDK).  Handle OAuth authentication flows.",
+          "validation": "Manually test workout sharing to Facebook and Twitter.  Verify that the posts are displayed correctly and that the link to the workout works.",
+          "error_handling": "Handle cases where sharing to social media fails (e.g., user not logged in, platform API error).  Display appropriate error messages to the user.",
+          "database_migrations": null,
+          "tests": [
+            "Integration tests to verify sharing to Facebook and Twitter.",
+            "End-to-end tests to simulate a user sharing a workout to each platform and verifying that the post is displayed correctly."
+          ],
+          "definition_of_done": [
+            "Users can share workouts to Facebook and Twitter.",
+            "Shared posts include a link and a default message.",
+            "Sharing respects privacy settings.",
+            "Code is reviewed and merged."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": "Design the UI for sharing to social media.  Design the UI for editing the default message.",
+          "implementation_details": "Use the Facebook and Twitter APIs to implement sharing functionality. Implement logic to generate a default message for the shared post.  Implement logic to handle user authentication with each platform."
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "4",
+      "title": "Permettre aux utilisateurs de découvrir et de suivre les entraînements partagés par d'autres",
+      "description": "Les utilisateurs peuvent parcourir les programmes d'entraînement partagés par d'autres utilisateurs et les ajouter à leur propre liste.",
+      "goal": "Offrir aux utilisateurs une source d'inspiration et de nouveaux entraînements à essayer.",
+      "issues": [
+        {
+          "id": "4-TASK-1",
+          "epic_id": "4",
+          "title": "Créer une API pour récupérer les entraînements partagés",
+          "type": "feat",
+          "description": "Développer une API RESTful qui permet de récupérer une liste d'entraînements partagés par d'autres utilisateurs. L'API doit supporter la pagination et le filtrage par critères (nom, utilisateur, type d'entraînement, etc.).",
+          "acceptance_criteria": [
+            "L'API doit retourner une liste d'entraînements partagés au format JSON.",
+            "L'API doit supporter la pagination avec des paramètres de limite et d'offset.",
+            "L'API doit permettre de filtrer les entraînements par nom, utilisateur, et type d'entraînement.",
+            "L'API doit gérer les erreurs et retourner des codes d'erreur appropriés."
+          ],
+          "tech_details": "Go, Gin/Echo, GORM/SQLx, PostgreSQL/MySQL",
+          "validation": "Valider que l'API retourne les données correctes en fonction des paramètres de requête. Valider la performance de l'API avec des outils de benchmark.",
+          "error_handling": "Retourner des erreurs HTTP standard (400, 404, 500) avec des messages d'erreur clairs au format JSON.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour vérifier la pagination.",
+            "Test unitaire pour vérifier le filtrage.",
+            "Test d'intégration pour vérifier l'API complète."
+          ],
+          "definition_of_done": [
+            "Code review effectué",
+            "Tests unitaires réussis",
+            "API documentée avec Swagger/OpenAPI"
+          ],
+          "example_request": "GET /api/workouts/shared?limit=20\u0026offset=0\u0026name=Cardio\u0026user=JohnDoe",
+          "example_response_success": "[\n  {\n    \"id\": \"123\",\n    \"name\": \"Cardio intense\",\n    \"user\": \"JohnDoe\",\n    \"type\": \"Cardio\",\n    \"description\": \"Entraînement cardio intense pour brûler des calories.\",\n    \"exercises\": [{\"name\":\"Tapis de course\", \"reps\": \"30min\"}]\n  }\n]",
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "GET /api/workouts/shared",
+          "ui_design": null,
+          "implementation_details": "Utiliser un framework web Go (ex: Gin, Echo) pour implémenter l'API.  Utiliser GORM ou un autre ORM pour interagir avec la base de données. Implémenter la pagination en utilisant les clauses `LIMIT` et `OFFSET` dans les requêtes SQL. Utiliser des index de base de données pour optimiser les requêtes de filtrage. Gérer les erreurs de manière centralisée avec un middleware."
+        },
+        {
+          "dependencies": [
+            "4-TASK-1"
+          ],
+          "id": "4-TASK-2",
+          "epic_id": "4",
+          "title": "Implémenter la logique pour ajouter un entraînement partagé à la liste de l'utilisateur",
+          "type": "feat",
+          "description": "Développer une fonctionnalité qui permet à un utilisateur d'ajouter un entraînement partagé à sa propre liste d'entraînements.  Cela implique de créer une nouvelle relation dans la base de données entre l'utilisateur et l'entraînement partagé.",
+          "acceptance_criteria": [
+            "L'utilisateur doit pouvoir ajouter un entraînement partagé à sa liste via un appel API.",
+            "La relation entre l'utilisateur et l'entraînement doit être persistée dans la base de données.",
+            "L'API doit retourner un code de succès si l'opération réussit.",
+            "L'API doit gérer les erreurs (ex: entraînement déjà ajouté, utilisateur non authentifié)."
+          ],
+          "tech_details": "Go, Gin/Echo, GORM/SQLx, PostgreSQL/MySQL",
+          "validation": "Valider que l'entraînement est correctement ajouté à la liste de l'utilisateur dans la base de données. Valider que l'API retourne les codes de succès et d'erreur appropriés.",
+          "error_handling": "Retourner des erreurs HTTP standard (400, 409) avec des messages d'erreur clairs au format JSON.",
+          "database_migrations": "Créer une table de jointure 'user_workouts' avec les colonnes 'user_id' et 'workout_id'.",
+          "tests": [
+            "Test unitaire pour vérifier l'ajout d'un entraînement.",
+            "Test unitaire pour vérifier la gestion des conflits.",
+            "Test d'intégration pour vérifier l'API complète."
+          ],
+          "definition_of_done": [
+            "Code review effectué",
+            "Tests unitaires réussis",
+            "API documentée avec Swagger/OpenAPI"
+          ],
+          "example_request": "POST /api/workouts/shared/123/add",
+          "example_response_success": "{\"message\": \"Workout added successfully\"}",
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": "{\"error\": \"Workout already added to user's list\"}",
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "POST /api/workouts/shared/{workoutId}/add",
+          "ui_design": null,
+          "implementation_details": "Utiliser un framework web Go (ex: Gin, Echo) pour implémenter l'API. Utiliser GORM ou un autre ORM pour interagir avec la base de données. Vérifier que l'utilisateur est authentifié avant d'ajouter l'entraînement. Vérifier que l'entraînement existe. Gérer les conflits (ex: entraînement déjà ajouté)."
+        },
+        {
+          "dependencies": [
+            "4-TASK-1"
+          ],
+          "id": "4-TASK-3",
+          "epic_id": "4",
+          "title": "Implémenter l'interface utilisateur pour parcourir les entraînements partagés",
+          "type": "feat",
+          "description": "Développer une interface utilisateur qui permet aux utilisateurs de parcourir les entraînements partagés et de les ajouter à leur liste. L'interface doit afficher une liste paginée d'entraînements avec des informations de base (nom, utilisateur, type).",
+          "acceptance_criteria": [
+            "L'interface doit afficher une liste paginée d'entraînements partagés.",
+            "L'interface doit afficher le nom, l'utilisateur et le type de chaque entraînement.",
+            "L'utilisateur doit pouvoir ajouter un entraînement à sa liste en cliquant sur un bouton.",
+            "L'interface doit afficher un message de confirmation après l'ajout d'un entraînement."
+          ],
+          "tech_details": "React/Vue.js/Angular, JavaScript/TypeScript, HTML/CSS",
+          "validation": "Valider que l'interface affiche les données correctes. Valider que l'utilisateur peut ajouter un entraînement à sa liste. Valider l'expérience utilisateur sur différents appareils et navigateurs.",
+          "error_handling": "Afficher des messages d'erreur clairs à l'utilisateur en cas de problème (ex: erreur lors de la récupération des entraînements, erreur lors de l'ajout d'un entraînement).",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour vérifier l'affichage de la liste des entraînements.",
+            "Test unitaire pour vérifier la pagination.",
+            "Test d'intégration pour vérifier l'ajout d'un entraînement."
+          ],
+          "definition_of_done": [
+            "Code review effectué",
+            "Tests unitaires réussis",
+            "Tests d'intégration réussis",
+            "UI validée par le designer"
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": "Lien vers la maquette Figma/Adobe XD.",
+          "implementation_details": "Utiliser un framework frontend (ex: React, Vue.js, Angular) pour implémenter l'interface utilisateur. Consommer l'API pour récupérer les entraînements partagés. Gérer la pagination côté client. Utiliser des composants réutilisables pour afficher les informations des entraînements. Utiliser des requêtes asynchrones pour améliorer l'expérience utilisateur."
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "5",
+      "title": "Mettre en place un système de recherche et de filtrage des entraînements",
+      "description": "Les utilisateurs peuvent rechercher des entraînements par nom, type d'exercice, niveau de difficulté, etc.",
+      "goal": "Faciliter la découverte d'entraînements pertinents pour chaque utilisateur.",
+      "issues": [
+        {
+          "id": "5-TASK-1",
+          "epic_id": "5",
+          "title": "Définir le schéma de données des entraînements pour la recherche",
+          "type": "feat",
+          "description": "Définir les champs de l'entité 'entraînement' qui seront indexés et utilisés pour la recherche (nom, type d'exercice, niveau de difficulté, mots-clés, etc.).  Choisir les types de données appropriés pour chaque champ pour optimiser la recherche.",
+          "acceptance_criteria": [
+            "Schéma de données des entraînements défini avec les champs pertinents pour la recherche.",
+            "Types de données appropriés choisis pour chaque champ.",
+            "Documentation du schéma de données disponible."
+          ],
+          "tech_details": "Base de données: PostgreSQL. ORM: GORM.",
+          "validation": "Vérifier que les champs de recherche sont correctement indexés dans la base de données.",
+          "error_handling": null,
+          "database_migrations": "Ajouter les indexes nécessaires pour les champs de recherche dans la table `entrainement`.",
+          "tests": [
+            "Tests unitaires pour vérifier l'intégrité du schéma de données.",
+            "Tests d'intégration pour vérifier le bon fonctionnement des migrations de base de données."
+          ],
+          "definition_of_done": [
+            "Schéma de données approuvé par l'équipe.",
+            "Migration de la base de données effectuée."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser un ORM pour gérer la base de données et les migrations.  Choisir une stratégie d'indexation appropriée (ex: indexation complète, indexation partielle)."
+        },
+        {
+          "dependencies": [
+            "5-TASK-1"
+          ],
+          "id": "5-TASK-2",
+          "epic_id": "5",
+          "title": "Implémenter l'API de recherche d'entraînements",
+          "type": "feat",
+          "description": "Développer une API REST qui permet aux utilisateurs de rechercher des entraînements en spécifiant des critères de recherche (nom, type d'exercice, niveau de difficulté, etc.). L'API doit retourner une liste d'entraînements correspondants aux critères.",
+          "acceptance_criteria": [
+            "API de recherche d'entraînements fonctionnelle.",
+            "L'API retourne une liste d'entraînements correspondants aux critères de recherche.",
+            "L'API gère les erreurs de manière appropriée (ex: critères de recherche invalides).",
+            "L'API est paginée pour gérer un grand nombre de résultats."
+          ],
+          "tech_details": "Framework web: Gin. Moteur de recherche: PostgreSQL LIKE. Pagination: Offset/Limit.",
+          "validation": "Vérifier que l'API retourne les résultats attendus pour différents critères de recherche.",
+          "error_handling": "Retourner une erreur 400 si les critères de recherche sont invalides. Retourner une liste vide si aucun entraînement ne correspond aux critères.",
+          "database_migrations": null,
+          "tests": [
+            "Tests unitaires pour vérifier le bon fonctionnement de l'API.",
+            "Tests d'intégration pour vérifier l'interaction avec la base de données.",
+            "Tests de performance pour vérifier la scalabilité de l'API."
+          ],
+          "definition_of_done": [
+            "API de recherche testée et validée.",
+            "Documentation de l'API disponible."
+          ],
+          "example_request": "GET /api/entrainements/search?nom=Force\u0026type=Musculation\u0026niveau=Avancé",
+          "example_response_success": "[{ \"id\": 1, \"nom\": \"Force\", \"type\": \"Musculation\", \"niveau\": \"Avancé\" }, { \"id\": 2, \"nom\": \"Force 2\", \"type\": \"Musculation\", \"niveau\": \"Avancé\" }]",
+          "example_response_error_400": "{ \"error\": \"Critères de recherche invalides\" }",
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "GET /api/entrainements/search?nom=Cardio",
+          "example_request_invalid": "GET /api/entrainements/search?niveau=Invalide",
+          "api_call": "GET /api/entrainements/search?nom={nom}\u0026type={type}\u0026niveau={niveau}",
+          "ui_design": null,
+          "implementation_details": "Utiliser un framework web pour développer l'API (ex: Gin).  Implémenter la pagination pour gérer un grand nombre de résultats.  Utiliser un moteur de recherche (ex: Elasticsearch) pour optimiser les performances de la recherche."
+        },
+        {
+          "dependencies": [
+            "5-TASK-2"
+          ],
+          "id": "5-TASK-3",
+          "epic_id": "5",
+          "title": "Implémenter le filtrage des entraînements dans l'interface utilisateur",
+          "type": "feat",
+          "description": "Ajouter une interface utilisateur qui permet aux utilisateurs de filtrer les entraînements en utilisant les critères de recherche disponibles (nom, type d'exercice, niveau de difficulté, etc.).  L'interface utilisateur doit appeler l'API de recherche d'entraînements pour obtenir les résultats filtrés.",
+          "acceptance_criteria": [
+            "Interface utilisateur de filtrage fonctionnelle.",
+            "Les utilisateurs peuvent filtrer les entraînements en utilisant les critères de recherche disponibles.",
+            "Les résultats de la recherche sont affichés en temps réel.",
+            "L'interface utilisateur est responsive et s'adapte à différentes tailles d'écran."
+          ],
+          "tech_details": "Framework JavaScript: React.  Gestion d'état: Redux.",
+          "validation": "Vérifier que les utilisateurs peuvent filtrer les entraînements en utilisant les critères de recherche disponibles et que les résultats sont affichés correctement.",
+          "error_handling": "Afficher un message d'erreur si l'API de recherche retourne une erreur.",
+          "database_migrations": null,
+          "tests": [
+            "Tests unitaires pour vérifier le bon fonctionnement des composants UI.",
+            "Tests d'intégration pour vérifier l'interaction avec l'API de recherche.",
+            "Tests d'acceptation pour vérifier que l'interface utilisateur répond aux exigences des utilisateurs."
+          ],
+          "definition_of_done": [
+            "Interface utilisateur de filtrage testée et validée.",
+            "L'interface utilisateur est accessible et utilisable sur différents appareils."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "GET /api/entrainements/search?nom={nom}\u0026type={type}\u0026niveau={niveau}",
+          "ui_design": "Fournir une maquette de l'interface utilisateur de filtrage.",
+          "implementation_details": "Utiliser un framework JavaScript pour développer l'interface utilisateur (ex: React, Angular, Vue.js).  Utiliser des composants UI réutilisables pour faciliter la maintenance.  Optimiser les performances de l'interface utilisateur pour garantir une expérience utilisateur fluide."
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "6",
+      "title": "Implémenter un système de notation et de commentaires pour les entraînements",
+      "description": "Les utilisateurs peuvent évaluer et commenter les programmes d'entraînement partagés par d'autres.",
+      "goal": "Améliorer la qualité des entraînements partagés et aider les utilisateurs à faire des choix éclairés.",
+      "issues": [
+        {
+          "id": "6-TASK-1",
+          "epic_id": "6",
+          "title": "Créer le modèle de données pour les évaluations et commentaires",
+          "type": "feat",
+          "description": "Définir le schéma de base de données pour stocker les évaluations (nombre d'étoiles, par exemple) et les commentaires associés à chaque entraînement. Inclure les champs pour l'utilisateur qui a fait l'évaluation, l'entraînement évalué, la note et le commentaire.",
+          "acceptance_criteria": [
+            "Le modèle de données pour les évaluations et commentaires est défini avec les champs nécessaires.",
+            "Les relations entre les tables 'utilisateurs', 'entraînements' et 'évaluations' sont correctement définies.",
+            "Un script de migration de base de données est créé pour appliquer les changements."
+          ],
+          "tech_details": "Utiliser PostgreSQL comme base de données. Utiliser GORM pour la gestion de la base de données en Go.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": "Créer une table 'ratings' avec les colonnes 'id', 'user_id', 'workout_id', 'rating', 'comment', 'created_at', 'updated_at'. Ajouter des clés étrangères vers les tables 'users' et 'workouts'.",
+          "tests": [
+            "Tests unitaires pour vérifier la création et la récupération des évaluations.",
+            "Tests d'intégration pour vérifier les relations entre les tables."
+          ],
+          "definition_of_done": [
+            "Le modèle de données est créé.",
+            "La migration de la base de données est implémentée et testée.",
+            "Le code est revu et approuvé."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser un ORM (comme GORM en Go) pour interagir avec la base de données. Définir des structures Go pour représenter les modèles de données."
+        },
+        {
+          "dependencies": [
+            "6-TASK-1",
+            "1-TASK-2"
+          ],
+          "id": "6-TASK-2",
+          "epic_id": "6",
+          "title": "Implémenter l'API pour créer une évaluation/commentaire",
+          "type": "feat",
+          "description": "Créer un endpoint API permettant aux utilisateurs d'ajouter une évaluation et un commentaire à un entraînement. Valider que l'utilisateur est authentifié et que l'entraînement existe.",
+          "acceptance_criteria": [
+            "L'API pour créer une évaluation/commentaire est implémentée.",
+            "L'API valide l'authentification de l'utilisateur.",
+            "L'API valide l'existence de l'entraînement.",
+            "L'API enregistre l'évaluation et le commentaire dans la base de données."
+          ],
+          "tech_details": "Utiliser Gin pour le framework API en Go. Utiliser JWT pour l'authentification.",
+          "validation": null,
+          "error_handling": "Retourner une erreur 400 si les données de la requête sont invalides. Retourner une erreur 401 si l'utilisateur n'est pas authentifié. Retourner une erreur 404 si l'entraînement n'existe pas.",
+          "database_migrations": null,
+          "tests": [
+            "Tests unitaires pour valider les données de la requête.",
+            "Tests d'intégration pour vérifier le fonctionnement de l'API."
+          ],
+          "definition_of_done": [
+            "L'API est implémentée et testée.",
+            "La validation de l'utilisateur et de l'entraînement est implémentée.",
+            "Le code est revu et approuvé."
+          ],
+          "example_request": "POST /workouts/123/ratings\n{\n  \"rating\": 4,\n  \"comment\": \"Très bon entraînement, merci !\"\n}",
+          "example_response_success": "{\n  \"id\": 1,\n  \"user_id\": 456,\n  \"workout_id\": 123,\n  \"rating\": 4,\n  \"comment\": \"Très bon entraînement, merci !\"\n}",
+          "example_response_error_400": "{\n  \"error\": \"Invalid rating value\"\n}",
+          "example_response_error_401": "{\n  \"error\": \"Unauthorized\"\n}",
+          "example_response_error_409": null,
+          "example_request_valid": "POST /workouts/123/ratings\n{\n  \"rating\": 4,\n  \"comment\": \"Très bon entraînement, merci !\"\n}",
+          "example_request_invalid": "POST /workouts/123/ratings\n{\n  \"rating\": 6,\n  \"comment\": \"Très bon entraînement, merci !\"\n}",
+          "api_call": "POST /workouts/{workout_id}/ratings",
+          "ui_design": null,
+          "implementation_details": "Utiliser le middleware d'authentification pour valider l'utilisateur. Utiliser un validateur pour valider les données de la requête."
+        },
+        {
+          "dependencies": [
+            "6-TASK-1"
+          ],
+          "id": "6-TASK-3",
+          "epic_id": "6",
+          "title": "Implémenter l'API pour récupérer les évaluations/commentaires d'un entraînement",
+          "type": "feat",
+          "description": "Créer un endpoint API permettant de récupérer la liste des évaluations et commentaires associés à un entraînement.  Inclure la pagination pour gérer un grand nombre de commentaires.",
+          "acceptance_criteria": [
+            "L'API pour récupérer les évaluations/commentaires est implémentée.",
+            "L'API retourne une liste d'évaluations et de commentaires.",
+            "L'API supporte la pagination.",
+            "L'API retourne les informations de l'utilisateur qui a posté le commentaire."
+          ],
+          "tech_details": "Utiliser Gin pour le framework API en Go.",
+          "validation": null,
+          "error_handling": "Retourner une erreur 404 si l'entraînement n'existe pas.",
+          "database_migrations": null,
+          "tests": [
+            "Tests unitaires pour vérifier la pagination.",
+            "Tests d'intégration pour vérifier le fonctionnement de l'API."
+          ],
+          "definition_of_done": [
+            "L'API est implémentée et testée.",
+            "La pagination est implémentée.",
+            "Le code est revu et approuvé."
+          ],
+          "example_request": "GET /workouts/123/ratings?page=1\u0026limit=10",
+          "example_response_success": "[\n  {\n    \"id\": 1,\n    \"user_id\": 456,\n    \"workout_id\": 123,\n    \"rating\": 4,\n    \"comment\": \"Très bon entraînement, merci !\",\n    \"user\": {\n      \"id\": 456,\n      \"username\": \"JohnDoe\"\n    }\n  },\n  {\n    \"id\": 2,\n    \"user_id\": 789,\n    \"workout_id\": 123,\n    \"rating\": 5,\n    \"comment\": \"Excellent entraînement !\",\n    \"user\": {\n      \"id\": 789,\n      \"username\": \"JaneSmith\"\n    }\n  }\n]",
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "GET /workouts/123/ratings?page=1\u0026limit=10",
+          "example_request_invalid": null,
+          "api_call": "GET /workouts/{workout_id}/ratings",
+          "ui_design": null,
+          "implementation_details": "Utiliser des requêtes SQL avec LIMIT et OFFSET pour implémenter la pagination. Joindre la table 'users' pour récupérer les informations de l'utilisateur."
+        },
+        {
+          "dependencies": [
+            "6-TASK-3"
+          ],
+          "id": "6-TASK-4",
+          "epic_id": "6",
+          "title": "Afficher les évaluations et commentaires sur la page de l'entraînement",
+          "type": "feat",
+          "description": "Modifier l'interface utilisateur pour afficher les évaluations et commentaires sur la page de détail d'un entraînement. Permettre aux utilisateurs de voir la note moyenne et de lire les commentaires.",
+          "acceptance_criteria": [
+            "Les évaluations et commentaires sont affichés sur la page de l'entraînement.",
+            "La note moyenne est calculée et affichée.",
+            "L'interface utilisateur est claire et intuitive."
+          ],
+          "tech_details": "Utiliser le framework frontend (React, Vue.js, etc.) pour afficher les données.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": null,
+          "tests": [
+            "Tests d'intégration pour vérifier l'affichage des évaluations et commentaires.",
+            "Tests UI pour vérifier l'interface utilisateur."
+          ],
+          "definition_of_done": [
+            "Les évaluations et commentaires sont affichés.",
+            "La note moyenne est affichée.",
+            "L'interface utilisateur est testée et approuvée."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": "Ajouter une section 'Évaluations' sur la page de l'entraînement. Afficher la note moyenne avec des étoiles. Afficher les commentaires avec le nom d'utilisateur et la date.",
+          "implementation_details": "Récupérer les données des évaluations/commentaires via l'API et les afficher dans le template HTML. Calculer la note moyenne en Go ou en JavaScript."
+        },
+        {
+          "dependencies": [
+            "6-TASK-2",
+            "6-TASK-4"
+          ],
+          "id": "6-TASK-5",
+          "epic_id": "6",
+          "title": "Permettre aux utilisateurs d'évaluer et commenter un entraînement",
+          "type": "feat",
+          "description": "Ajouter un formulaire sur la page de l'entraînement permettant aux utilisateurs d'ajouter une évaluation et un commentaire.  Utiliser l'API créée précédemment pour soumettre les données.",
+          "acceptance_criteria": [
+            "Un formulaire est disponible pour évaluer et commenter un entraînement.",
+            "Le formulaire soumet les données à l'API.",
+            "Un message de succès est affiché après la soumission.",
+            "Le formulaire est validé côté client."
+          ],
+          "tech_details": "Utiliser le framework frontend (React, Vue.js, etc.) pour implémenter le formulaire.",
+          "validation": null,
+          "error_handling": "Afficher un message d'erreur si la soumission échoue.",
+          "database_migrations": null,
+          "tests": [
+            "Tests unitaires pour valider le formulaire côté client.",
+            "Tests d'intégration pour vérifier la soumission du formulaire et l'appel à l'API.",
+            "Test UI pour vérifier le formulaire et son comportement."
+          ],
+          "definition_of_done": [
+            "Le formulaire est implémenté et testé.",
+            "La validation côté client est implémentée.",
+            "Le message de succès est affiché.",
+            "L'API est appelée correctement.",
+            "L'utilisateur doit être redirigé vers le même entrainement après le commentaire."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": "Ajouter un formulaire sous la section 'Évaluations' sur la page de l'entraînement. Utiliser des étoiles pour la note et un champ texte pour le commentaire.",
+          "implementation_details": "Utiliser un formulaire HTML avec des champs pour la note (nombre d'étoiles) et le commentaire. Utiliser JavaScript pour valider le formulaire côté client et soumettre les données à l'API."
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "7",
+      "title": "Envoyer des notifications aux utilisateurs pour les informer des nouvelles activités",
+      "description": "Les utilisateurs reçoivent des notifications lorsqu'un nouvel entraînement est partagé, qu'un ami les suit, etc.",
+      "goal": "Maintenir les utilisateurs engagés et informés des dernières activités sur l'application.",
+      "issues": [
+        {
+          "id": "7-TASK-1",
+          "epic_id": "7",
+          "title": "Configurer un service de notification (Firebase, AWS SNS, etc.)",
+          "type": "feat",
+          "description": "Choisir et configurer un service de notification push pour l'application.  Ce service sera utilisé pour envoyer des notifications aux utilisateurs.",
+          "acceptance_criteria": [
+            "Le service de notification est correctement intégré à l'environnement backend.",
+            "L'application peut s'authentifier auprès du service de notification.",
+            "Le service de notification peut envoyer des notifications de test à des appareils spécifiques."
+          ],
+          "tech_details": "Choisir un service de notification (Firebase Cloud Messaging (FCM), AWS SNS, etc.).  Implémenter l'initialisation et l'authentification du service dans le backend Go.",
+          "validation": "Vérifier que le service de notification est correctement initialisé et peut envoyer des notifications de test.",
+          "error_handling": "Gérer les erreurs d'initialisation du service de notification et les problèmes d'authentification.",
+          "database_migrations": null,
+          "tests": [
+            "Test d'initialisation du service.",
+            "Test d'authentification.",
+            "Test d'envoi de notification de test."
+          ],
+          "definition_of_done": [
+            "Service de notification choisi et configuré.",
+            "Clés API et configurations stockées en toute sécurité.",
+            "Fonctionnalité de test de notification implémentée et fonctionnelle."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser un SDK Go pour interagir avec le service de notification choisi.  Configurer les paramètres d'authentification et les clés API de manière sécurisée (variables d'environnement, gestionnaire de secrets)."
+        },
+        {
+          "dependencies": [
+            "7-TASK-1"
+          ],
+          "id": "7-TASK-2",
+          "epic_id": "7",
+          "title": "Implémenter la gestion des tokens d'appareil",
+          "type": "feat",
+          "description": "Permettre à l'application d'enregistrer et de mettre à jour les tokens d'appareil (device tokens) pour chaque utilisateur.  Ces tokens sont nécessaires pour envoyer des notifications push à des appareils spécifiques.",
+          "acceptance_criteria": [
+            "L'application peut enregistrer un token d'appareil pour un utilisateur.",
+            "L'application peut mettre à jour un token d'appareil existant.",
+            "Les tokens d'appareil sont stockés de manière sécurisée dans la base de données."
+          ],
+          "tech_details": "Implémenter une API RESTful pour gérer les tokens d'appareil.  Utiliser un ORM (GORM, etc.) pour interagir avec la base de données.",
+          "validation": "Vérifier que l'API peut enregistrer et mettre à jour les tokens d'appareil et que les tokens sont stockés correctement dans la base de données.",
+          "error_handling": "Gérer les erreurs de validation du token d'appareil et les erreurs de base de données.",
+          "database_migrations": "Ajouter une colonne 'device_token' à la table 'users'.",
+          "tests": [
+            "Test d'enregistrement d'un nouveau token.",
+            "Test de mise à jour d'un token existant.",
+            "Test de validation du format du token.",
+            "Test de gestion des erreurs (utilisateur non trouvé, token invalide)."
+          ],
+          "definition_of_done": [
+            "API pour enregistrer/mettre à jour le token d'appareil implémentée.",
+            "Tokens d'appareil stockés dans la base de données.",
+            "Gestion des erreurs (token invalide, utilisateur non trouvé) implémentée."
+          ],
+          "example_request": "{\"device_token\": \"abcdef123456\"}",
+          "example_response_success": "{\"message\": \"Device token updated successfully\"}",
+          "example_response_error_400": "{\"error\": \"Invalid device token\"}",
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "{\"device_token\": \"valid_device_token\"}",
+          "example_request_invalid": "{\"device_token\": null}",
+          "api_call": "/users/{user_id}/device_token (POST/PUT)",
+          "ui_design": null,
+          "implementation_details": "Créer une API pour enregistrer et mettre à jour le token d'appareil. Valider le format du token.  Utiliser une requête PUT pour la mise à jour et une requête POST pour la création initiale."
+        },
+        {
+          "dependencies": [
+            "7-TASK-1",
+            "7-TASK-2",
+            "2-TASK-2"
+          ],
+          "id": "7-TASK-3",
+          "epic_id": "7",
+          "title": "Implémenter la logique d'envoi de notifications pour les nouveaux entraînements",
+          "type": "feat",
+          "description": "Envoyer une notification push aux abonnés d'un utilisateur lorsqu'il partage un nouvel entraînement.",
+          "acceptance_criteria": [
+            "Une notification est envoyée aux abonnés lorsqu'un utilisateur partage un nouvel entraînement.",
+            "La notification contient le nom de l'utilisateur et le titre de l'entraînement.",
+            "La notification redirige l'utilisateur vers l'entraînement lorsqu'il clique dessus."
+          ],
+          "tech_details": "Utiliser un système de pub/sub (Redis Pub/Sub, Kafka, etc.) ou un système de queues (RabbitMQ, etc.) pour gérer les événements de création d'entraînement et l'envoi de notifications de manière asynchrone.  Cela permet d'éviter de bloquer la requête de création d'entraînement.",
+          "validation": "Vérifier que les abonnés reçoivent une notification lorsqu'un utilisateur partage un nouvel entraînement et que le contenu de la notification est correct.",
+          "error_handling": "Gérer les erreurs d'envoi de notification (service indisponible, token invalide).  Mettre en place une stratégie de retry.",
+          "database_migrations": null,
+          "tests": [
+            "Test d'envoi de notification lors de la création d'un entraînement.",
+            "Test de contenu de la notification.",
+            "Test de gestion des erreurs (service indisponible)."
+          ],
+          "definition_of_done": [
+            "Logique d'envoi de notification implémentée.",
+            "Notifications envoyées aux abonnés lors du partage d'un nouvel entraînement.",
+            "Contenu de la notification correct.",
+            "Gestion des erreurs (service de notification indisponible) implémentée."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Ecouter l'événement de création d'un nouvel entraînement.  Récupérer la liste des abonnés de l'utilisateur.  Envoyer une notification push à chaque abonné en utilisant le service de notification."
+        },
+        {
+          "dependencies": [
+            "7-TASK-1",
+            "7-TASK-2"
+          ],
+          "id": "7-TASK-4",
+          "epic_id": "7",
+          "title": "Implémenter la logique d'envoi de notifications lorsqu'un ami vous suit",
+          "type": "feat",
+          "description": "Envoyer une notification push à un utilisateur lorsqu'un autre utilisateur commence à le suivre.",
+          "acceptance_criteria": [
+            "Une notification est envoyée à l'utilisateur lorsqu'un autre utilisateur commence à le suivre.",
+            "La notification contient le nom de l'utilisateur qui a commencé à le suivre.",
+            "La notification redirige l'utilisateur vers le profil de l'utilisateur qui a commencé à le suivre lorsqu'il clique dessus."
+          ],
+          "tech_details": "Utiliser un système de pub/sub (Redis Pub/Sub, Kafka, etc.) ou un système de queues (RabbitMQ, etc.) pour gérer les événements de suivi et l'envoi de notifications de manière asynchrone.  Cela permet d'éviter de bloquer la requête de suivi.",
+          "validation": "Vérifier que l'utilisateur reçoit une notification lorsqu'il est suivi par un autre utilisateur et que le contenu de la notification est correct.",
+          "error_handling": "Gérer les erreurs d'envoi de notification (service indisponible, token invalide).  Mettre en place une stratégie de retry.",
+          "database_migrations": null,
+          "tests": [
+            "Test d'envoi de notification lors du suivi d'un utilisateur.",
+            "Test de contenu de la notification.",
+            "Test de gestion des erreurs (service indisponible)."
+          ],
+          "definition_of_done": [
+            "Logique d'envoi de notification implémentée.",
+            "Notifications envoyées lorsqu'un utilisateur est suivi par un autre.",
+            "Contenu de la notification correct.",
+            "Gestion des erreurs (service de notification indisponible) implémentée."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Ecouter l'événement de suivi d'un utilisateur.  Récupérer le token d'appareil de l'utilisateur suivi.  Envoyer une notification push à l'utilisateur suivi en utilisant le service de notification."
+        },
+        {
+          "dependencies": [
+            "7-TASK-2"
+          ],
+          "id": "7-TASK-5",
+          "epic_id": "7",
+          "title": "Implémenter les paramètres de notification utilisateur",
+          "type": "feat",
+          "description": "Permettre aux utilisateurs de choisir les types de notifications qu'ils souhaitent recevoir (nouveaux entraînements, nouveaux followers, etc.).",
+          "acceptance_criteria": [
+            "Les utilisateurs peuvent activer/désactiver les notifications pour chaque type d'événement.",
+            "Les paramètres de notification sont persistants.",
+            "Seules les notifications activées par l'utilisateur sont envoyées."
+          ],
+          "tech_details": "Implémenter une API RESTful pour gérer les paramètres de notification.  Utiliser un ORM (GORM, etc.) pour interagir avec la base de données.",
+          "validation": "Vérifier que les utilisateurs peuvent gérer leurs paramètres de notification, que les paramètres sont persistants et que seules les notifications activées sont envoyées.",
+          "error_handling": "Gérer les erreurs de validation des paramètres de notification et les erreurs de base de données.",
+          "database_migrations": "Ajouter une table 'notification_settings' avec les colonnes 'user_id', 'new_workout', 'new_follower', etc.",
+          "tests": [
+            "Test de mise à jour des paramètres de notification.",
+            "Test de persistance des paramètres.",
+            "Test d'envoi de notification en fonction des paramètres utilisateur.",
+            "Test de validation des paramètres."
+          ],
+          "definition_of_done": [
+            "API pour gérer les paramètres de notification implémentée.",
+            "Paramètres de notification stockés dans la base de données.",
+            "Seules les notifications activées sont envoyées.",
+            "Interface utilisateur pour gérer les paramètres de notification implémentée."
+          ],
+          "example_request": "{\"new_workout\": true, \"new_follower\": false}",
+          "example_response_success": "{\"message\": \"Notification settings updated successfully\"}",
+          "example_response_error_400": "{\"error\": \"Invalid notification setting value\"}",
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "{\"new_workout\": true, \"new_follower\": false}",
+          "example_request_invalid": "{\"new_workout\": \"invalid_value\"}",
+          "api_call": "/users/{user_id}/notification_settings (PUT)",
+          "ui_design": "Créer une interface utilisateur pour permettre aux utilisateurs de gérer leurs paramètres de notification.",
+          "implementation_details": "Créer une API pour gérer les paramètres de notification.  Utiliser un middleware pour vérifier si l'utilisateur a activé les notifications pour un type d'événement avant d'envoyer la notification.  Mettre à jour la logique d'envoi de notification pour prendre en compte les paramètres utilisateur."
+        }
+      ],
+      "priority": "low"
+    },
+    {
+      "id": "8",
+      "title": "Permettre aux utilisateurs de personnaliser leur profil",
+      "description": "Les utilisateurs peuvent ajouter une photo de profil, une description et des informations sur leurs objectifs.",
+      "goal": "Permettre aux utilisateurs de se présenter et de se connecter avec d'autres utilisateurs partageant les mêmes intérêts.",
+      "issues": [
+        {
+          "id": "8-TASK-1",
+          "epic_id": "8",
+          "title": "Ajouter un champ 'photo de profil' au modèle utilisateur",
+          "type": "feat",
+          "description": "Ajouter un champ pour stocker l'URL de la photo de profil de l'utilisateur. Ce champ doit être nullable.",
+          "acceptance_criteria": [
+            "Un champ 'photo_de_profil' est ajouté au modèle utilisateur dans la base de données.",
+            "Le champ 'photo_de_profil' peut être null.",
+            "Le champ 'photo_de_profil' est inclus dans la sérialisation et la désérialisation de l'utilisateur."
+          ],
+          "tech_details": "Utiliser le framework ORM pour effectuer la migration de la base de données.",
+          "validation": "Vérifier que la migration de la base de données a été appliquée correctement. Vérifier que le champ 'photo_de_profil' est visible dans l'interface d'administration.",
+          "error_handling": "Gérer les erreurs potentielles lors de la manipulation des URL de photos de profil (par exemple, URL invalides).",
+          "database_migrations": "Ajouter une colonne 'photo_de_profil' de type TEXT nullable à la table 'users'.",
+          "tests": [
+            "Test unitaire pour vérifier que le champ 'photo_de_profil' est ajouté au modèle utilisateur.",
+            "Test unitaire pour vérifier que le champ 'photo_de_profil' peut être null.",
+            "Test d'intégration pour vérifier l'upload d'une image et sa sauvegarde de l'url en base."
+          ],
+          "definition_of_done": [
+            "Le code est revu et approuvé.",
+            "Les tests unitaires passent.",
+            "La migration de la base de données est appliquée avec succès."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser un stockage cloud (ex: AWS S3, Cloudinary) pour stocker les photos de profil.  Stocker uniquement l'URL dans la base de données.  Implémenter une fonction utilitaire pour uploader les images vers le stockage cloud."
+        },
+        {
+          "dependencies": [
+            "8-TASK-1"
+          ],
+          "id": "8-TASK-2",
+          "epic_id": "8",
+          "title": "Ajouter un champ 'description' au modèle utilisateur",
+          "type": "feat",
+          "description": "Ajouter un champ pour stocker la description de l'utilisateur. Ce champ doit être une chaîne de caractères de longueur maximale 255.",
+          "acceptance_criteria": [
+            "Un champ 'description' est ajouté au modèle utilisateur dans la base de données.",
+            "Le champ 'description' est une chaîne de caractères de longueur maximale 255.",
+            "Le champ 'description' est inclus dans la sérialisation et la désérialisation de l'utilisateur."
+          ],
+          "tech_details": "Utiliser le framework ORM pour effectuer la migration de la base de données.",
+          "validation": "Vérifier que la migration de la base de données a été appliquée correctement. Vérifier que le champ 'description' est visible dans l'interface d'administration.",
+          "error_handling": "Gérer les erreurs potentielles lors de la validation de la longueur de la description.",
+          "database_migrations": "Ajouter une colonne 'description' de type VARCHAR(255) à la table 'users'.",
+          "tests": [
+            "Test unitaire pour vérifier que le champ 'description' est ajouté au modèle utilisateur.",
+            "Test unitaire pour vérifier que le champ 'description' est une chaîne de caractères de longueur maximale 255.",
+            "Test d'intégration pour vérifier que la description est correctement enregistrée dans la base de données."
+          ],
+          "definition_of_done": [
+            "Le code est revu et approuvé.",
+            "Les tests unitaires passent.",
+            "La migration de la base de données est appliquée avec succès."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser les mécanismes de validation du framework pour assurer que la longueur de la description ne dépasse pas 255 caractères."
+        },
+        {
+          "dependencies": [
+            "8-TASK-2"
+          ],
+          "id": "8-TASK-3",
+          "epic_id": "8",
+          "title": "Ajouter un champ 'objectifs' au modèle utilisateur",
+          "type": "feat",
+          "description": "Ajouter un champ pour stocker les objectifs de l'utilisateur. Ce champ peut être une chaîne de caractères de longueur maximale 255.",
+          "acceptance_criteria": [
+            "Un champ 'objectifs' est ajouté au modèle utilisateur dans la base de données.",
+            "Le champ 'objectifs' est une chaîne de caractères de longueur maximale 255.",
+            "Le champ 'objectifs' est inclus dans la sérialisation et la désérialisation de l'utilisateur."
+          ],
+          "tech_details": "Utiliser le framework ORM pour effectuer la migration de la base de données.",
+          "validation": "Vérifier que la migration de la base de données a été appliquée correctement. Vérifier que le champ 'objectifs' est visible dans l'interface d'administration.",
+          "error_handling": "Gérer les erreurs potentielles lors de la validation de la longueur des objectifs.",
+          "database_migrations": "Ajouter une colonne 'objectifs' de type VARCHAR(255) à la table 'users'.",
+          "tests": [
+            "Test unitaire pour vérifier que le champ 'objectifs' est ajouté au modèle utilisateur.",
+            "Test unitaire pour vérifier que le champ 'objectifs' est une chaîne de caractères de longueur maximale 255.",
+            "Test d'intégration pour vérifier que les objectifs sont correctement enregistrés dans la base de données."
+          ],
+          "definition_of_done": [
+            "Le code est revu et approuvé.",
+            "Les tests unitaires passent.",
+            "La migration de la base de données est appliquée avec succès."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser les mécanismes de validation du framework pour assurer que la longueur des objectifs ne dépasse pas 255 caractères."
+        },
+        {
+          "dependencies": [
+            "8-TASK-1",
+            "8-TASK-2",
+            "8-TASK-3",
+            "1-TASK-2"
+          ],
+          "id": "8-TASK-4",
+          "epic_id": "8",
+          "title": "Créer une API pour modifier le profil utilisateur",
+          "type": "feat",
+          "description": "Créer une API permettant aux utilisateurs de modifier leur photo de profil, leur description et leurs objectifs.",
+          "acceptance_criteria": [
+            "Une API PUT /users/{id} est créée pour modifier le profil utilisateur.",
+            "L'API permet de modifier la photo de profil, la description et les objectifs de l'utilisateur.",
+            "L'API renvoie un code 200 OK en cas de succès.",
+            "L'API renvoie un code d'erreur approprié en cas d'échec."
+          ],
+          "tech_details": "Utiliser le framework API pour créer l'API PUT /users/{id}. Utiliser le framework ORM pour accéder à la base de données.",
+          "validation": "Vérifier que l'API PUT /users/{id} fonctionne correctement. Vérifier que les données sont correctement enregistrées dans la base de données. Vérifier que la photo de profil est correctement uploadée.",
+          "error_handling": "Gérer les erreurs potentielles lors de la validation des données, de l'accès à la base de données et de l'upload de la photo de profil.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour vérifier que l'API renvoie un code 200 OK en cas de succès.",
+            "Test unitaire pour vérifier que l'API renvoie un code d'erreur approprié en cas d'échec.",
+            "Test d'intégration pour vérifier que les données sont correctement enregistrées dans la base de données.",
+            "Test d'intégration pour vérifier que la photo de profil est correctement uploadée."
+          ],
+          "definition_of_done": [
+            "Le code est revu et approuvé.",
+            "Les tests unitaires passent.",
+            "Les tests d'intégration passent.",
+            "La documentation de l'API est à jour."
+          ],
+          "example_request": "PUT /users/1 {\"photo_de_profil\": \"https://example.com/photo.jpg\", \"description\": \"Ma description\", \"objectifs\": \"Mes objectifs\"}",
+          "example_response_success": "{\"id\": 1, \"photo_de_profil\": \"https://example.com/photo.jpg\", \"description\": \"Ma description\", \"objectifs\": \"Mes objectifs\"}",
+          "example_response_error_400": "{\"error\": \"La description est trop longue\"}",
+          "example_response_error_401": "{\"error\": \"Non autorisé\"}",
+          "example_response_error_409": null,
+          "example_request_valid": "PUT /users/1 {\"photo_de_profil\": \"https://example.com/photo.jpg\", \"description\": \"Ma description\", \"objectifs\": \"Mes objectifs\"}",
+          "example_request_invalid": "PUT /users/1 {\"description\": \"Une description trop longue\"}",
+          "api_call": "PUT /users/{id}",
+          "ui_design": null,
+          "implementation_details": "Utiliser un middleware d'authentification pour vérifier que l'utilisateur est autorisé à modifier son profil. Valider les données entrantes avant de les enregistrer dans la base de données. Utiliser une librairie de manipulation d'images pour redimensionner et optimiser les photos de profil."
+        },
+        {
+          "dependencies": [
+            "8-TASK-4"
+          ],
+          "id": "8-TASK-5",
+          "epic_id": "8",
+          "title": "Mettre à jour l'interface utilisateur pour permettre la modification du profil",
+          "type": "feat",
+          "description": "Mettre à jour l'interface utilisateur pour permettre aux utilisateurs de modifier leur photo de profil, leur description et leurs objectifs.",
+          "acceptance_criteria": [
+            "Une page de modification du profil est créée.",
+            "La page permet de modifier la photo de profil, la description et les objectifs de l'utilisateur.",
+            "La page utilise l'API PUT /users/{id} pour enregistrer les modifications.",
+            "La page affiche un message de succès ou d'erreur après l'enregistrement des modifications."
+          ],
+          "tech_details": "Utiliser le framework UI pour créer la page de modification du profil. Utiliser le framework API client pour appeler l'API PUT /users/{id}.",
+          "validation": "Vérifier que la page de modification du profil fonctionne correctement. Vérifier que les données sont correctement enregistrées dans la base de données. Vérifier que l'utilisateur peut modifier son profil avec succès.",
+          "error_handling": "Gérer les erreurs potentielles lors de l'appel à l'API PUT /users/{id}. Afficher des messages d'erreur clairs et concis à l'utilisateur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour vérifier que la page de modification du profil affiche les données de l'utilisateur.",
+            "Test unitaire pour vérifier que la page utilise l'API PUT /users/{id} pour enregistrer les modifications.",
+            "Test d'intégration pour vérifier que les modifications sont correctement enregistrées dans la base de données.",
+            "Test d'acceptation pour vérifier que l'utilisateur peut modifier son profil avec succès."
+          ],
+          "definition_of_done": [
+            "Le code est revu et approuvé.",
+            "Les tests unitaires passent.",
+            "Les tests d'intégration passent.",
+            "Les tests d'acceptation passent."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "PUT /users/{id}",
+          "ui_design": "Créer une maquette de la page de modification du profil.",
+          "implementation_details": "Utiliser un framework UI pour créer la page de modification du profil. Utiliser une librairie de gestion des formulaires pour faciliter la validation des données. Utiliser une librairie d'upload de fichiers pour permettre l'upload de la photo de profil."
+        }
+      ],
+      "priority": "low"
+    },
+    {
+      "id": "9",
+      "title": "Intégrer des statistiques et des graphiques pour suivre les progrès des utilisateurs",
+      "description": "Les utilisateurs peuvent visualiser leurs progrès en termes de nombre d'entraînements réalisés, de calories brûlées, etc.",
+      "goal": "Motiver les utilisateurs à atteindre leurs objectifs et à rester actifs.",
+      "issues": [
+        {
+          "id": "9-TASK-1",
+          "epic_id": "9",
+          "title": "Modèle de données pour les statistiques d'entraînement",
+          "type": "feat",
+          "description": "Créer un modèle de données pour stocker les statistiques des entraînements des utilisateurs.  Inclure le nombre d'entraînements réalisés, les calories brûlées, la durée totale d'entraînement, et d'autres mesures pertinentes.",
+          "acceptance_criteria": [
+            "Le modèle de données doit inclure les champs : user_id, date, nombre_entrainements, calories_brulees, duree_totale.",
+            "Le modèle de données doit être extensible pour ajouter d'autres statistiques à l'avenir.",
+            "Une migration de base de données doit être créée pour ajouter les nouvelles tables/colonnes."
+          ],
+          "tech_details": "Utiliser Go pour implémenter le modèle de données et les migrations.",
+          "validation": "Valider que les données sont correctement stockées dans la base de données.",
+          "error_handling": "Gérer les erreurs de validation des données (ex: date invalide, nombre négatif).",
+          "database_migrations": "Créer une migration pour ajouter la table 'training_stats' avec les colonnes user_id, date, nombre_entrainements, calories_brulees, duree_totale, created_at, updated_at.",
+          "tests": [
+            "Test unitaire pour valider la création d'une statistique d'entraînement.",
+            "Test unitaire pour valider la mise à jour d'une statistique d'entraînement.",
+            "Test d'intégration pour vérifier l'interaction avec la base de données."
+          ],
+          "definition_of_done": [
+            "Modèle de données créé et testé.",
+            "Migration de base de données créée et appliquée avec succès.",
+            "Tests unitaires écrits pour valider le modèle."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser un ORM (ex: Gorm) pour interagir avec la base de données.  Assurer l'intégrité des données en utilisant des validations au niveau du modèle."
+        },
+        {
+          "dependencies": [
+            "9-TASK-1"
+          ],
+          "id": "9-TASK-2",
+          "epic_id": "9",
+          "title": "Service de calcul des statistiques d'entraînement",
+          "type": "feat",
+          "description": "Implémenter un service qui calcule les statistiques d'entraînement pour un utilisateur donné sur une période donnée. Ce service doit agréger les données des entraînements de l'utilisateur et calculer les statistiques pertinentes.",
+          "acceptance_criteria": [
+            "Le service doit prendre en entrée un user_id et une période (date de début, date de fin).",
+            "Le service doit retourner le nombre total d'entraînements, les calories totales brûlées, et la durée totale d'entraînement pour la période donnée.",
+            "Le service doit gérer le cas où il n'y a pas d'entraînements pour l'utilisateur dans la période donnée."
+          ],
+          "tech_details": "Utiliser Go pour implémenter le service. Utiliser des goroutines pour paralléliser les calculs si nécessaire.",
+          "validation": "Valider que les statistiques calculées correspondent aux données d'entraînement de l'utilisateur.",
+          "error_handling": "Gérer les erreurs de requête à la base de données et les erreurs de calcul.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour valider le calcul des statistiques avec des données existantes.",
+            "Test unitaire pour valider le cas où il n'y a pas d'entraînements.",
+            "Test d'intégration pour vérifier l'interaction avec la base de données."
+          ],
+          "definition_of_done": [
+            "Service implémenté et testé.",
+            "Tests unitaires écrits pour valider les calculs.",
+            "Gestion des erreurs implémentée."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser la logique métier en Go pour agréger les données. Optimiser les requêtes à la base de données pour éviter les performances lentes."
+        },
+        {
+          "dependencies": [
+            "9-TASK-2"
+          ],
+          "id": "9-TASK-3",
+          "epic_id": "9",
+          "title": "API pour récupérer les statistiques d'entraînement",
+          "type": "feat",
+          "description": "Créer une API REST pour permettre aux clients de récupérer les statistiques d'entraînement d'un utilisateur.",
+          "acceptance_criteria": [
+            "L'API doit prendre en entrée un user_id, une date de début et une date de fin.",
+            "L'API doit retourner les statistiques calculées par le service de calcul des statistiques.",
+            "L'API doit être sécurisée et nécessiter une authentification.",
+            "L'API doit retourner une erreur appropriée si l'utilisateur n'est pas autorisé à accéder aux statistiques."
+          ],
+          "tech_details": "Utiliser Go pour implémenter l'API.  Utiliser un format de données JSON pour les requêtes et les réponses.",
+          "validation": "Valider que l'API retourne les statistiques correctes pour un utilisateur donné.",
+          "error_handling": "Retourner des codes d'erreur HTTP appropriés (ex: 400 pour une requête invalide, 401 pour une authentification échouée, 500 pour une erreur serveur).",
+          "database_migrations": null,
+          "tests": [
+            "Test d'intégration pour valider la récupération des statistiques avec une requête valide.",
+            "Test d'intégration pour valider la gestion des erreurs d'authentification.",
+            "Test d'intégration pour valider la gestion des erreurs de requête invalide."
+          ],
+          "definition_of_done": [
+            "API implémentée et testée.",
+            "Documentation de l'API créée.",
+            "Sécurité de l'API implémentée.",
+            "Gestion des erreurs implémentée."
+          ],
+          "example_request": "GET /users/123/stats?start_date=2024-01-01\u0026end_date=2024-01-31",
+          "example_response_success": "{\"nombre_entrainements\": 10, \"calories_brulees\": 3000, \"duree_totale\": 600}",
+          "example_response_error_400": "{\"error\": \"Invalid user ID\"}",
+          "example_response_error_401": "{\"error\": \"Unauthorized\"}",
+          "example_response_error_409": null,
+          "example_request_valid": "GET /users/123/stats?start_date=2024-01-01\u0026end_date=2024-01-31",
+          "example_request_invalid": "GET /users/abc/stats?start_date=2024-01-01\u0026end_date=2024-01-31",
+          "api_call": "GET /users/{user_id}/stats?start_date=YYYY-MM-DD\u0026end_date=YYYY-MM-DD",
+          "ui_design": null,
+          "implementation_details": "Utiliser un framework web Go (ex: Gin, Echo) pour implémenter l'API.  Utiliser un middleware pour gérer l'authentification."
+        },
+        {
+          "dependencies": [
+            "9-TASK-3"
+          ],
+          "id": "9-TASK-4",
+          "epic_id": "9",
+          "title": "Interface utilisateur pour afficher les statistiques",
+          "type": "feat",
+          "description": "Créer une interface utilisateur pour afficher les statistiques d'entraînement de l'utilisateur.  Inclure des graphiques pour visualiser les progrès au fil du temps.",
+          "acceptance_criteria": [
+            "L'interface utilisateur doit afficher le nombre d'entraînements, les calories brûlées, et la durée totale d'entraînement.",
+            "L'interface utilisateur doit afficher des graphiques pour visualiser les progrès au fil du temps.",
+            "L'interface utilisateur doit permettre à l'utilisateur de choisir la période à afficher (ex: semaine, mois, année).",
+            "L'interface utilisateur doit être responsive et s'adapter à différentes tailles d'écran."
+          ],
+          "tech_details": "Utiliser JavaScript, HTML et CSS pour implémenter l'interface utilisateur.  Utiliser des requêtes AJAX pour communiquer avec l'API.",
+          "validation": "Valider que l'interface utilisateur affiche les statistiques correctes et que les graphiques sont clairs et compréhensibles.",
+          "error_handling": "Gérer les erreurs de requête à l'API et afficher des messages d'erreur appropriés à l'utilisateur.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour valider l'affichage des statistiques.",
+            "Test unitaire pour valider l'affichage des graphiques.",
+            "Test d'intégration pour vérifier l'interaction avec l'API.",
+            "Test de responsive design."
+          ],
+          "definition_of_done": [
+            "Interface utilisateur implémentée et testée.",
+            "Graphiques implémentés et fonctionnels.",
+            "Responsive design implémenté.",
+            "Tests unitaires et d'intégration écrits."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "GET /users/{user_id}/stats?start_date=YYYY-MM-DD\u0026end_date=YYYY-MM-DD",
+          "ui_design": "Fournir des maquettes de l'interface utilisateur et des graphiques.",
+          "implementation_details": "Utiliser un framework JavaScript (ex: React, Vue.js) pour implémenter l'interface utilisateur.  Utiliser une librairie de graphiques (ex: Chart.js, D3.js) pour afficher les graphiques."
+        }
+      ],
+      "priority": "low"
+    }
+  ],
+  "model": "google/gemini-2.0-flash-001",
+  "number_token": 27783,
+  "marketing": {
+    "analyse_marketing": {
+      "synthese_executive": {
+        "potentiel_global": {
+          "note": 4,
+          "echelle": 5
+        },
+        "forces_principales": [
+          "Communauté et partage d'expérience",
+          "Personnalisation des entraînements",
+          "Potentiel de monétisation (premium, partenariats)"
+        ],
+        "risques_majeurs": [
+          "Concurrence forte (applications existantes, réseaux sociaux)",
+          "Acquisition et rétention des utilisateurs",
+          "Modération du contenu et respect de la vie privée"
+        ]
+      },
+      "analyse_marche": {
+        "taille_marche": {
+          "valeur": "Croissant",
+          "unite": "Utilisateurs de fitness et de salles de sport",
+          "tendance": "Croissance"
+        },
+        "segments_cibles": [
+          {
+            "nom": "Débutants en fitness",
+            "description": "Personnes souhaitant commencer un programme d'entraînement structuré.",
+            "priorite": "Primaire"
+          },
+          {
+            "nom": "Sportifs réguliers",
+            "description": "Individus ayant déjà une routine sportive et cherchant à la diversifier ou à la partager.",
+            "priorite": "Primaire"
+          },
+          {
+            "nom": "Coachs sportifs",
+            "description": "Professionnels du fitness souhaitant promouvoir leurs services et partager leur expertise.",
+            "priorite": "Secondaire"
+          }
+        ],
+        "positionnement": {
+          "concurrents_principaux": [
+            "Applications de suivi d'entraînement (ex: Strava, MyFitnessPal)",
+            "Réseaux sociaux (ex: Instagram, TikTok)",
+            "Applications de coaching sportif (ex: Freeletics)"
+          ],
+          "avantage_concurrentiel": "Spécialisation sur le partage de programmes d'entraînement et l'aspect communautaire."
+        }
+      },
+      "proposition_valeur": {
+        "probleme_resolu": "Manque d'inspiration et de structure dans les programmes d'entraînement, difficulté à trouver des programmes adaptés à ses objectifs.",
+        "benefices_uniques": [
+          "Accès à une large variété de programmes d'entraînement partagés par la communauté.",
+          "Possibilité de personnaliser et d'adapter les programmes à ses besoins.",
+          "Motivation et soutien grâce au partage et aux interactions avec d'autres utilisateurs."
+        ],
+        "differentiation": "Plateforme dédiée au partage de programmes d'entraînement, axée sur la communauté et la personnalisation."
+      },
+      "faisabilite": {
+        "ressources_necessaires": {
+          "equipe": [
+            "Développeurs (iOS, Android, Backend)",
+            "Designers (UI/UX)",
+            "Marketing et communication",
+            "Modérateur de contenu"
+          ],
+          "technologies": [
+            "Frameworks de développement mobile (React Native, Flutter)",
+            "Base de données (ex: MongoDB, PostgreSQL)",
+            "API pour l'authentification et le partage de contenu",
+            "Serveurs cloud (ex: AWS, Google Cloud)"
+          ]
+        },
+        "barrieres_entree": [
+          "Acquisition d'une masse critique d'utilisateurs",
+          "Concurrence avec les applications existantes",
+          "Gestion de la modération du contenu et de la sécurité des données"
+        ]
+      },
+      "strategie_go_to_market": {
+        "canaux_acquisition": [
+          {
+            "canal": "Publicités sur les réseaux sociaux (Facebook, Instagram)",
+            "priorite": "Élevée",
+            "cout_estime": "Variable, dépend du ciblage et du budget"
+          },
+          {
+            "canal": "Partenariats avec des influenceurs fitness",
+            "priorite": "Moyenne",
+            "cout_estime": "Variable, dépend de la notoriété de l'influenceur"
+          },
+          {
+            "canal": "SEO et marketing de contenu (blog, articles de conseils)",
+            "priorite": "Moyenne",
+            "cout_estime": "Faible, nécessite du temps et des efforts"
+          },
+          {
+            "canal": "App Store Optimization (ASO)",
+            "priorite": "Élevée",
+            "cout_estime": "Faible, nécessite une recherche de mots-clés pertinents"
+          }
+        ],
+        "pricing": {
+          "modele": "Freemium",
+          "fourchette": {
+            "min": 0,
+            "max": 9.99,
+            "devise": "EUR"
+          }
+        },
+        "tactiques_lancement": [
+          "Campagne de pré-lancement sur les réseaux sociaux",
+          "Offre de lancement (ex: accès premium gratuit pendant une période limitée)",
+          "Concours et challenges pour encourager le partage de programmes d'entraînement"
+        ]
+      },
+      "metriques_cles": {
+        "kpis": [
+          {
+            "nom": "Nombre d'utilisateurs actifs mensuels (MAU)",
+            "objectif_6_mois": "10 000",
+            "objectif_12_mois": "50 000"
+          },
+          {
+            "nom": "Nombre de programmes d'entraînement partagés",
+            "objectif_6_mois": "1 000",
+            "objectif_12_mois": "5 000"
+          },
+          {
+            "nom": "Taux de conversion du freemium au premium",
+            "objectif_6_mois": "2%",
+            "objectif_12_mois": "5%"
+          },
+          {
+            "nom": "Taux de rétention des utilisateurs",
+            "objectif_6_mois": "30%",
+            "objectif_12_mois": "40%"
+          }
+        ]
+      },
+      "recommandations": {
+        "actions_prioritaires": [
+          {
+            "action": "Développer une version MVP (Minimum Viable Product) de l'application",
+            "delai": "Court terme",
+            "impact": "Élevé"
+          },
+          {
+            "action": "Mettre en place une stratégie de marketing de contenu et de réseaux sociaux",
+            "delai": "Court terme",
+            "impact": "Élevé"
+          },
+          {
+            "action": "Identifier et contacter des influenceurs fitness pour des partenariats",
+            "delai": "Moyen terme",
+            "impact": "Moyen"
+          }
+        ],
+        "quick_wins": [
+          "Créer une communauté sur les réseaux sociaux avant le lancement de l'application",
+          "Proposer un programme d'entraînement gratuit à télécharger en échange d'une adresse email",
+          "Mettre en place un système de parrainage pour encourager le bouche-à-oreille"
+        ],
+        "points_attention": [
+          "Gestion de la modération du contenu et de la sécurité des données",
+          "Suivi des performances des campagnes marketing et ajustement en fonction des résultats",
+          "Veille concurrentielle pour identifier les nouvelles tendances et opportunités"
+        ]
+      },
+      "metadata": {
+        "date_analyse": "2025-11-24",
+        "niveau_confiance": "Moyen",
+        "hypotheses_cles": [
+          "Le marché du fitness est en croissance et les utilisateurs sont à la recherche de programmes d'entraînement personnalisés.",
+          "Les utilisateurs sont prêts à partager leurs programmes d'entraînement avec d'autres.",
+          "Un modèle freemium est viable pour ce type d'application."
+        ]
+      }
+    }
+  }
+}

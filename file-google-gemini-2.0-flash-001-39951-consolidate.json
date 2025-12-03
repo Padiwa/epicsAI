@@ -1,0 +1,2292 @@
+{
+  "idea": "Une application simple permettant de visualiser des fichiers GPX ",
+  "epics": [
+    {
+      "id": "1",
+      "title": "En tant qu'utilisateur, je veux pouvoir importer un fichier GPX pour visualiser son contenu",
+      "description": "Permettre l'import de fichiers GPX depuis différentes sources (local, URL).",
+      "goal": "Importer des fichiers GPX avec succès et afficher un message de confirmation.",
+      "priority": "high",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir importer un fichier GPX depuis mon ordinateur, afin de visualiser son tracé sur la carte.",
+          "description": "Permettre à l'utilisateur de sélectionner un fichier GPX stocké localement sur son ordinateur et de l'importer dans l'application. L'application doit ensuite parser le fichier et afficher le tracé sur une carte.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page d'accueil de l'application",
+            "Quand je clique sur le bouton 'Importer un fichier'",
+            "Et que je sélectionne un fichier GPX valide depuis mon ordinateur",
+            "Alors le fichier est importé avec succès",
+            "Et le tracé du fichier GPX est affiché sur la carte",
+            "Et un message de succès s'affiche"
+          ],
+          "definition_of_done": "L'utilisateur peut importer un fichier GPX depuis son ordinateur et visualiser le tracé sur la carte. Un message de succès est affiché.",
+          "tests_to_plan": [
+            "Test d'import de fichier GPX valide",
+            "Test d'import de fichier GPX invalide (format incorrect)",
+            "Test d'import de fichier GPX volumineux",
+            "Test de gestion des erreurs lors de l'import (fichier corrompu, etc.)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Implémentation d'un composant d'upload de fichier",
+            "Implémentation d'un parser GPX",
+            "Implémentation de l'affichage du tracé sur la carte"
+          ],
+          "issues": [
+            {
+              "id": "1-US-001-TASK-1",
+              "epic_id": "1",
+              "title": "Implémenter le composant de sélection de fichier GPX",
+              "type": "feat",
+              "description": "Développer un composant UI permettant à l'utilisateur de sélectionner un fichier GPX depuis son ordinateur.",
+              "acceptance_criteria": [
+                "L'utilisateur peut cliquer sur un bouton pour ouvrir une boîte de dialogue de sélection de fichier.",
+                "La boîte de dialogue de sélection de fichier est filtrée pour afficher uniquement les fichiers avec l'extension '.gpx'.",
+                "Le chemin du fichier sélectionné est stocké et accessible à l'application."
+              ],
+              "tech_details": "Utiliser JavaScript pour manipuler l'élément `\u003cinput type='file'\u003e` et récupérer le chemin du fichier.",
+              "validation": "Valider que le chemin du fichier est correct et que le fichier existe.",
+              "error_handling": "Afficher un message d'erreur si la sélection du fichier échoue.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que le chemin du fichier est correctement stocké.",
+                "Test d'intégration pour vérifier le bon fonctionnement de la boîte de dialogue de sélection de fichier."
+              ],
+              "definition_of_done": [
+                "Composant de sélection de fichier implémenté.",
+                "Filtrage des fichiers par extension '.gpx' fonctionnel.",
+                "Chemin du fichier sélectionné accessible."
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Prévoir un bouton clair et identifiable pour l'import de fichier (ex: 'Importer GPX').",
+              "implementation_details": "Utiliser l'élément `\u003cinput type='file'\u003e` en HTML pour la sélection de fichier.  Assurer la compatibilité avec les différents navigateurs.",
+              "mermaid_flow_diagram": "graph LR\n A[Clic sur le bouton 'Importer'] --\u003e B{Ouvrir la boîte de dialogue de sélection de fichier}\n B --\u003e C{Sélectionner un fichier .gpx}\n C --\u003e D{Stocker le chemin du fichier}\n D --\u003e E[Retour du chemin du fichier]"
+            },
+            {
+              "dependencies": [
+                "1-US-001-TASK-1"
+              ],
+              "id": "1-US-001-TASK-2",
+              "epic_id": "1",
+              "title": "Implémenter le parser de fichier GPX",
+              "type": "feat",
+              "description": "Développer une fonction pour parser le contenu d'un fichier GPX et extraire les données pertinentes (points GPS, timestamps, etc.).",
+              "acceptance_criteria": [
+                "La fonction de parsing accepte un chemin de fichier GPX en entrée.",
+                "La fonction extrait les informations de latitude, longitude et timestamp de chaque point GPS.",
+                "La fonction retourne une structure de données contenant les points GPS parsés."
+              ],
+              "tech_details": "Choisir une librairie de parsing XML performante et facile à utiliser. Optimiser le parsing pour les fichiers GPX volumineux.",
+              "validation": "Valider que les données GPS parsées correspondent aux données contenues dans le fichier GPX d'origine.",
+              "error_handling": "Gérer les erreurs de parsing (fichier invalide, format incorrect) et afficher un message d'erreur approprié.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que la fonction de parsing extrait correctement les données GPS.",
+                "Test d'intégration avec des fichiers GPX de différents formats et tailles.",
+                "Test de gestion des erreurs pour les fichiers GPX invalides."
+              ],
+              "definition_of_done": [
+                "Fonction de parsing GPX implémentée.",
+                "Extraction des données GPS (latitude, longitude, timestamp) fonctionnelle.",
+                "Structure de données retournée conforme aux spécifications."
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser une librairie de parsing XML (ex: `xml2js` en Node.js) pour analyser le fichier GPX. Définir une structure de données pour représenter les points GPS (ex: `{ latitude: number, longitude: number, timestamp: Date }[]`).",
+              "mermaid_flow_diagram": "graph LR\n A[Chemin du fichier GPX] --\u003e B{Lire le contenu du fichier}\n B --\u003e C{Parser le XML}\n C --\u003e D{Extraire les points GPS}\n D --\u003e E[Retourner la liste des points GPS]"
+            },
+            {
+              "dependencies": [
+                "1-US-001-TASK-2"
+              ],
+              "id": "1-US-001-TASK-3",
+              "epic_id": "1",
+              "title": "Afficher le tracé GPX sur une carte",
+              "type": "feat",
+              "description": "Intégrer une librairie de cartographie (ex: Leaflet, Google Maps) et afficher le tracé GPX sur la carte.",
+              "acceptance_criteria": [
+                "La carte s'affiche correctement dans l'application.",
+                "Le tracé GPX est dessiné sur la carte en utilisant les points GPS parsés.",
+                "La carte est centrée et zoomée pour afficher l'intégralité du tracé GPX.",
+                "L'utilisateur peut interagir avec la carte (zoom, déplacement)."
+              ],
+              "tech_details": "Optimiser l'affichage du tracé pour les fichiers GPX volumineux (clustering, simplification).  Gérer les performances de la carte pour une expérience utilisateur fluide.",
+              "validation": "Valider que le tracé affiché sur la carte correspond au tracé réel du fichier GPX.",
+              "error_handling": "Gérer les erreurs d'initialisation de la carte et d'affichage du tracé.",
+              "database_migrations": null,
+              "tests": [
+                "Test d'intégration pour vérifier que le tracé GPX est correctement affiché sur la carte.",
+                "Test de performance avec des fichiers GPX volumineux.",
+                "Test d'interaction avec la carte (zoom, déplacement)."
+              ],
+              "definition_of_done": [
+                "Librairie de cartographie intégrée.",
+                "Tracé GPX affiché sur la carte.",
+                "Carte centrée et zoomée correctement.",
+                "Interaction avec la carte fonctionnelle."
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Prévoir une interface utilisateur intuitive pour interagir avec la carte (boutons de zoom, etc.).",
+              "implementation_details": "Choisir une librairie de cartographie adaptée aux besoins du projet.  Utiliser les données GPS parsées pour créer un polyline sur la carte.  Adapter le style du polyline (couleur, épaisseur) pour une meilleure visibilité.",
+              "mermaid_flow_diagram": "graph LR\n A[Liste des points GPS] --\u003e B{Créer un polyline}\n B --\u003e C{Ajouter le polyline à la carte}\n C --\u003e D{Centrer et zoomer la carte}\n D --\u003e E[Afficher la carte]"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n participant User\n participant Application\n participant FileSystem\n User-\u003e\u003eApplication: Clique sur 'Importer'\n Application-\u003e\u003eFileSystem: Affiche la boite de dialogue de sélection de fichier\n User-\u003e\u003eFileSystem: Sélectionne le fichier GPX\n FileSystem-\u003e\u003eApplication: Retourne le chemin du fichier\n Application-\u003e\u003eApplication: Lit le fichier GPX\n Application-\u003e\u003eApplication: Parse le fichier GPX\n Application-\u003e\u003eApplication: Affiche le tracé sur la carte\n Application-\u003e\u003eUser: Affiche message de succès"
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir importer un fichier GPX depuis une URL, afin de visualiser son tracé sur la carte.",
+          "description": "Permettre à l'utilisateur de saisir une URL pointant vers un fichier GPX et de l'importer dans l'application. L'application doit ensuite parser le fichier et afficher le tracé sur une carte.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page d'accueil de l'application",
+            "Quand je clique sur le bouton 'Importer depuis une URL'",
+            "Et que je saisis une URL valide pointant vers un fichier GPX",
+            "Et que je clique sur 'Importer'",
+            "Alors le fichier est téléchargé et importé avec succès",
+            "Et le tracé du fichier GPX est affiché sur la carte",
+            "Et un message de succès s'affiche"
+          ],
+          "definition_of_done": "L'utilisateur peut importer un fichier GPX depuis une URL et visualiser le tracé sur la carte. Un message de succès est affiché.",
+          "tests_to_plan": [
+            "Test d'import de fichier GPX valide depuis une URL",
+            "Test d'import depuis une URL invalide (URL inexistante, fichier non GPX)",
+            "Test de gestion des erreurs lors du téléchargement (timeout, erreur réseau)",
+            "Test de gestion des erreurs lors du parsing (fichier corrompu)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 8,
+          "technical_dependencies": [
+            "Implémentation d'un champ de saisie d'URL",
+            "Implémentation d'un client HTTP pour télécharger le fichier",
+            "Implémentation d'un parser GPX",
+            "Implémentation de l'affichage du tracé sur la carte"
+          ],
+          "issues": [
+            {
+              "id": "1-US-002-TASK-1",
+              "epic_id": "1",
+              "title": "Créer une interface utilisateur pour la saisie de l'URL du fichier GPX",
+              "type": "feat",
+              "description": "Développer un champ de texte dans l'interface utilisateur permettant à l'utilisateur de saisir ou coller l'URL d'un fichier GPX.",
+              "acceptance_criteria": [
+                "Un champ de texte est présent dans l'interface utilisateur.",
+                "Le champ de texte est clairement identifiable et étiqueté 'URL du fichier GPX'.",
+                "L'utilisateur peut saisir ou coller une URL valide dans le champ de texte.",
+                "Un bouton 'Importer' est présent, permettant de lancer l'import du fichier GPX."
+              ],
+              "tech_details": "Utiliser le framework UI choisi (ex: React, Vue.js, Angular) pour implémenter le formulaire. Gérer l'état du champ de texte pour récupérer l'URL saisie.",
+              "validation": "Valider que l'interface utilisateur affiche correctement le champ de texte et le bouton. Vérifier que la saisie de l'URL et le clic sur 'Importer' déclenchent l'action d'import.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire vérifiant la présence du champ de texte et du bouton.",
+                "Test d'intégration vérifiant que la saisie d'une URL et le clic sur 'Importer' déclenchent l'action d'import."
+              ],
+              "definition_of_done": [
+                "Champ de texte et bouton 'Importer' implémentés dans l'interface utilisateur.",
+                "Tests unitaires vérifiant la présence et la fonctionnalité du champ de texte et du bouton.",
+                "Revue de code approuvée."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Fournir une maquette de l'interface utilisateur montrant l'emplacement du champ de texte et du bouton 'Importer'.",
+              "implementation_details": "Utiliser un composant de formulaire standard (ex: `\u003cinput type='url'\u003e` en HTML) pour le champ de texte.  Ajouter un bouton avec un gestionnaire d'événements.",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant User\n    participant UI\n    User-\u003e\u003eUI: Saisit l'URL du fichier GPX\n    User-\u003e\u003eUI: Clique sur 'Importer'\n    UI-\u003e\u003eApplication: Envoie l'URL"
+            },
+            {
+              "dependencies": [
+                "1-US-002-TASK-1"
+              ],
+              "id": "1-US-002-TASK-2",
+              "epic_id": "1",
+              "title": "Implémenter la récupération du fichier GPX depuis l'URL",
+              "type": "feat",
+              "description": "Développer une fonction permettant de récupérer le contenu d'un fichier GPX à partir d'une URL donnée.",
+              "acceptance_criteria": [
+                "La fonction récupère le contenu du fichier GPX à partir de l'URL.",
+                "La fonction gère les erreurs de connexion (ex: URL invalide, serveur inaccessible).",
+                "La fonction retourne le contenu du fichier GPX sous forme de chaîne de caractères ou d'objet (à définir).",
+                "La fonction gère les erreurs HTTP (ex: 404 Not Found)."
+              ],
+              "tech_details": "Utiliser `net/http.Get()` pour récupérer le contenu.  Gérer les erreurs en utilisant `errors.Is()` pour identifier les types d'erreurs spécifiques.",
+              "validation": "Valider que la fonction récupère correctement le contenu du fichier GPX à partir d'une URL valide. Vérifier que les erreurs de connexion et HTTP sont gérées correctement et qu'un message d'erreur approprié est affiché à l'utilisateur.",
+              "error_handling": "Gérer les erreurs de connexion (ex: `net/http` timeouts). Gérer les erreurs HTTP (ex: 404 Not Found) en affichant un message d'erreur clair à l'utilisateur.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire vérifiant la récupération du fichier GPX à partir d'une URL valide.",
+                "Test unitaire vérifiant la gestion des erreurs de connexion (ex: timeout).",
+                "Test unitaire vérifiant la gestion des erreurs HTTP (ex: 404 Not Found)."
+              ],
+              "definition_of_done": [
+                "Fonction de récupération du fichier GPX implémentée.",
+                "Gestion des erreurs de connexion et HTTP implémentée.",
+                "Tests unitaires vérifiant la récupération du fichier GPX à partir d'une URL valide et la gestion des erreurs.",
+                "Revue de code approuvée."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser la librairie `net/http` pour effectuer une requête GET vers l'URL spécifiée.  Implémenter une gestion des timeouts pour éviter de bloquer l'application en cas de serveur inaccessible.",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant Application\n    participant URL\n    Application-\u003e\u003eURL: Effectue une requête GET\n    URL--\u003e\u003eApplication: Retourne le contenu du fichier GPX ou une erreur"
+            },
+            {
+              "dependencies": [
+                "1-US-002-TASK-2"
+              ],
+              "id": "1-US-002-TASK-3",
+              "epic_id": "1",
+              "title": "Implémenter le parsing du fichier GPX",
+              "type": "feat",
+              "description": "Développer une fonction permettant de parser le contenu d'un fichier GPX et d'extraire les informations nécessaires (ex: coordonnées géographiques, timestamps).",
+              "acceptance_criteria": [
+                "La fonction parse le contenu du fichier GPX.",
+                "La fonction extrait les coordonnées géographiques (latitude, longitude) de chaque point du tracé.",
+                "La fonction extrait les timestamps de chaque point du tracé (si disponibles).",
+                "La fonction retourne les données extraites dans un format structuré (ex: tableau d'objets).",
+                "La fonction gère les erreurs de parsing (ex: fichier GPX invalide)."
+              ],
+              "tech_details": "Utiliser `encoding/xml.Unmarshal()` pour parser le contenu XML. Définir une structure Go correspondant à la structure du fichier GPX.",
+              "validation": "Valider que la fonction parse correctement le contenu du fichier GPX et extrait les informations nécessaires. Vérifier que les erreurs de parsing sont gérées correctement et qu'un message d'erreur approprié est affiché à l'utilisateur.",
+              "error_handling": "Gérer les erreurs de parsing en affichant un message d'erreur clair à l'utilisateur.  Utiliser un logger pour enregistrer les détails de l'erreur pour le débogage.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire vérifiant le parsing d'un fichier GPX valide et l'extraction des coordonnées géographiques et des timestamps.",
+                "Test unitaire vérifiant la gestion des erreurs de parsing (ex: fichier GPX invalide)."
+              ],
+              "definition_of_done": [
+                "Fonction de parsing du fichier GPX implémentée.",
+                "Extraction des coordonnées géographiques et des timestamps implémentée.",
+                "Gestion des erreurs de parsing implémentée.",
+                "Tests unitaires vérifiant le parsing d'un fichier GPX valide et la gestion des erreurs.",
+                "Revue de code approuvée."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser une librairie Go de parsing XML (ex: `encoding/xml`) pour parser le contenu du fichier GPX. Définir une structure Go représentant les données extraites du fichier GPX.",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant Application\n    participant GPX Parser\n    Application-\u003e\u003eGPX Parser: Fournit le contenu du fichier GPX\n    GPX Parser--\u003e\u003eApplication: Retourne les données parsées ou une erreur"
+            },
+            {
+              "dependencies": [
+                "1-US-002-TASK-3"
+              ],
+              "id": "1-US-002-TASK-4",
+              "epic_id": "1",
+              "title": "Afficher le tracé GPX sur une carte",
+              "type": "feat",
+              "description": "Intégrer une librairie de cartographie (ex: Leaflet, Google Maps API) et afficher le tracé GPX sur une carte en utilisant les coordonnées géographiques extraites.",
+              "acceptance_criteria": [
+                "Une carte est affichée dans l'interface utilisateur.",
+                "Le tracé GPX est affiché sur la carte en utilisant les coordonnées géographiques extraites.",
+                "La carte est centrée sur le tracé GPX.",
+                "L'utilisateur peut zoomer et dézoomer sur la carte.",
+                "La carte est responsive et s'adapte à la taille de l'écran."
+              ],
+              "tech_details": "Utiliser les API de la librairie de cartographie choisie pour initialiser la carte et afficher le tracé.  Optimiser l'affichage du tracé pour gérer les fichiers GPX contenant un grand nombre de points.",
+              "validation": "Valider que le tracé GPX est affiché correctement sur la carte. Vérifier que les fonctionnalités de zoom et de dézoom fonctionnent correctement. Valider que la carte est responsive et s'adapte à la taille de l'écran.",
+              "error_handling": "Gérer les erreurs d'initialisation de la carte en affichant un message d'erreur clair à l'utilisateur.",
+              "database_migrations": null,
+              "tests": [
+                "Test d'intégration vérifiant l'affichage du tracé GPX sur la carte.",
+                "Test d'intégration vérifiant les fonctionnalités de zoom et de dézoom.",
+                "Test de performance vérifiant l'affichage du tracé pour les fichiers GPX contenant un grand nombre de points."
+              ],
+              "definition_of_done": [
+                "Intégration de la librairie de cartographie implémentée.",
+                "Affichage du tracé GPX sur la carte implémenté.",
+                "Fonctionnalités de zoom et de dézoom implémentées.",
+                "Tests d'intégration vérifiant l'affichage du tracé GPX sur la carte.",
+                "Revue de code approuvée."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Fournir une maquette de l'interface utilisateur montrant l'emplacement de la carte et les contrôles de zoom.",
+              "implementation_details": "Choisir une librairie de cartographie (ex: Leaflet, Google Maps API). Initialiser la carte et afficher le tracé GPX en utilisant les coordonnées géographiques extraites. Utiliser des marqueurs ou des lignes pour représenter le tracé.",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant Application\n    participant Map Library\n    Application-\u003e\u003eMap Library: Fournit les coordonnées GPX\n    Map Library--\u003e\u003eApplication: Affiche le tracé sur la carte"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n participant User\n participant Application\n participant Network\n User-\u003e\u003eApplication: Clique sur 'Importer depuis URL'\n User-\u003e\u003eApplication: Saisit l'URL du fichier GPX\n Application-\u003e\u003eNetwork: Télécharge le fichier GPX depuis l'URL\n Network-\u003e\u003eApplication: Retourne le contenu du fichier GPX\n Application-\u003e\u003eApplication: Parse le fichier GPX\n Application-\u003e\u003eApplication: Affiche le tracé sur la carte\n Application-\u003e\u003eUser: Affiche message de succès"
+        },
+        {
+          "id": "US-003",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux être notifié si le fichier GPX que j'essaie d'importer est invalide, afin de comprendre pourquoi l'import échoue.",
+          "description": "L'application doit valider le format du fichier GPX lors de l'import et afficher un message d'erreur clair et informatif à l'utilisateur si le fichier est invalide.",
+          "acceptance_criteria": [
+            "Étant donné que j'essaie d'importer un fichier GPX",
+            "Quand le fichier GPX est invalide (format incorrect, fichier corrompu)",
+            "Alors un message d'erreur clair et informatif est affiché à l'utilisateur",
+            "Et le tracé n'est pas affiché sur la carte"
+          ],
+          "definition_of_done": "Un message d'erreur clair est affiché à l'utilisateur si le fichier GPX est invalide.",
+          "tests_to_plan": [
+            "Test d'import de fichier GPX avec format incorrect",
+            "Test d'import de fichier GPX corrompu",
+            "Test que le message d'erreur est clair et informatif"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Implémentation d'une validation du format GPX",
+            "Implémentation de l'affichage des messages d'erreur"
+          ],
+          "issues": [
+            {
+              "id": "1-US-003-TASK-1",
+              "epic_id": "1",
+              "title": "Implémenter la validation du format de fichier GPX",
+              "type": "feat",
+              "description": "Implémenter une fonction qui valide si un fichier est bien au format GPX attendu. Ceci inclut la vérification de la structure XML et la présence des éléments essentiels (e.g., \u003cgpx\u003e, \u003ctrk\u003e, \u003ctrkpt\u003e).",
+              "acceptance_criteria": [
+                "La fonction de validation doit accepter un fichier GPX en entrée.",
+                "La fonction de validation doit retourner une valeur booléenne indiquant si le fichier est valide ou non.",
+                "La fonction de validation doit retourner un message d'erreur clair et informatif en cas de fichier invalide, précisant la nature de l'erreur (e.g., 'Balise \u003cgpx\u003e manquante', 'Format XML invalide').",
+                "La validation doit être robuste et gérer les erreurs de parsing XML sans planter l'application."
+              ],
+              "tech_details": "Le code de validation doit être modulaire et facile à maintenir. Créer une fonction dédiée à la validation du format GPX. La fonction doit prendre en entrée le chemin du fichier GPX et retourner un booléen indiquant si le fichier est valide, ainsi qu'un message d'erreur en cas d'invalidité.",
+              "validation": "Valider que l'application affiche le message d'erreur correct lorsque l'utilisateur tente d'importer un fichier GPX invalide. Vérifier que l'application ne plante pas lors de la validation d'un fichier invalide.",
+              "error_handling": "Gérer les erreurs de parsing XML et les exceptions potentielles lors de la lecture du fichier. Retourner un message d'erreur générique si l'erreur n'est pas spécifique au format GPX.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire avec un fichier GPX valide.",
+                "Test unitaire avec un fichier GPX invalide (balise manquante).",
+                "Test unitaire avec un fichier GPX invalide (format XML incorrect).",
+                "Test unitaire avec un fichier GPX vide.",
+                "Test unitaire avec un fichier qui n'est pas un fichier XML."
+              ],
+              "definition_of_done": [
+                "Fonction de validation implémentée et testée.",
+                "Messages d'erreur clairs et informatifs définis.",
+                "Tests unitaires couvrant les cas de fichiers GPX valides et invalides.",
+                "Code review effectué."
+              ],
+              "user_story_id": "US-003",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser une librairie de parsing XML (e.g., `encoding/xml` en Go) pour analyser le fichier GPX. Vérifier la présence des balises et attributs obligatoires en parcourant la structure XML.  En Go, utiliser `xml.Unmarshal` pour parser le fichier GPX dans une structure Go et vérifier les champs obligatoires après le parsing. Implémenter une fonction `ValidateGPXFile(filePath string) (bool, error)`.",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant User\n    participant Application\n    participant GPXValidator\n\n    User-\u003e\u003eApplication: Importer fichier GPX\n    Application-\u003e\u003eGPXValidator: ValidateGPXFile(fichier)\n    alt Fichier GPX valide\n        GPXValidator--\u003e\u003eApplication: true\n    else Fichier GPX invalide\n        GPXValidator--\u003e\u003eApplication: false, erreur\n    end\n    Application-\u003e\u003eUser: Afficher message (succès/erreur)"
+            },
+            {
+              "dependencies": [
+                "1-US-003-TASK-1"
+              ],
+              "id": "1-US-003-TASK-2",
+              "epic_id": "1",
+              "title": "Afficher un message d'erreur clair à l'utilisateur en cas de fichier GPX invalide",
+              "type": "feat",
+              "description": "Lorsqu'un fichier GPX est détecté comme invalide, afficher un message d'erreur convivial et informatif à l'utilisateur, expliquant la raison de l'échec de l'importation.",
+              "acceptance_criteria": [
+                "Un message d'erreur doit être affiché à l'utilisateur si le fichier GPX est invalide.",
+                "Le message d'erreur doit être clair, concis et compréhensible pour un utilisateur non technique.",
+                "Le message d'erreur doit indiquer la raison de l'invalidité du fichier (e.g., 'Fichier GPX corrompu', 'Format de fichier non reconnu').",
+                "Le message d'erreur doit être affiché de manière visible et non intrusive (e.g., une boîte de dialogue, un message en rouge sous le bouton d'importation).",
+                "L'interface utilisateur doit rester réactive et ne pas se bloquer après l'affichage du message d'erreur."
+              ],
+              "tech_details": "Le code d'affichage du message d'erreur doit être séparé de la logique de validation du fichier. Créer une fonction dédiée à l'affichage du message d'erreur. La fonction doit prendre en entrée le message d'erreur à afficher.",
+              "validation": "Valider que l'application affiche le message d'erreur correct et que l'interface utilisateur reste réactive après l'affichage du message d'erreur.",
+              "error_handling": "Prévoir un message d'erreur par défaut si la raison de l'invalidité du fichier n'est pas claire. Gérer les erreurs d'affichage du message d'erreur (e.g., si l'interface utilisateur n'est pas disponible).",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que le message d'erreur correct est affiché pour différents types de fichiers GPX invalides.",
+                "Test d'intégration pour vérifier que le message d'erreur est affiché après la tentative d'importation d'un fichier GPX invalide.",
+                "Test d'interface utilisateur pour vérifier que le message d'erreur est affiché de manière visible et non intrusive."
+              ],
+              "definition_of_done": [
+                "Message d'erreur implémenté et affiché correctement.",
+                "Message d'erreur testé avec différents types de fichiers GPX invalides.",
+                "Design du message d'erreur approuvé par l'équipe UI/UX.",
+                "Code review effectué."
+              ],
+              "user_story_id": "US-003",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Définir le design du message d'erreur (couleur, police, icône). S'assurer que le design est cohérent avec le reste de l'application.",
+              "implementation_details": "Utiliser une boîte de dialogue ou un composant d'alerte pour afficher le message d'erreur. Le message d'erreur doit être localisable pour supporter différentes langues.  En Go, utiliser une librairie UI (e.g., Fyne) pour afficher une boîte de dialogue avec le message d'erreur. Assurez-vous que le message d'erreur est affiché sur le thread principal pour éviter les problèmes d'interface utilisateur.",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant User\n    participant Application\n    participant GPXValidator\n\n    User-\u003e\u003eApplication: Importer fichier GPX\n    Application-\u003e\u003eGPXValidator: ValidateGPXFile(fichier)\n    alt Fichier GPX valide\n        GPXValidator--\u003e\u003eApplication: true\n        Application-\u003e\u003eUser: Afficher carte\n    else Fichier GPX invalide\n        GPXValidator--\u003e\u003eApplication: false, erreur\n        Application-\u003e\u003eUser: Afficher message d'erreur\n    end"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n participant User\n participant Application\n User-\u003e\u003eApplication: Importe un fichier GPX\n Application-\u003e\u003eApplication: Valide le format du fichier\n alt Fichier invalide\n Application-\u003e\u003eUser: Affiche un message d'erreur\n else Fichier valide\n Application-\u003e\u003eApplication: Parse le fichier GPX\n Application-\u003e\u003eApplication: Affiche le tracé sur la carte\n end"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "En tant qu'utilisateur, je veux visualiser le tracé GPX sur une carte interactive",
+      "description": "Afficher le tracé du fichier GPX sur une carte avec zoom et déplacement.",
+      "goal": "Afficher le tracé GPX correctement sur une carte interactive.",
+      "priority": "high",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir charger un fichier GPX depuis mon appareil, afin de visualiser son tracé.",
+          "description": "L'application doit permettre à l'utilisateur de sélectionner un fichier GPX stocké localement sur son appareil (ordinateur, smartphone, tablette).",
+          "acceptance_criteria": [
+            "Étant donné que l'utilisateur est sur l'application",
+            "Quand il clique sur le bouton 'Charger un fichier GPX'",
+            "Alors une fenêtre de sélection de fichier s'ouvre",
+            "Et l'utilisateur peut naviguer et sélectionner un fichier GPX",
+            "Et une fois le fichier sélectionné, il est chargé dans l'application"
+          ],
+          "definition_of_done": "L'utilisateur peut charger un fichier GPX depuis son appareil. L'application affiche un message d'erreur clair si le fichier n'est pas au format GPX valide.",
+          "tests_to_plan": [
+            "Test de chargement d'un fichier GPX valide",
+            "Test de chargement d'un fichier non GPX (e.g., .txt, .jpg)",
+            "Test de chargement d'un fichier GPX corrompu",
+            "Test de chargement d'un fichier GPX de grande taille",
+            "Test de gestion des erreurs si le fichier n'est pas trouvé ou inaccessible"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Composant de sélection de fichier",
+            "Bibliothèque de parsing GPX"
+          ],
+          "issues": [
+            {
+              "id": "2-US-001-TASK-1",
+              "epic_id": "2",
+              "title": "Implémenter un bouton 'Charger un fichier GPX'",
+              "type": "feat",
+              "description": "Ajouter un bouton sur l'interface utilisateur permettant à l'utilisateur de lancer le processus de sélection de fichier GPX.",
+              "acceptance_criteria": [
+                "Un bouton avec le texte 'Charger un fichier GPX' est visible sur l'interface.",
+                "Le bouton est cliquable.",
+                "Au clic, le sélecteur de fichiers du système d'exploitation s'ouvre."
+              ],
+              "tech_details": "Utiliser JavaScript pour gérer l'événement 'click' du bouton et l'événement 'change' de l'input de type 'file'.",
+              "validation": "Valider que le sélecteur de fichier s'ouvre correctement et que le chemin du fichier sélectionné est récupéré.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire vérifiant que le clic sur le bouton ouvre le sélecteur de fichier.",
+                "Test d'intégration vérifiant la récupération du chemin du fichier sélectionné."
+              ],
+              "definition_of_done": [
+                "Bouton implémenté et fonctionnel.",
+                "Tests unitaires validés.",
+                "Code review effectué."
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Fournir une maquette du bouton 'Charger un fichier GPX' indiquant son emplacement et son style.",
+              "implementation_details": "Utiliser un élément `\u003cinput type='file'\u003e` caché et un bouton stylisé pour déclencher l'ouverture du sélecteur de fichier.  Assurer la compatibilité avec différents navigateurs et systèmes d'exploitation.",
+              "mermaid_flow_diagram": "graph LR\nA[Clic sur 'Charger un fichier GPX'] --\u003e B{Ouvrir sélecteur de fichier};\nB --\u003e C[Attente sélection fichier];\nC --\u003e D{Fichier sélectionné?};\nD -- Oui --\u003e E[Récupérer chemin du fichier];\nD -- Non --\u003e C;"
+            },
+            {
+              "dependencies": [
+                "2-US-001-TASK-1"
+              ],
+              "id": "2-US-001-TASK-2",
+              "epic_id": "2",
+              "title": "Implémenter la sélection de fichier GPX",
+              "type": "feat",
+              "description": "Permettre à l'utilisateur de sélectionner un fichier GPX depuis le sélecteur de fichiers.",
+              "acceptance_criteria": [
+                "Le sélecteur de fichiers s'ouvre lorsque l'utilisateur clique sur le bouton 'Charger un fichier GPX'.",
+                "L'utilisateur peut parcourir les fichiers de son appareil.",
+                "L'utilisateur peut sélectionner un fichier GPX.",
+                "Le chemin du fichier GPX sélectionné est correctement stocké dans l'application."
+              ],
+              "tech_details": "Utiliser JavaScript pour gérer l'événement 'change' de l'input de type 'file'.  Implémenter une fonction de validation du fichier GPX (extension et format).",
+              "validation": "Valider que le chemin du fichier est correctement stocké et que le contenu du fichier GPX peut être lu. Valider la gestion des erreurs.",
+              "error_handling": "Gérer les erreurs si l'utilisateur annule la sélection du fichier ou si le fichier sélectionné n'est pas un fichier GPX valide. Afficher un message d'erreur approprié.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire vérifiant la récupération du chemin du fichier sélectionné.",
+                "Test d'intégration vérifiant la lecture du contenu du fichier GPX.",
+                "Test unitaire vérifiant la gestion des erreurs si le fichier n'est pas un GPX valide."
+              ],
+              "definition_of_done": [
+                "Sélecteur de fichier fonctionnel.",
+                "Chemin du fichier GPX stocké.",
+                "Tests unitaires validés.",
+                "Code review effectué."
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Définir un message d'erreur clair et concis à afficher si le fichier sélectionné n'est pas un fichier GPX valide.",
+              "implementation_details": "Utiliser l'API `FileReader` de JavaScript pour lire le contenu du fichier une fois sélectionné.  Valider l'extension du fichier avant de le lire.",
+              "mermaid_flow_diagram": "graph LR\nA[Sélecteur de fichier ouvert] --\u003e B{Fichier sélectionné?};\nB -- Oui --\u003e C[Lire le fichier];\nB -- Non --\u003e D[Annuler sélection];\nC --\u003e E{Fichier GPX valide?};\nE -- Oui --\u003e F[Stocker le contenu du fichier];\nE -- Non --\u003e G[Afficher message d'erreur];"
+            },
+            {
+              "dependencies": [
+                "2-US-001-TASK-2"
+              ],
+              "id": "2-US-001-TASK-3",
+              "epic_id": "2",
+              "title": "Afficher un indicateur de chargement pendant le chargement du fichier",
+              "type": "feat",
+              "description": "Montrer à l'utilisateur qu'un fichier est en cours de chargement.",
+              "acceptance_criteria": [
+                "Un indicateur visuel (spinner, barre de progression) est affiché pendant le chargement du fichier GPX.",
+                "L'indicateur disparait une fois le fichier chargé.",
+                "L'indicateur est visible pendant toute la durée du chargement, même si le fichier est petit et se charge rapidement."
+              ],
+              "tech_details": "Utiliser JavaScript pour contrôler l'affichage et la disparition de l'indicateur de chargement.",
+              "validation": "Valider que l'indicateur de chargement est affiché et caché correctement pendant le processus de chargement du fichier GPX.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire vérifiant l'affichage de l'indicateur pendant le chargement.",
+                "Test unitaire vérifiant la disparition de l'indicateur après le chargement.",
+                "Test manuel vérifiant la visibilité de l'indicateur même pour les fichiers de petite taille."
+              ],
+              "definition_of_done": [
+                "Indicateur de chargement implémenté et fonctionnel.",
+                "Tests unitaires validés.",
+                "Code review effectué."
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Définir le style et l'emplacement de l'indicateur de chargement.",
+              "implementation_details": "Utiliser un composant UI pour afficher l'indicateur de chargement. Activer l'indicateur avant de commencer la lecture du fichier GPX et le désactiver une fois la lecture terminée.",
+              "mermaid_flow_diagram": "graph LR\nA[Début de la lecture du fichier] --\u003e B[Afficher l'indicateur de chargement];\nB --\u003e C[Lecture du fichier];\nC --\u003e D[Fin de la lecture du fichier];\nD --\u003e E[Cacher l'indicateur de chargement];"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n    participant User\n    participant App\n    User-\u003e\u003eApp: Clique sur 'Charger un fichier'\n    App-\u003e\u003eOS: Affiche la fenêtre de sélection de fichier\n    User-\u003e\u003eOS: Sélectionne un fichier GPX\n    OS-\u003e\u003eApp: Retourne le chemin du fichier\n    App-\u003e\u003eApp: Lit le fichier GPX\n"
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux voir le tracé GPX affiché sur une carte, afin de visualiser le parcours.",
+          "description": "Une fois le fichier GPX chargé, l'application doit afficher le tracé sur une carte interactive. Le tracé doit être clairement visible et identifiable.",
+          "acceptance_criteria": [
+            "Étant donné qu'un fichier GPX a été chargé avec succès",
+            "Quand l'application traite les données GPX",
+            "Alors le tracé du parcours est affiché sur la carte",
+            "Et le tracé est visible et identifiable (e.g., couleur distincte, épaisseur de ligne)",
+            "Et la carte est centrée sur le tracé GPX"
+          ],
+          "definition_of_done": "Le tracé GPX est affiché sur une carte centrée sur le parcours. La carte est interactive et permet le zoom et le déplacement.",
+          "tests_to_plan": [
+            "Test d'affichage du tracé pour différents fichiers GPX",
+            "Test de centrage de la carte sur le tracé",
+            "Test d'affichage du tracé avec différents niveaux de zoom",
+            "Test d'affichage du tracé sur différentes cartes (e.g., OpenStreetMap, Google Maps)",
+            "Test d'affichage du tracé avec des données GPS minimales (e.g., seulement quelques points)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Bibliothèque de carte interactive (e.g., Leaflet, OpenLayers)",
+            "Fonction de conversion des données GPX en format compatible avec la bibliothèque de carte"
+          ],
+          "issues": [
+            {
+              "id": "2-US-002-TASK-1",
+              "epic_id": "2",
+              "title": "Configurer l'environnement de développement pour l'affichage de la carte",
+              "type": "feat",
+              "description": "Mettre en place l'environnement de développement avec les librairies nécessaires pour afficher une carte interactive (ex: Leaflet, OpenLayers).",
+              "acceptance_criteria": [
+                "L'environnement de développement est configuré avec les librairies de cartographie.",
+                "Un exemple de carte simple est affiché dans l'application."
+              ],
+              "tech_details": "Utiliser une librairie JavaScript pour la carte. Gérer les dépendances avec un gestionnaire de paquets (npm, yarn).",
+              "validation": "Vérifier visuellement que la carte est affichée et fonctionnelle.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Vérifier que la carte est affichée.",
+                "Vérifier que les contrôles de zoom et de déplacement fonctionnent."
+              ],
+              "definition_of_done": [
+                "Les librairies de cartographie sont installées et configurées.",
+                "Une carte de base est affichée avec succès."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Choisir une librairie de cartographie appropriée (Leaflet, OpenLayers, etc.). Installer les dépendances nécessaires. Créer un composant carte de base."
+            },
+            {
+              "dependencies": [
+                "2-US-001-TASK-1"
+              ],
+              "id": "2-US-002-TASK-2",
+              "epic_id": "2",
+              "title": "Implémenter la fonctionnalité de chargement de fichier GPX",
+              "type": "feat",
+              "description": "Ajouter une fonctionnalité permettant à l'utilisateur de charger un fichier GPX depuis son ordinateur.",
+              "acceptance_criteria": [
+                "L'utilisateur peut sélectionner et charger un fichier GPX.",
+                "Un message d'erreur est affiché si le fichier n'est pas au format GPX.",
+                "Le contenu du fichier GPX est accessible à l'application."
+              ],
+              "tech_details": "Utiliser l'API `FileReader` pour lire le contenu du fichier. Gérer les erreurs de chargement et de parsing.",
+              "validation": "Vérifier que le fichier GPX est chargé et parsé sans erreur.",
+              "error_handling": "Afficher un message d'erreur si le fichier n'est pas au format GPX ou si une erreur se produit lors du chargement.",
+              "database_migrations": null,
+              "tests": [
+                "Vérifier que le fichier GPX est chargé correctement.",
+                "Vérifier que le format de fichier est validé.",
+                "Vérifier que le contenu du fichier GPX est parsé correctement."
+              ],
+              "definition_of_done": [
+                "Un composant de chargement de fichier est implémenté.",
+                "La validation du format de fichier est effectuée.",
+                "Le contenu du fichier GPX est parsé."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser un élément `\u003cinput type=\"file\"\u003e` pour le chargement de fichier. Implémenter la logique de validation du format GPX. Utiliser une librairie pour parser le fichier GPX (ex: `xml2js` en JavaScript)."
+            },
+            {
+              "dependencies": [
+                "2-US-002-TASK-2",
+                "2-US-003-TASK-1"
+              ],
+              "id": "2-US-002-TASK-3",
+              "epic_id": "2",
+              "title": "Afficher le tracé GPX sur la carte",
+              "type": "feat",
+              "description": "Afficher le tracé contenu dans le fichier GPX sur la carte interactive.",
+              "acceptance_criteria": [
+                "Le tracé GPX est affiché sur la carte.",
+                "Le tracé est clairement visible et identifiable.",
+                "La carte se centre automatiquement sur le tracé GPX."
+              ],
+              "tech_details": "Utiliser les méthodes de la librairie de cartographie pour ajouter une couche vectorielle contenant le tracé. Gérer les performances pour les tracés très longs.",
+              "validation": "Vérifier visuellement que le tracé est affiché correctement et que la carte se centre et zoome sur le tracé.",
+              "error_handling": "Gérer les erreurs si les données GPX sont invalides ou incomplètes.",
+              "database_migrations": null,
+              "tests": [
+                "Vérifier que le tracé est affiché correctement sur la carte.",
+                "Vérifier que la carte se centre et zoome correctement sur le tracé.",
+                "Vérifier que le style du tracé est configurable."
+              ],
+              "definition_of_done": [
+                "Les données du fichier GPX sont utilisées pour dessiner le tracé sur la carte.",
+                "Le style du tracé est configurable (couleur, épaisseur).",
+                "La carte se centre et zoome automatiquement sur le tracé."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Extraire les coordonnées du fichier GPX parsé. Utiliser les API de la librairie de cartographie pour dessiner une ligne (polyline) reliant les coordonnées. Calculer le bounding box du tracé pour centrer et zoomer la carte."
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n    participant App\n    participant GPXParser\n    participant MapLibrary\n    App-\u003e\u003eGPXParser: Parse le fichier GPX\n    GPXParser-\u003e\u003eApp: Retourne les coordonnées\n    App-\u003e\u003eMapLibrary: Affiche le tracé sur la carte (coordonnées)\n"
+        },
+        {
+          "id": "US-003",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir zoomer et me déplacer sur la carte, afin d'examiner le tracé en détail.",
+          "description": "La carte doit permettre à l'utilisateur de zoomer et de se déplacer afin d'examiner le tracé en détail et d'explorer différentes sections du parcours.",
+          "acceptance_criteria": [
+            "Étant donné qu'un tracé GPX est affiché sur la carte",
+            "Quand l'utilisateur utilise les outils de zoom (roulette de la souris, boutons de zoom) ou déplace la carte",
+            "Alors la carte zoome ou se déplace en conséquence",
+            "Et le tracé reste visible et ne se déforme pas lors du zoom",
+            "Et le déplacement de la carte est fluide et réactif"
+          ],
+          "definition_of_done": "L'utilisateur peut zoomer et se déplacer sur la carte de manière fluide et réactive. Le tracé reste visible et ne se déforme pas lors du zoom.",
+          "tests_to_plan": [
+            "Test du zoom avec la roulette de la souris",
+            "Test du zoom avec les boutons de zoom",
+            "Test du déplacement de la carte en faisant glisser la souris",
+            "Test du zoom et du déplacement sur différentes sections du tracé",
+            "Test du zoom et du déplacement avec différents niveaux de zoom",
+            "Test de performance du zoom et du déplacement avec des fichiers GPX de grande taille"
+          ],
+          "priority": "high",
+          "estimation_story_points": 2,
+          "technical_dependencies": [
+            "Bibliothèque de carte interactive (e.g., Leaflet, OpenLayers) avec support du zoom et du déplacement"
+          ],
+          "issues": [
+            {
+              "id": "2-US-003-TASK-1",
+              "epic_id": "2",
+              "title": "Intégration d'une bibliothèque de carte interactive",
+              "type": "feat",
+              "description": "Choisir et intégrer une bibliothèque de carte interactive (ex: Leaflet, OpenLayers) dans l'application. Cette bibliothèque permettra l'affichage de la carte et la manipulation (zoom, déplacement).",
+              "acceptance_criteria": [
+                "La bibliothèque de carte est intégrée au projet.",
+                "La carte s'affiche correctement dans l'interface utilisateur.",
+                "La carte est initialisée avec une vue par défaut (ex: centre du monde, niveau de zoom initial)."
+              ],
+              "tech_details": "Utiliser une bibliothèque JavaScript pour la carte. Gérer les dépendances avec un gestionnaire de paquets (ex: npm, yarn).",
+              "validation": "Vérifier visuellement que la carte s'affiche correctement et qu'elle est interactive.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que la carte est initialisée.",
+                "Test d'intégration pour vérifier que la carte s'affiche correctement dans l'interface utilisateur."
+              ],
+              "definition_of_done": [
+                "Code revu et approuvé.",
+                "Tests unitaires basiques pour l'initialisation de la carte sont passés.",
+                "La carte s'affiche sans erreur dans l'environnement de développement."
+              ],
+              "user_story_id": "US-003",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Explorer différentes bibliothèques de cartes (Leaflet, OpenLayers) et choisir celle qui convient le mieux aux besoins du projet (taille, fonctionnalités, licence). Configurer la bibliothèque dans le projet (installation, initialisation).",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant User\n    participant App\n    participant MapLibrary\n    User-\u003e\u003eApp: Charge l'application\n    App-\u003e\u003eMapLibrary: Initialise la carte\n    MapLibrary--\u003e\u003eApp: Affiche la carte\n    App--\u003e\u003eUser: Affiche la carte dans l'interface"
+            },
+            {
+              "dependencies": [
+                "2-US-003-TASK-1"
+              ],
+              "id": "2-US-003-TASK-2",
+              "epic_id": "2",
+              "title": "Implémentation du zoom sur la carte",
+              "type": "feat",
+              "description": "Permettre à l'utilisateur de zoomer sur la carte en utilisant les contrôles de la bibliothèque de carte ou avec la molette de la souris.",
+              "acceptance_criteria": [
+                "L'utilisateur peut zoomer avant et arrière sur la carte.",
+                "Le niveau de zoom est limité (minimum et maximum).",
+                "Le zoom est fluide et réactif."
+              ],
+              "tech_details": "Utiliser les API de la bibliothèque de carte pour le zoom. Gérer les événements de la souris.",
+              "validation": "Vérifier visuellement que le zoom fonctionne correctement et que les niveaux de zoom sont limités.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que le zoom avant fonctionne.",
+                "Test unitaire pour vérifier que le zoom arrière fonctionne.",
+                "Test d'intégration pour vérifier que le zoom fonctionne avec la molette de la souris."
+              ],
+              "definition_of_done": [
+                "Code revu et approuvé.",
+                "Tests unitaires pour le zoom sont passés.",
+                "Le zoom fonctionne correctement avec la molette de la souris et les contrôles de la carte."
+              ],
+              "user_story_id": "US-003",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser les fonctions de zoom de la bibliothèque de carte. Définir les niveaux de zoom maximum et minimum. Gérer les événements de la molette de la souris pour le zoom.",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant User\n    participant App\n    participant MapLibrary\n    User-\u003e\u003eApp: Zoome sur la carte\n    App-\u003e\u003eMapLibrary: Applique le zoom\n    MapLibrary--\u003e\u003eApp: Met à jour la vue de la carte\n    App--\u003e\u003eUser: Affiche la carte zoomée"
+            },
+            {
+              "dependencies": [
+                "2-US-003-TASK-1"
+              ],
+              "id": "2-US-003-TASK-3",
+              "epic_id": "2",
+              "title": "Implémentation du déplacement sur la carte",
+              "type": "feat",
+              "description": "Permettre à l'utilisateur de se déplacer sur la carte en faisant glisser la carte avec la souris.",
+              "acceptance_criteria": [
+                "L'utilisateur peut déplacer la carte en faisant glisser avec la souris.",
+                "Le déplacement est fluide et réactif.",
+                "La carte ne peut pas être déplacée au-delà des limites du monde."
+              ],
+              "tech_details": "Utiliser les API de la bibliothèque de carte pour le déplacement. Gérer les événements de la souris.",
+              "validation": "Vérifier visuellement que le déplacement fonctionne correctement et que la carte ne peut pas être déplacée au-delà des limites du monde.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que le déplacement vers le haut fonctionne.",
+                "Test unitaire pour vérifier que le déplacement vers le bas fonctionne.",
+                "Test unitaire pour vérifier que le déplacement vers la gauche fonctionne.",
+                "Test unitaire pour vérifier que le déplacement vers la droite fonctionne.",
+                "Test d'intégration pour vérifier que le déplacement fonctionne avec la souris."
+              ],
+              "definition_of_done": [
+                "Code revu et approuvé.",
+                "Tests unitaires pour le déplacement sont passés.",
+                "Le déplacement fonctionne correctement avec la souris."
+              ],
+              "user_story_id": "US-003",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser les fonctions de déplacement de la bibliothèque de carte. Gérer les événements de la souris pour le déplacement. Limiter le déplacement pour éviter de sortir des limites du monde.",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant User\n    participant App\n    participant MapLibrary\n    User-\u003e\u003eApp: Déplace la carte\n    App-\u003e\u003eMapLibrary: Applique le déplacement\n    MapLibrary--\u003e\u003eApp: Met à jour la vue de la carte\n    App--\u003e\u003eUser: Affiche la carte déplacée"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n    participant User\n    participant MapLibrary\n    User-\u003e\u003eMapLibrary: Zoome ou déplace la carte\n    MapLibrary-\u003e\u003eMapLibrary: Redessine la carte avec le nouveau zoom/position\n"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "En tant qu'utilisateur, je veux voir les informations clés du fichier GPX (distance, altitude, temps)",
+      "description": "Afficher les statistiques principales du tracé GPX.",
+      "goal": "Afficher les informations clés du GPX de manière claire et concise.",
+      "priority": "medium",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux voir la distance totale du tracé GPX, afin de connaître la longueur de mon parcours.",
+          "description": "L'application doit afficher la distance totale du tracé GPX en kilomètres ou en mètres.",
+          "acceptance_criteria": [
+            "Étant donné un fichier GPX valide est chargé",
+            "Quand l'application analyse le fichier",
+            "Alors la distance totale du tracé doit être affichée dans l'interface utilisateur"
+          ],
+          "definition_of_done": "La distance totale est calculée correctement et affichée dans l'interface utilisateur. L'unité de mesure (km ou m) est clairement indiquée.",
+          "tests_to_plan": [
+            "Tests unitaires pour le calcul de la distance",
+            "Tests d'intégration pour l'affichage de la distance",
+            "Tests avec différents fichiers GPX (différentes distances)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Librairie d'analyse de fichiers GPX"
+          ],
+          "issues": [
+            {
+              "id": "3-US-001-TASK-1",
+              "epic_id": "3",
+              "title": "Créer une fonction de calcul de la distance totale à partir d'un fichier GPX",
+              "type": "feat",
+              "description": "Implémenter une fonction Go qui prend en entrée un fichier GPX et calcule la distance totale du parcours. La fonction doit gérer les différentes unités de mesure (latitude, longitude) et effectuer la conversion en kilomètres ou mètres.",
+              "acceptance_criteria": [
+                "La fonction doit prendre un fichier GPX en entrée.",
+                "La fonction doit calculer la distance totale avec une précision raisonnable.",
+                "La fonction doit retourner la distance en kilomètres ou en mètres, selon une option de configuration.",
+                "La fonction doit gérer les erreurs potentielles lors de la lecture du fichier GPX ou du calcul de la distance."
+              ],
+              "tech_details": "Utiliser les types de données 'float64' pour représenter la latitude et la longitude.  Optimiser la fonction pour minimiser l'utilisation de la mémoire et le temps de calcul.",
+              "validation": "Valider que la distance calculée correspond à la distance réelle du parcours avec une marge d'erreur acceptable (par exemple, moins de 1%).",
+              "error_handling": "Gérer les erreurs de lecture de fichier GPX (fichier inexistant, format incorrect). Retourner une erreur si le fichier GPX est invalide ou ne contient pas de données de localisation.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire avec un fichier GPX valide.",
+                "Test unitaire avec un fichier GPX invalide.",
+                "Test unitaire avec un fichier GPX contenant des données de localisation manquantes.",
+                "Test d'intégration pour vérifier que la fonction s'intègre correctement avec le reste de l'application."
+              ],
+              "definition_of_done": [
+                "Fonction implémentée et testée.",
+                "La fonction retourne la distance totale correcte.",
+                "Gestion des erreurs implémentée.",
+                "Code revu et approuvé."
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser la librairie 'encoding/xml' de Go pour parser le fichier GPX.  Implémenter la formule de Haversine pour calculer la distance entre deux points GPS.  Permettre de configurer l'unité de mesure (kilomètres ou mètres) via une variable d'environnement ou un paramètre de configuration.",
+              "mermaid_flow_diagram": "string"
+            },
+            {
+              "dependencies": [
+                "3-US-001-TASK-1"
+              ],
+              "id": "3-US-001-TASK-2",
+              "epic_id": "3",
+              "title": "Afficher la distance totale dans l'interface utilisateur",
+              "type": "feat",
+              "description": "Modifier l'interface utilisateur pour afficher la distance totale calculée à partir du fichier GPX.  L'unité de mesure (kilomètres ou mètres) doit être clairement indiquée.",
+              "acceptance_criteria": [
+                "La distance totale doit être affichée dans un format lisible.",
+                "L'unité de mesure (kilomètres ou mètres) doit être clairement indiquée.",
+                "L'affichage doit être mis à jour automatiquement lorsque le fichier GPX est chargé ou modifié.",
+                "L'affichage doit être responsive et s'adapter aux différentes tailles d'écran."
+              ],
+              "tech_details": "Utiliser les fonctionnalités de mise à jour de l'interface utilisateur de Go (par exemple, les canaux ou les goroutines) pour mettre à jour l'affichage de la distance en temps réel.",
+              "validation": "Valider que la distance affichée correspond à la distance calculée par la fonction de calcul de la distance.  Valider que l'unité de mesure est affichée correctement.",
+              "error_handling": "Afficher un message d'erreur clair si la distance totale ne peut pas être calculée ou affichée.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que la distance est affichée correctement.",
+                "Test d'intégration pour vérifier que la distance est calculée et affichée correctement lorsque le fichier GPX est chargé.",
+                "Test d'interface utilisateur pour vérifier que l'affichage est responsive et s'adapte aux différentes tailles d'écran."
+              ],
+              "definition_of_done": [
+                "La distance totale est affichée correctement dans l'interface utilisateur.",
+                "L'unité de mesure est clairement indiquée.",
+                "L'affichage est mis à jour en temps réel.",
+                "L'interface utilisateur est responsive.",
+                "Code revu et approuvé."
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Ajouter un champ de texte ou un label pour afficher la distance totale.  Positionner le champ de manière à ce qu'il soit facilement visible pour l'utilisateur.  Utiliser une police de caractères claire et lisible.",
+              "implementation_details": "Modifier le code de l'interface utilisateur pour récupérer la distance totale calculée par la fonction de calcul de la distance.  Utiliser les composants de l'interface utilisateur existants pour afficher la distance.  Utiliser un format numérique approprié pour afficher la distance (par exemple, avec une décimale).",
+              "mermaid_flow_diagram": "string"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\nparticipant User\nparticipant App\nparticipant GPXParser\nUser-\u003e\u003eApp: Charge un fichier GPX\nApp-\u003e\u003eGPXParser: Analyse le fichier GPX\nGPXParser-\u003e\u003eApp: Retourne les données du tracé\nApp-\u003e\u003eApp: Calcule la distance totale\nApp-\u003e\u003eUser: Affiche la distance totale"
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux voir l'altitude maximale et minimale du tracé GPX, afin de connaître le dénivelé de mon parcours.",
+          "description": "L'application doit afficher l'altitude maximale et minimale atteinte pendant le tracé GPX en mètres.",
+          "acceptance_criteria": [
+            "Étant donné un fichier GPX valide est chargé",
+            "Quand l'application analyse le fichier",
+            "Alors l'altitude maximale et minimale du tracé doivent être affichées dans l'interface utilisateur"
+          ],
+          "definition_of_done": "L'altitude maximale et minimale sont calculées correctement et affichées dans l'interface utilisateur. L'unité de mesure (m) est clairement indiquée.",
+          "tests_to_plan": [
+            "Tests unitaires pour le calcul de l'altitude maximale et minimale",
+            "Tests d'intégration pour l'affichage de l'altitude",
+            "Tests avec différents fichiers GPX (différents dénivelés)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Librairie d'analyse de fichiers GPX"
+          ],
+          "issues": [
+            {
+              "id": "3-US-002-TASK-1",
+              "epic_id": "3",
+              "title": "Analyse du fichier GPX pour extraire les données d'altitude",
+              "type": "feat",
+              "description": "Implémenter une fonction pour analyser le fichier GPX et extraire tous les points de données contenant des informations d'altitude.",
+              "acceptance_criteria": [
+                "La fonction doit pouvoir lire un fichier GPX valide.",
+                "La fonction doit extraire toutes les valeurs d'altitude du fichier GPX.",
+                "La fonction doit gérer les erreurs si le fichier GPX est invalide ou corrompu."
+              ],
+              "tech_details": "Choisir une librairie de parsing XML performante.  Considérer l'utilisation de goroutines pour le traitement parallèle si nécessaire.",
+              "validation": "Vérifier que toutes les altitudes sont correctement extraites du fichier GPX.",
+              "error_handling": "Gestion des erreurs de lecture de fichier (fichier inexistant, format invalide). Retourner une erreur explicite.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier la lecture correcte d'un fichier GPX valide.",
+                "Test unitaire pour vérifier la gestion d'un fichier GPX invalide.",
+                "Test de performance avec un fichier GPX de grande taille."
+              ],
+              "definition_of_done": [
+                "Code relu et approuvé.",
+                "Tests unitaires réussis.",
+                "La fonction est intégrée dans le pipeline de traitement des fichiers GPX."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser une librairie Go standard (encoding/xml) ou une librairie tierce (ex: github.com/twpayne/go-gpx) pour parser le fichier GPX.  Optimiser la lecture du fichier pour gérer les fichiers de grande taille.",
+              "mermaid_flow_diagram": "graph LR\n    A[Fichier GPX] --\u003e B(Lecture du fichier)\n    B --\u003e C{Données d'altitude trouvées ?}\n    C -- Oui --\u003e D[Extraction de l'altitude]\n    C -- Non --\u003e E[Fin de la lecture]\n    D --\u003e C\n    E --\u003e F[Retourne la liste des altitudes]"
+            },
+            {
+              "dependencies": [
+                "3-US-002-TASK-1"
+              ],
+              "id": "3-US-002-TASK-2",
+              "epic_id": "3",
+              "title": "Calcul de l'altitude maximale et minimale",
+              "type": "feat",
+              "description": "Implémenter une fonction pour calculer l'altitude maximale et minimale à partir d'une liste de valeurs d'altitude.",
+              "acceptance_criteria": [
+                "La fonction doit prendre en entrée une liste de nombres représentant les altitudes.",
+                "La fonction doit retourner l'altitude maximale et minimale de la liste.",
+                "La fonction doit gérer les listes vides."
+              ],
+              "tech_details": "Choisir un algorithme de recherche du min/max efficace.  Considérer l'utilisation de goroutines pour le traitement parallèle si la liste est très grande.",
+              "validation": "Vérifier que l'altitude maximale et minimale sont correctement calculées pour différents jeux de données.",
+              "error_handling": "Gérer le cas où la liste d'altitudes est vide. Retourner une erreur ou des valeurs par défaut (ex: 0).",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire avec une liste d'altitudes positives.",
+                "Test unitaire avec une liste d'altitudes négatives.",
+                "Test unitaire avec une liste d'altitudes mixtes.",
+                "Test unitaire avec une liste vide."
+              ],
+              "definition_of_done": [
+                "Code relu et approuvé.",
+                "Tests unitaires réussis.",
+                "La fonction est optimisée pour la performance."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser des fonctions Go standard (ex: math.Max, math.Min) pour trouver le maximum et le minimum. Optimiser l'algorithme pour éviter les itérations inutiles.",
+              "mermaid_flow_diagram": "graph LR\n    A[Liste des altitudes] --\u003e B(Initialisation max et min)\n    B --\u003e C{Altitude suivante ?}\n    C -- Oui --\u003e D[Comparaison avec max et min]\n    D --\u003e E[Mise à jour max et/ou min]\n    E --\u003e C\n    C -- Non --\u003e F[Retourne max et min]"
+            },
+            {
+              "dependencies": [
+                "3-US-002-TASK-2"
+              ],
+              "id": "3-US-002-TASK-3",
+              "epic_id": "3",
+              "title": "Affichage de l'altitude maximale et minimale dans l'interface utilisateur",
+              "type": "feat",
+              "description": "Modifier l'interface utilisateur pour afficher l'altitude maximale et minimale calculée à partir du fichier GPX.",
+              "acceptance_criteria": [
+                "L'altitude maximale et minimale doivent être affichées en mètres.",
+                "L'affichage doit être clair et lisible.",
+                "L'affichage doit être mis à jour lorsque l'utilisateur charge un nouveau fichier GPX."
+              ],
+              "tech_details": "Utiliser les mécanismes de mise à jour de l'interface utilisateur (ex: data binding, événements) pour refléter les changements d'altitude.  Assurer la compatibilité avec différentes résolutions d'écran.",
+              "validation": "Vérifier que l'altitude maximale et minimale sont correctement affichées dans l'interface utilisateur et qu'elles correspondent aux valeurs calculées.",
+              "error_handling": "Afficher un message d'erreur si l'altitude maximale et minimale ne peuvent pas être calculées.",
+              "database_migrations": null,
+              "tests": [
+                "Test manuel pour vérifier l'affichage correct de l'altitude maximale et minimale avec différents fichiers GPX.",
+                "Test de l'interface utilisateur sur différentes résolutions d'écran.",
+                "Test de l'interface utilisateur avec des données invalides."
+              ],
+              "definition_of_done": [
+                "Code relu et approuvé.",
+                "Tests manuels réussis.",
+                "L'interface utilisateur est responsive."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Ajouter un élément d'affichage (ex: label) pour afficher l'altitude maximale et minimale en mètres.  Positionner l'élément de manière claire et lisible dans l'interface utilisateur.",
+              "implementation_details": "Modifier le code de l'interface utilisateur pour récupérer l'altitude maximale et minimale calculée et l'afficher dans un élément approprié (ex: label, text field). Utiliser un formatage de nombre approprié pour afficher les valeurs en mètres.",
+              "mermaid_flow_diagram": "graph LR\n    A[Chargement du fichier GPX] --\u003e B(Calcul de l'altitude max et min)\n    B --\u003e C[Mise à jour de l'interface utilisateur]\n    C --\u003e D[Affichage de l'altitude max et min]"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\nparticipant User\nparticipant App\nparticipant GPXParser\nUser-\u003e\u003eApp: Charge un fichier GPX\nApp-\u003e\u003eGPXParser: Analyse le fichier GPX\nGPXParser-\u003e\u003eApp: Retourne les données du tracé\nApp-\u003e\u003eApp: Calcule l'altitude max et min\nApp-\u003e\u003eUser: Affiche l'altitude max et min"
+        },
+        {
+          "id": "US-003",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux voir le temps total du tracé GPX, afin de connaître la durée de mon parcours.",
+          "description": "L'application doit afficher le temps total écoulé pendant le tracé GPX, incluant le temps de pause.",
+          "acceptance_criteria": [
+            "Étant donné un fichier GPX valide est chargé",
+            "Quand l'application analyse le fichier",
+            "Alors le temps total du tracé doit être affiché dans l'interface utilisateur au format HH:MM:SS"
+          ],
+          "definition_of_done": "Le temps total est calculé correctement et affiché dans l'interface utilisateur au format HH:MM:SS.",
+          "tests_to_plan": [
+            "Tests unitaires pour le calcul du temps total",
+            "Tests d'intégration pour l'affichage du temps",
+            "Tests avec différents fichiers GPX (différentes durées, incluant les pauses)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Librairie d'analyse de fichiers GPX",
+            "Gestion des fuseaux horaires"
+          ],
+          "issues": [
+            {
+              "id": "3-US-003-TASK-1",
+              "epic_id": "3",
+              "title": "Analyse du fichier GPX pour extraire le temps total",
+              "type": "feat",
+              "description": "Implémenter une fonction qui analyse le fichier GPX et calcule le temps total écoulé, incluant les pauses. Cette fonction doit tenir compte des informations de timestamp présentes dans le fichier GPX.",
+              "acceptance_criteria": [
+                "La fonction doit correctement parser un fichier GPX.",
+                "La fonction doit extraire tous les timestamps du fichier GPX.",
+                "La fonction doit calculer la différence entre le premier et le dernier timestamp pour obtenir le temps total.",
+                "La fonction doit retourner le temps total en un format lisible (ex: heures, minutes, secondes)."
+              ],
+              "tech_details": "Langage: Go. Librairie: github.com/twpayne/go-gpx. Format de sortie: string (ex: '2h 30m 15s')",
+              "validation": "Valider que le temps total affiché correspond au temps total réel du tracé GPX en utilisant un outil externe (ex: un site web d'analyse GPX).",
+              "error_handling": "Gérer les erreurs de parsing du fichier GPX (fichier invalide, format incorrect). Retourner une erreur descriptive en cas d'échec.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier le parsing correct d'un fichier GPX valide.",
+                "Test unitaire pour vérifier le calcul correct du temps total avec différents fichiers GPX (courts, longs, avec pauses).",
+                "Test unitaire pour vérifier la gestion des erreurs en cas de fichier GPX invalide."
+              ],
+              "definition_of_done": [
+                "Fonction d'analyse GPX implémentée et testée.",
+                "Calcul du temps total validé avec des fichiers GPX de test.",
+                "La fonction retourne le temps total dans un format lisible."
+              ],
+              "user_story_id": "US-003",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser une librairie Go pour parser les fichiers GPX (ex: github.com/twpayne/go-gpx). Extraire les informations de timestamp de chaque point du tracé. Calculer la différence entre le premier et le dernier timestamp.",
+              "mermaid_flow_diagram": "graph LR\n    A[Début] --\u003e B(Parser le fichier GPX)\n    B --\u003e C{Fichier GPX valide ?}\n    C -- Oui --\u003e D(Extraire les timestamps)\n    C -- Non --\u003e E[Retourner une erreur]\n    D --\u003e F(Calculer le temps total)\n    F --\u003e G(Retourner le temps total)\n    G --\u003e H[Fin]"
+            },
+            {
+              "dependencies": [
+                "3-US-003-TASK-1"
+              ],
+              "id": "3-US-003-TASK-2",
+              "epic_id": "3",
+              "title": "Affichage du temps total dans l'interface utilisateur",
+              "type": "feat",
+              "description": "Intégrer le résultat du calcul du temps total dans l'interface utilisateur de l'application. Le temps total doit être affiché de manière claire et lisible.",
+              "acceptance_criteria": [
+                "Le temps total doit être affiché dans un format lisible (ex: heures, minutes, secondes).",
+                "L'affichage du temps total doit être mis à jour dynamiquement après le chargement d'un fichier GPX.",
+                "L'affichage du temps total doit être cohérent avec les autres informations affichées dans l'interface utilisateur."
+              ],
+              "tech_details": "Langage: Go (pour la logique). Framework UI: [Spécifier le framework UI utilisé]. Format d'affichage: string (ex: '2h 30m 15s')",
+              "validation": "Valider que le temps total affiché dans l'interface utilisateur correspond au temps total calculé par la fonction d'analyse GPX.",
+              "error_handling": "Gérer les erreurs d'affichage. Afficher un message d'erreur clair si le temps total ne peut pas être affiché.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que le temps total est correctement affiché dans l'interface utilisateur.",
+                "Test d'intégration pour vérifier que l'affichage est mis à jour dynamiquement après le chargement d'un fichier GPX.",
+                "Test d'interface utilisateur pour vérifier la lisibilité et la cohérence de l'affichage."
+              ],
+              "definition_of_done": [
+                "Le temps total est affiché dans l'interface utilisateur.",
+                "L'affichage est mis à jour dynamiquement après le chargement d'un fichier GPX.",
+                "Le format d'affichage est clair et lisible."
+              ],
+              "user_story_id": "US-003",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Spécifier l'emplacement et le style de l'affichage du temps total dans l'interface utilisateur. Fournir une maquette de l'interface utilisateur.",
+              "implementation_details": "Récupérer le temps total calculé par la fonction d'analyse GPX. Utiliser le framework UI choisi pour afficher le temps total dans un élément de texte. Mettre à jour l'élément de texte après le chargement du fichier GPX.",
+              "mermaid_flow_diagram": "graph LR\n    A[Début] --\u003e B(Récupérer le temps total)\n    B --\u003e C(Afficher le temps total dans l'UI)\n    C --\u003e D[Fin]"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\nparticipant User\nparticipant App\nparticipant GPXParser\nUser-\u003e\u003eApp: Charge un fichier GPX\nApp-\u003e\u003eGPXParser: Analyse le fichier GPX\nGPXParser-\u003e\u003eApp: Retourne les données du tracé\nApp-\u003e\u003eApp: Calcule le temps total\nApp-\u003e\u003eUser: Affiche le temps total"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "title": "En tant qu'utilisateur, je veux pouvoir exporter le tracé visualisé dans différents formats (PNG, JPG)",
+      "description": "Permettre l'export de la carte affichée dans des formats image courants.",
+      "goal": "Exporter la carte au format image sélectionné par l'utilisateur.",
+      "priority": "low",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir exporter le tracé au format PNG afin de pouvoir le partager facilement.",
+          "description": "Permettre à l'utilisateur d'exporter la carte affichée au format PNG. L'export doit inclure le tracé GPX, les marqueurs et les éléments de l'interface utilisateur (ex: échelle, titre).",
+          "acceptance_criteria": [
+            "Étant donné que j'ai un tracé GPX affiché sur la carte",
+            "Quand je clique sur le bouton 'Exporter en PNG'",
+            "Alors un fichier PNG est généré et téléchargé avec le tracé affiché, les marqueurs et l'interface utilisateur."
+          ],
+          "definition_of_done": "L'export au format PNG fonctionne correctement et produit une image de qualité acceptable, incluant le tracé, les marqueurs et l'interface utilisateur.",
+          "tests_to_plan": [
+            "Test de l'export avec différents tracés GPX (taille, complexité)",
+            "Test de l'export avec et sans marqueurs",
+            "Test de la qualité de l'image PNG générée",
+            "Test de l'inclusion correcte des éléments de l'interface utilisateur (échelle, titre)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Bibliothèque de rendu de carte fonctionnelle",
+            "Bibliothèque de manipulation d'images (ex: canvas)"
+          ],
+          "issues": [
+            {
+              "id": "4-US-001-TASK-1",
+              "epic_id": "4",
+              "title": "Ajouter une dépendance pour la manipulation d'images PNG",
+              "type": "feat",
+              "description": "Ajouter une bibliothèque Go pour encoder l'image de la carte au format PNG. Utiliser une bibliothèque bien établie et maintenue.",
+              "acceptance_criteria": [
+                "Le projet doit inclure une dépendance pour l'encodage PNG.",
+                "La dépendance doit être correctement référencée dans le fichier `go.mod`.",
+                "La compilation du projet ne doit pas générer d'erreurs suite à l'ajout de la dépendance."
+              ],
+              "tech_details": "Choisir une bibliothèque comme `image/png` du package standard de Go ou une bibliothèque tierce comme `github.com/kettek/apng` si des fonctionnalités avancées sont nécessaires.",
+              "validation": "Vérifier que l'ajout de la dépendance n'introduit pas de régressions dans les fonctionnalités existantes.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Vérifier que la dépendance est correctement importée et utilisée dans le code.",
+                "Créer un test unitaire simple pour encoder une image de test au format PNG."
+              ],
+              "definition_of_done": [
+                "Dépendance ajoutée au projet",
+                "Fichier `go.mod` mis à jour",
+                "Vérification de la compilation réussie"
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser `go get` pour installer la bibliothèque d'encodage PNG. Vérifier la compatibilité de la bibliothèque avec les autres dépendances du projet."
+            },
+            {
+              "dependencies": [
+                "4-US-001-TASK-1"
+              ],
+              "id": "4-US-001-TASK-2",
+              "epic_id": "4",
+              "title": "Implémenter la logique de rendu de la carte en mémoire",
+              "type": "feat",
+              "description": "Créer une fonction qui prend les données du tracé GPX, les marqueurs et les éléments de l'interface utilisateur et les rend en une image en mémoire.",
+              "acceptance_criteria": [
+                "La fonction doit accepter les données du tracé GPX, les marqueurs et les éléments de l'interface utilisateur en entrée.",
+                "La fonction doit générer une image représentant la carte affichée.",
+                "L'image générée doit être stockée en mémoire."
+              ],
+              "tech_details": "Définir une structure de données pour représenter la carte (ex: taille, couleur de fond, etc.).  Optimiser le rendu pour minimiser l'utilisation de la mémoire et le temps de calcul.",
+              "validation": "Comparer visuellement l'image générée avec la carte affichée dans l'application pour vérifier la fidélité du rendu.",
+              "error_handling": "Gérer les erreurs potentielles lors du rendu de la carte (ex: données GPX invalides, ressources manquantes).",
+              "database_migrations": null,
+              "tests": [
+                "Créer des tests unitaires pour vérifier que la fonction de rendu génère des images correctes avec différentes données GPX, marqueurs et éléments de l'interface utilisateur.",
+                "Vérifier la performance de la fonction de rendu avec des données GPX volumineuses."
+              ],
+              "definition_of_done": [
+                "Fonction de rendu de la carte implémentée",
+                "Image de la carte générée en mémoire",
+                "Vérification de la qualité du rendu"
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser une bibliothèque de dessin 2D comme `golang.org/x/image/draw` pour dessiner le tracé GPX, les marqueurs et les éléments de l'interface utilisateur sur une image en mémoire."
+            },
+            {
+              "dependencies": [
+                "4-US-001-TASK-2"
+              ],
+              "id": "4-US-001-TASK-3",
+              "epic_id": "4",
+              "title": "Implémenter la fonctionnalité d'export au format PNG",
+              "type": "feat",
+              "description": "Ajouter un bouton ou une option de menu pour permettre à l'utilisateur d'exporter la carte au format PNG.  L'export doit inclure le tracé GPX, les marqueurs et les éléments de l'interface utilisateur.",
+              "acceptance_criteria": [
+                "L'utilisateur doit pouvoir lancer l'export de la carte au format PNG.",
+                "L'image exportée doit inclure le tracé GPX, les marqueurs et les éléments de l'interface utilisateur.",
+                "L'image exportée doit être enregistrée dans un fichier PNG sur le système de l'utilisateur."
+              ],
+              "tech_details": "Utiliser les fonctions `os.Create` et `png.Encode` du package standard de Go pour créer et enregistrer le fichier PNG.",
+              "validation": "Ouvrir l'image exportée avec un visualiseur d'images pour vérifier sa qualité et son contenu.",
+              "error_handling": "Gérer les erreurs potentielles lors de l'export (ex: problème d'écriture sur le disque, format de fichier invalide). Afficher un message d'erreur clair à l'utilisateur.",
+              "database_migrations": null,
+              "tests": [
+                "Créer un test d'intégration pour vérifier que l'export au format PNG fonctionne correctement.",
+                "Vérifier que l'image exportée est bien au format PNG et qu'elle contient le tracé GPX, les marqueurs et les éléments de l'interface utilisateur.",
+                "Tester l'export avec différents noms et emplacements de fichiers."
+              ],
+              "definition_of_done": [
+                "Bouton/option d'export implémenté(e)",
+                "Fonctionnalité d'export au format PNG fonctionnelle",
+                "Vérification de la qualité de l'image exportée"
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Ajouter un bouton \"Exporter en PNG\" dans la barre d'outils ou dans le menu \"Fichier\".",
+              "implementation_details": "Utiliser la bibliothèque d'encodage PNG ajoutée dans TASK-1 pour encoder l'image générée dans TASK-2 au format PNG et l'enregistrer dans un fichier.  Proposer une boîte de dialogue pour permettre à l'utilisateur de choisir le nom et l'emplacement du fichier."
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n\tparticipant User\n\tparticipant UI\n\tparticipant MapRenderer\n\tparticipant ImageExporter\n\n\tUser-\u003e\u003eUI: Clic sur 'Exporter en PNG'\n\tUI-\u003e\u003eMapRenderer: Demande de rendu de la carte\n\tMapRenderer-\u003e\u003eImageExporter: Envoie l'image rendue\n\tImageExporter-\u003e\u003eUI: Retourne l'image au format PNG\n\tUI-\u003e\u003eUser: Télécharge le fichier PNG"
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir exporter le tracé au format JPG afin de pouvoir l'utiliser sur des plateformes nécessitant ce format.",
+          "description": "Permettre à l'utilisateur d'exporter la carte affichée au format JPG. L'export doit inclure le tracé GPX, les marqueurs et les éléments de l'interface utilisateur.  Proposer un niveau de qualité configurable pour le JPG.",
+          "acceptance_criteria": [
+            "Étant donné que j'ai un tracé GPX affiché sur la carte",
+            "Quand je clique sur le bouton 'Exporter en JPG'",
+            "Alors un fichier JPG est généré et téléchargé avec le tracé affiché, les marqueurs et l'interface utilisateur.",
+            "Etant donné que je souhaite une image de plus petite taille",
+            "Quand je configure la qualité de l'export JPG à 50%",
+            "Alors le fichier JPG généré aura une compression plus importante."
+          ],
+          "definition_of_done": "L'export au format JPG fonctionne correctement et produit une image de qualité acceptable, incluant le tracé, les marqueurs et l'interface utilisateur. La qualité du JPG est configurable.",
+          "tests_to_plan": [
+            "Test de l'export avec différents tracés GPX (taille, complexité)",
+            "Test de l'export avec et sans marqueurs",
+            "Test de la qualité de l'image JPG générée (différents niveaux de qualité)",
+            "Test de l'inclusion correcte des éléments de l'interface utilisateur (échelle, titre)",
+            "Test de la taille du fichier JPG en fonction de la qualité choisie"
+          ],
+          "priority": "high",
+          "estimation_story_points": 8,
+          "technical_dependencies": [
+            "Bibliothèque de rendu de carte fonctionnelle",
+            "Bibliothèque de manipulation d'images (ex: canvas)",
+            "Implémentation du paramètre de qualité pour le JPG"
+          ],
+          "issues": [
+            {
+              "id": "4-US-002-TASK-1",
+              "epic_id": "4",
+              "title": "Ajouter une option d'export JPG",
+              "type": "feat",
+              "description": "Implémenter une option dans l'interface utilisateur permettant à l'utilisateur d'exporter la carte actuelle au format JPG.",
+              "acceptance_criteria": [
+                "Un bouton 'Exporter en JPG' est présent dans l'interface.",
+                "Cliquer sur le bouton ouvre une boîte de dialogue de sauvegarde de fichier.",
+                "Le fichier exporté est au format JPG.",
+                "Le fichier JPG contient la carte affichée, le tracé GPX, et les marqueurs.",
+                "L'interface utilisateur n'est pas bloquée pendant l'export."
+              ],
+              "tech_details": "Choisir une librairie Go pour l'encodage JPG (ex: `image/jpeg`). Explorer les options de qualité d'encodage offertes par la librairie.  Implémenter une fonction pour capturer le contenu de la carte (tracé GPX, marqueurs) sous forme d'image raster.",
+              "validation": "Vérifier que le fichier JPG exporté s'ouvre correctement dans différents visionneurs d'images et sur différentes plateformes.  Valider que la qualité de l'image est acceptable pour différents niveaux de qualité configurables.",
+              "error_handling": "Afficher un message d'erreur clair si l'export échoue (ex: manque de permissions, espace disque insuffisant).",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire: Vérifier que la fonction d'export JPG génère un fichier JPG valide.",
+                "Test unitaire: Vérifier que la fonction d'export gère correctement les erreurs (ex: pas de permissions d'écriture).",
+                "Test d'intégration: Vérifier que le fichier JPG exporté contient bien la carte, le tracé GPX et les marqueurs.",
+                "Test manuel: Exporter une carte avec différents tracés et marqueurs et vérifier visuellement la qualité de l'image JPG."
+              ],
+              "definition_of_done": [
+                "Code revu et approuvé.",
+                "Tests unitaires et d'intégration réussis.",
+                "Fonctionnalité testée manuellement et validée."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Ajouter un bouton 'Exporter en JPG' à côté des autres options d'export (si existantes) ou dans un menu 'Fichier' -\u003e 'Exporter'. Utiliser une icône appropriée pour le format JPG.",
+              "implementation_details": "Utiliser une librairie de manipulation d'image pour encoder la carte au format JPG.  Considérer l'utilisation d'un thread séparé ou d'une coroutine pour éviter de bloquer l'interface utilisateur pendant l'export.",
+              "mermaid_flow_diagram": "```mermaid\nsequenceDiagram\n    participant User\n    participant UI\n    participant Exporter\n    participant ImageEncoder\n\n    User-\u003e\u003eUI: Clique sur 'Exporter en JPG'\n    UI-\u003e\u003eExporter: Demande d'export JPG\n    Exporter-\u003e\u003eImageEncoder: Générer image JPG (carte, tracé, marqueurs)\n    ImageEncoder--\u003e\u003eExporter: Image JPG\n    Exporter-\u003e\u003eUI: Propose la sauvegarde du fichier\n    User-\u003e\u003eUI: Sauvegarde le fichier\n```"
+            },
+            {
+              "dependencies": [
+                "4-US-002-TASK-1"
+              ],
+              "id": "4-US-002-TASK-2",
+              "epic_id": "4",
+              "title": "Ajouter un paramètre de qualité JPG",
+              "type": "feat",
+              "description": "Permettre à l'utilisateur de configurer le niveau de qualité de l'image JPG exportée.",
+              "acceptance_criteria": [
+                "Une option de configuration de la qualité JPG est disponible dans les paramètres de l'application ou dans la boîte de dialogue d'export.",
+                "L'option de qualité propose différents niveaux (ex: Faible, Moyen, Élevé) ou un curseur de qualité.",
+                "La taille du fichier JPG exporté varie en fonction du niveau de qualité sélectionné.",
+                "La qualité visuelle de l'image JPG exportée correspond au niveau de qualité sélectionné."
+              ],
+              "tech_details": "La librairie `image/jpeg` permet de spécifier la qualité JPG via l'option `jpeg.Encode(w io.Writer, img image.Image, opt *jpeg.Options)`.  Explorer les valeurs de qualité possibles et leur impact sur la taille du fichier et la qualité visuelle.",
+              "validation": "Vérifier que la qualité visuelle de l'image JPG correspond au niveau de qualité sélectionné.  Valider que la taille du fichier JPG varie en fonction du niveau de qualité.",
+              "error_handling": "Gérer les valeurs de qualité invalides (ex: hors limites) en utilisant une valeur par défaut.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire: Vérifier que la fonction d'export JPG utilise le niveau de qualité configuré.",
+                "Test unitaire: Vérifier que la fonction gère correctement les valeurs de qualité invalides.",
+                "Test d'intégration: Vérifier que la taille du fichier JPG varie en fonction du niveau de qualité sélectionné.",
+                "Test manuel: Exporter une carte avec différents niveaux de qualité et vérifier visuellement la qualité de l'image JPG."
+              ],
+              "definition_of_done": [
+                "Code revu et approuvé.",
+                "Tests unitaires et d'intégration réussis.",
+                "Fonctionnalité testée manuellement et validée."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Ajouter une option de configuration de la qualité JPG dans les paramètres de l'application ou dans la boîte de dialogue d'export. Utiliser une liste déroulante ou un curseur pour permettre à l'utilisateur de sélectionner le niveau de qualité.",
+              "implementation_details": "Utiliser la librairie d'encodage JPG pour configurer la qualité de l'image.  Associer chaque niveau de qualité à une valeur de qualité JPG (ex: 0-100).",
+              "mermaid_flow_diagram": "```mermaid\nsequenceDiagram\n    participant User\n    participant UI\n    participant Exporter\n    participant ImageEncoder\n\n    User-\u003e\u003eUI: Configure la qualité JPG\n    User-\u003e\u003eUI: Clique sur 'Exporter en JPG'\n    UI-\u003e\u003eExporter: Demande d'export JPG avec qualité\n    Exporter-\u003e\u003eImageEncoder: Générer image JPG (carte, tracé, marqueurs) avec qualité\n    ImageEncoder--\u003e\u003eExporter: Image JPG\n    Exporter-\u003e\u003eUI: Propose la sauvegarde du fichier\n    User-\u003e\u003eUI: Sauvegarde le fichier\n```"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n\tparticipant User\n\tparticipant UI\n\tparticipant MapRenderer\n\tparticipant ImageExporter\n\n\tUser-\u003e\u003eUI: Clic sur 'Exporter en JPG'\n\tUser-\u003e\u003eUI: Sélection de la qualité JPG (optionnel)\n\tUI-\u003e\u003eMapRenderer: Demande de rendu de la carte\n\tMapRenderer-\u003e\u003eImageExporter: Envoie l'image rendue et la qualité JPG\n\tImageExporter-\u003e\u003eUI: Retourne l'image au format JPG\n\tUI-\u003e\u003eUser: Télécharge le fichier JPG"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "title": "En tant qu'utilisateur, je veux pouvoir gérer mes fichiers GPX (sauvegarde, suppression)",
+      "description": "Permettre la sauvegarde et la suppression de fichiers GPX importés.",
+      "goal": "Gérer sa collection de fichiers GPX.",
+      "priority": "medium",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir sauvegarder un fichier GPX importé, afin de pouvoir le réutiliser ultérieurement sans avoir à l'importer à nouveau.",
+          "description": "Permettre à l'utilisateur de sauvegarder un fichier GPX dans un stockage local (par exemple, le stockage interne de l'appareil ou un dossier spécifique).  La sauvegarde doit conserver le fichier GPX intact et permettre de le recharger dans l'application.",
+          "acceptance_criteria": [
+            "Étant donné que j'ai importé un fichier GPX dans l'application",
+            "Quand je clique sur le bouton 'Sauvegarder'",
+            "Alors le fichier GPX doit être sauvegardé dans un emplacement de stockage par défaut ou spécifié par l'utilisateur",
+            "Et un message de confirmation doit s'afficher indiquant que le fichier a été sauvegardé avec succès",
+            "Et le nom du fichier doit être affiché dans une liste de fichiers sauvegardés."
+          ],
+          "definition_of_done": "La fonctionnalité de sauvegarde est implémentée et testée. L'utilisateur peut sauvegarder un fichier GPX et le retrouver dans le stockage de l'appareil. Un message de confirmation est affiché après la sauvegarde.",
+          "tests_to_plan": [
+            "Test de sauvegarde réussie",
+            "Test de sauvegarde avec un nom de fichier existant (gestion des conflits)",
+            "Test de sauvegarde avec un espace de stockage insuffisant",
+            "Test de sauvegarde avec un fichier GPX corrompu (gestion des erreurs)",
+            "Test de sauvegarde avec un chemin invalide"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Implémentation du stockage local de fichiers",
+            "Gestion des permissions d'accès au stockage",
+            "Création d'une interface utilisateur pour la sauvegarde (bouton, message de confirmation)"
+          ],
+          "issues": [
+            {
+              "id": "5-US-001-TASK-1",
+              "epic_id": "5",
+              "title": "Implémenter le stockage local des fichiers GPX",
+              "type": "feat",
+              "description": "Mettre en place le mécanisme de stockage des fichiers GPX dans un répertoire local de l'appareil.",
+              "acceptance_criteria": [
+                "L'application doit permettre de choisir un répertoire de stockage par défaut ou laisser l'utilisateur en choisir un.",
+                "Les fichiers GPX doivent être stockés avec leur nom d'origine, ou un nom généré si nécessaire (gestion des doublons).",
+                "Le répertoire de stockage doit être accessible en lecture et écriture par l'application.",
+                "Un message de confirmation doit être affiché à l'utilisateur après la sauvegarde réussie d'un fichier.",
+                "Gérer les erreurs potentielles lors de la sauvegarde (espace disque insuffisant, permissions)."
+              ],
+              "tech_details": "Implémenter une classe utilitaire pour gérer les opérations de sauvegarde/chargement. Utiliser un pattern singleton pour cette classe.",
+              "validation": "Vérifier que le fichier GPX sauvegardé est identique au fichier original. Vérifier que le fichier peut être rechargé correctement.",
+              "error_handling": "Gestion des erreurs de lecture/écriture, espace disque insuffisant, permissions.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire de la sauvegarde réussie",
+                "Test unitaire de la gestion des erreurs de sauvegarde",
+                "Test d'intégration de la sauvegarde avec l'interface utilisateur"
+              ],
+              "definition_of_done": [
+                "Code review effectué",
+                "Tests unitaires passant",
+                "Tests d'intégration réussis",
+                "Documentation mise à jour"
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Ajouter un bouton 'Sauvegarder' dans l'interface utilisateur, soit dans le menu contextuel du fichier GPX, soit dans une barre d'outils dédiée.",
+              "implementation_details": "Utiliser les API de stockage local spécifiques à la plateforme (ex: SharedPreferences pour les préférences, File API pour le stockage de fichiers).",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant User\n    participant App\n    participant LocalStorage\n    User-\u003e\u003eApp: Demande de sauvegarde du fichier GPX\n    App-\u003e\u003eLocalStorage: Vérification de l'espace disponible\n    alt Espace insuffisant\n        LocalStorage--\u003e\u003eApp: Erreur: Espace insuffisant\n        App--\u003e\u003eUser: Affichage message d'erreur\n    else Espace suffisant\n        App-\u003e\u003eLocalStorage: Sauvegarde du fichier GPX\n        LocalStorage--\u003e\u003eApp: Succès\n        App--\u003e\u003eUser: Affichage message de confirmation\n    end"
+            },
+            {
+              "dependencies": [
+                "5-US-001-TASK-1"
+              ],
+              "id": "5-US-001-TASK-2",
+              "epic_id": "5",
+              "title": "Ajouter une option de configuration du répertoire de sauvegarde",
+              "type": "feat",
+              "description": "Permettre à l'utilisateur de choisir le répertoire où les fichiers GPX seront sauvegardés.",
+              "acceptance_criteria": [
+                "L'application doit proposer une interface pour choisir un répertoire de sauvegarde.",
+                "Le répertoire choisi doit être persistant entre les sessions de l'application.",
+                "L'application doit valider que le répertoire choisi est accessible en lecture/écriture.",
+                "Afficher un message d'erreur si le répertoire n'est pas valide.",
+                "Proposer un répertoire par défaut si l'utilisateur n'en a pas choisi un."
+              ],
+              "tech_details": "Créer une classe de gestion des préférences pour centraliser la gestion des paramètres de l'application.",
+              "validation": "Vérifier que le répertoire choisi est correctement sauvegardé et utilisé lors des sauvegardes de fichiers GPX.",
+              "error_handling": "Gestion des erreurs d'accès au répertoire, permissions.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire de la sauvegarde et du chargement du répertoire",
+                "Test d'intégration avec l'interface utilisateur de configuration"
+              ],
+              "definition_of_done": [
+                "Code review effectué",
+                "Tests unitaires passant",
+                "Tests d'intégration réussis",
+                "Documentation mise à jour"
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Ajouter une section 'Stockage' dans les paramètres de l'application, avec une option pour choisir le répertoire.",
+              "implementation_details": "Utiliser les SharedPreferences ou un mécanisme similaire pour stocker le chemin du répertoire. Utiliser un FileChooser pour permettre à l'utilisateur de choisir un répertoire.",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant User\n    participant App\n    participant Settings\n    User-\u003e\u003eApp: Ouvre les paramètres\n    App-\u003e\u003eUser: Affiche l'option de choix du répertoire\n    User-\u003e\u003eApp: Sélectionne un répertoire\n    App-\u003e\u003eSettings: Enregistre le répertoire\n    Settings--\u003e\u003eApp: Succès\n    App--\u003e\u003eUser: Confirmation\n"
+            },
+            {
+              "dependencies": [
+                "5-US-001-TASK-1"
+              ],
+              "id": "5-US-001-TASK-3",
+              "epic_id": "5",
+              "title": "Gérer les conflits de noms de fichiers lors de la sauvegarde",
+              "type": "feat",
+              "description": "Implémenter une logique pour gérer les cas où un fichier GPX avec le même nom existe déjà dans le répertoire de sauvegarde.",
+              "acceptance_criteria": [
+                "Si un fichier avec le même nom existe déjà, l'application doit proposer de le remplacer ou de renommer le nouveau fichier.",
+                "Le renommage doit être automatique (ex: ajout d'un suffixe numérique) ou manuel (laisser l'utilisateur choisir un nouveau nom).",
+                "L'application doit informer l'utilisateur du conflit et de la solution proposée.",
+                "La solution choisie par l'utilisateur doit être appliquée correctement."
+              ],
+              "tech_details": "Implémenter une fonction utilitaire pour générer des noms de fichiers uniques.",
+              "validation": "Vérifier que les fichiers sont correctement remplacés ou renommés, et que les données sont conservées.",
+              "error_handling": "Gestion des erreurs lors du renommage ou du remplacement de fichiers.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire du remplacement de fichier",
+                "Test unitaire du renommage automatique",
+                "Test d'intégration avec l'interface utilisateur"
+              ],
+              "definition_of_done": [
+                "Code review effectué",
+                "Tests unitaires passant",
+                "Tests d'intégration réussis",
+                "Documentation mise à jour"
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Afficher une boîte de dialogue modale pour gérer le conflit de noms.",
+              "implementation_details": "Vérifier l'existence du fichier avant la sauvegarde. Utiliser une boîte de dialogue pour proposer les options à l'utilisateur.",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant User\n    participant App\n    participant LocalStorage\n    User-\u003e\u003eApp: Demande de sauvegarde du fichier GPX\n    App-\u003e\u003eLocalStorage: Vérifie si le fichier existe\n    alt Le fichier existe\n        LocalStorage--\u003e\u003eApp: Fichier existe\n        App--\u003e\u003eUser: Propose les options (remplacer, renommer)\n        User-\u003e\u003eApp: Choisit une option\n        alt Remplacer\n            App-\u003e\u003eLocalStorage: Remplace le fichier\n        else Renommer\n            App-\u003e\u003eUser: Demande un nouveau nom\n            User-\u003e\u003eApp: Fournit un nouveau nom\n            App-\u003e\u003eLocalStorage: Sauvegarde avec le nouveau nom\n        end\n        LocalStorage--\u003e\u003eApp: Succès\n        App--\u003e\u003eUser: Confirmation\n    else Le fichier n'existe pas\n        App-\u003e\u003eLocalStorage: Sauvegarde le fichier\n        LocalStorage--\u003e\u003eApp: Succès\n        App--\u003e\u003eUser: Confirmation\n    end"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n    participant User\n    participant App\n    participant Storage\n\n    User-\u003e\u003eApp: Clique sur 'Sauvegarder'\n    App-\u003e\u003eApp: Récupère le contenu du fichier GPX\n    App-\u003e\u003eStorage: Sauvegarde le fichier GPX (nom, contenu)\n    alt Succès\n        Storage--\u003e\u003eApp: Confirmation de sauvegarde\n        App--\u003e\u003eUser: Affiche 'Fichier sauvegardé'\n    else Echec\n        Storage--\u003e\u003eApp: Erreur de sauvegarde\n        App--\u003e\u003eUser: Affiche message d'erreur\n    end"
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir supprimer un fichier GPX sauvegardé, afin de libérer de l'espace de stockage ou de supprimer des fichiers inutiles.",
+          "description": "Permettre à l'utilisateur de supprimer un fichier GPX précédemment sauvegardé depuis la liste des fichiers sauvegardés. Une confirmation de suppression doit être demandée avant la suppression définitive.",
+          "acceptance_criteria": [
+            "Étant donné que j'ai des fichiers GPX sauvegardés dans l'application",
+            "Quand je sélectionne un fichier GPX dans la liste des fichiers sauvegardés et que je clique sur le bouton 'Supprimer'",
+            "Alors une boîte de dialogue de confirmation doit s'afficher me demandant si je suis sûr de vouloir supprimer le fichier",
+            "Et si je confirme la suppression, le fichier GPX doit être supprimé du stockage local",
+            "Et le fichier GPX doit être supprimé de la liste des fichiers sauvegardés."
+          ],
+          "definition_of_done": "La fonctionnalité de suppression est implémentée et testée. L'utilisateur peut supprimer un fichier GPX sauvegardé après confirmation. Le fichier est supprimé du stockage et de la liste des fichiers sauvegardés.",
+          "tests_to_plan": [
+            "Test de suppression réussie",
+            "Test d'annulation de la suppression (ne doit pas supprimer le fichier)",
+            "Test de suppression d'un fichier inexistant (gestion des erreurs)",
+            "Test de suppression avec des droits d'accès insuffisants (gestion des erreurs)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Accès à la liste des fichiers sauvegardés",
+            "Implémentation de la boîte de dialogue de confirmation",
+            "Suppression du fichier du stockage local",
+            "Mise à jour de la liste des fichiers sauvegardés"
+          ],
+          "issues": [
+            {
+              "id": "5-US-002-TASK-1",
+              "epic_id": "5",
+              "title": "Implémenter la fonctionnalité de suppression de fichier GPX",
+              "type": "feat",
+              "description": "Permettre à l'utilisateur de supprimer un fichier GPX sélectionné dans la liste des fichiers sauvegardés.",
+              "acceptance_criteria": [
+                "L'utilisateur peut sélectionner un fichier GPX dans la liste.",
+                "Un bouton ou une option 'Supprimer' est disponible pour le fichier sélectionné.",
+                "Un message de confirmation s'affiche avant la suppression définitive du fichier.",
+                "Après confirmation, le fichier est supprimé de la liste et du stockage.",
+                "Un message de succès est affiché après la suppression."
+              ],
+              "tech_details": "Utiliser la fonction de suppression de fichier du langage Go (os.Remove ou similaire) après confirmation de l'utilisateur.  Gérer correctement les erreurs potentielles lors de la suppression du fichier du système de stockage.",
+              "validation": "Vérifier que le fichier est bien supprimé de la liste et du système de stockage après confirmation.  Vérifier que les messages d'erreur sont affichés correctement en cas de problème.",
+              "error_handling": "Gérer les erreurs de suppression de fichier (fichier inexistant, permissions). Afficher un message d'erreur clair à l'utilisateur.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire de la fonction de suppression de fichier.",
+                "Test d'intégration de la suppression de fichier avec l'interface utilisateur.",
+                "Test de suppression avec un fichier inexistant.",
+                "Test de suppression avec des permissions insuffisantes."
+              ],
+              "definition_of_done": [
+                "Code développé et testé unitairement.",
+                "Fonctionnalité testée manuellement.",
+                "Revue de code effectuée.",
+                "Documentation mise à jour."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Ajouter une icône de poubelle ou un bouton 'Supprimer' à côté de chaque fichier GPX dans la liste.  Concevoir une boîte de dialogue de confirmation de suppression claire et concise.",
+              "implementation_details": "Utiliser une boîte de dialogue modale pour la confirmation de suppression.  Assurer la suppression effective du fichier du système de stockage (base de données ou système de fichiers).",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant User\n    participant UI\n    participant Application\n    participant Storage\n\n    User-\u003e\u003eUI: Sélectionne un fichier GPX à supprimer\n    UI-\u003e\u003eApplication: Demande de suppression du fichier\n    Application-\u003e\u003eUI: Affiche une confirmation de suppression\n    User-\u003e\u003eUI: Confirme la suppression\n    UI-\u003e\u003eApplication: Envoie la confirmation de suppression\n    Application-\u003e\u003eStorage: Supprime le fichier GPX\n    Storage--\u003e\u003eApplication: Confirmation de suppression\n    Application-\u003e\u003eUI: Affiche un message de succès\n"
+            },
+            {
+              "dependencies": [
+                "5-US-002-TASK-1"
+              ],
+              "id": "5-US-002-TASK-2",
+              "epic_id": "5",
+              "title": "Afficher une confirmation de suppression",
+              "type": "feat",
+              "description": "Afficher une boîte de dialogue de confirmation avant de supprimer définitivement un fichier GPX.",
+              "acceptance_criteria": [
+                "Une boîte de dialogue s'affiche avant la suppression.",
+                "La boîte de dialogue contient un message clair demandant à l'utilisateur de confirmer la suppression.",
+                "La boîte de dialogue propose des options 'Confirmer' et 'Annuler'.",
+                "Si l'utilisateur clique sur 'Confirmer', le fichier est supprimé.",
+                "Si l'utilisateur clique sur 'Annuler', la suppression est annulée et la liste des fichiers reste inchangée."
+              ],
+              "tech_details": "Choisir une bibliothèque UI appropriée pour afficher la boîte de dialogue.  S'assurer de la compatibilité avec les différents navigateurs et systèmes d'exploitation.",
+              "validation": "Vérifier que la boîte de dialogue s'affiche correctement avant la suppression.  Vérifier que les actions 'Confirmer' et 'Annuler' fonctionnent comme prévu.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test de l'affichage de la boîte de dialogue.",
+                "Test des boutons 'Confirmer' et 'Annuler'.",
+                "Test de la suppression du fichier après confirmation.",
+                "Test de l'annulation de la suppression."
+              ],
+              "definition_of_done": [
+                "Boîte de dialogue implémentée.",
+                "Fonctionnalité testée manuellement.",
+                "Revue de code effectuée.",
+                "Documentation mise à jour."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Concevoir une boîte de dialogue claire et concise avec des boutons bien visibles.  Utiliser une couleur d'accentuation pour le bouton 'Confirmer' afin d'attirer l'attention de l'utilisateur.",
+              "implementation_details": "Utiliser une bibliothèque UI pour afficher la boîte de dialogue modale.  S'assurer que la boîte de dialogue est bien centrée et facile à utiliser.",
+              "mermaid_flow_diagram": "sequenceDiagram\n    participant User\n    participant UI\n\n    User-\u003e\u003eUI: Clique sur 'Supprimer'\n    UI-\u003e\u003eUI: Affiche la boîte de dialogue de confirmation\n    User-\u003e\u003eUI: Clique sur 'Confirmer' ou 'Annuler'\n    alt Confirmer\n        UI-\u003e\u003eApplication: Envoie la confirmation de suppression\n    else Annuler\n        UI-\u003e\u003eUI: Ferme la boîte de dialogue\n    end\n"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n    participant User\n    participant App\n    participant Storage\n\n    User-\u003e\u003eApp: Sélectionne un fichier et clique sur 'Supprimer'\n    App-\u003e\u003eUser: Affiche une boîte de dialogue de confirmation\n    User-\u003e\u003eApp: Confirme la suppression\n    App-\u003e\u003eStorage: Supprime le fichier GPX\n    alt Succès\n        Storage--\u003e\u003eApp: Confirmation de suppression\n        App-\u003e\u003eApp: Met à jour la liste des fichiers\n        App--\u003e\u003eUser: Affiche liste mise à jour\n    else Echec\n        Storage--\u003e\u003eApp: Erreur de suppression\n        App--\u003e\u003eUser: Affiche message d'erreur\n    end"
+        },
+        {
+          "id": "US-003",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux une interface claire pour gérer mes fichiers GPX sauvegardés (liste, noms), afin de facilement les retrouver et les identifier.",
+          "description": "L'application doit afficher une liste des fichiers GPX sauvegardés avec des informations pertinentes (nom du fichier, date de sauvegarde, etc.). L'utilisateur doit pouvoir identifier facilement chaque fichier.",
+          "acceptance_criteria": [
+            "Étant donné que j'ai des fichiers GPX sauvegardés",
+            "Quand j'ouvre l'application ou que je vais dans la section 'Fichiers Sauvegardés'",
+            "Alors une liste de mes fichiers GPX sauvegardés doit s'afficher",
+            "Et chaque élément de la liste doit afficher au moins le nom du fichier",
+            "Et la liste doit être triable par nom ou par date de sauvegarde"
+          ],
+          "definition_of_done": "L'interface de gestion des fichiers GPX sauvegardés est implémentée et testée. La liste des fichiers est affichée avec des informations pertinentes. L'utilisateur peut identifier et trier les fichiers.",
+          "tests_to_plan": [
+            "Test d'affichage correct de la liste des fichiers",
+            "Test de tri par nom",
+            "Test de tri par date de sauvegarde",
+            "Test d'affichage des informations pertinentes (nom, date)",
+            "Test de performance avec un grand nombre de fichiers sauvegardés"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Accès à la liste des fichiers sauvegardés",
+            "Création de l'interface utilisateur pour afficher la liste",
+            "Implémentation des fonctionnalités de tri"
+          ],
+          "issues": [
+            {
+              "id": "5-US-003-TASK-1",
+              "epic_id": "5",
+              "title": "Conception de l'interface utilisateur pour la liste des fichiers GPX",
+              "type": "feat",
+              "description": "Concevoir l'interface utilisateur pour afficher la liste des fichiers GPX sauvegardés. L'interface doit inclure le nom du fichier, la date de sauvegarde et potentiellement d'autres métadonnées pertinentes.",
+              "acceptance_criteria": [
+                "L'interface affiche une liste de fichiers GPX.",
+                "Chaque élément de la liste affiche le nom du fichier.",
+                "Chaque élément de la liste affiche la date de sauvegarde.",
+                "La liste est ordonnée par date de sauvegarde (du plus récent au plus ancien par défaut).",
+                "L'interface est responsive et s'adapte à différentes tailles d'écran.",
+                "Le design est clair et intuitif pour l'utilisateur."
+              ],
+              "tech_details": "Choisir un framework UI approprié (Compose, SwiftUI, React Native, Flutter, etc.).  Considérer la performance pour un grand nombre de fichiers.",
+              "validation": "Valider visuellement l'interface utilisateur avec le PO. Valider le fonctionnement correct des tests unitaires et d'intégration.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire: Vérifier que la liste est vide si aucun fichier n'est sauvegardé.",
+                "Test unitaire: Vérifier que chaque élément de la liste affiche correctement le nom du fichier.",
+                "Test unitaire: Vérifier que chaque élément de la liste affiche correctement la date de sauvegarde.",
+                "Test d'intégration (lorsque le backend sera disponible): Vérifier que la liste est correctement peuplée avec les données provenant du backend."
+              ],
+              "definition_of_done": [
+                "Maquette de l'interface utilisateur approuvée par le PO.",
+                "Implémentation de l'interface utilisateur conforme à la maquette.",
+                "Tests unitaires pour vérifier l'affichage correct des informations.",
+                "Tests d'intégration pour vérifier l'intégration avec le backend (lorsque celui-ci sera disponible)."
+              ],
+              "user_story_id": "US-003",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Lien vers la maquette Figma/Adobe XD/etc.",
+              "implementation_details": "Utiliser un composant de liste (par exemple, RecyclerView en Android, List en SwiftUI, etc.) pour afficher les fichiers GPX.  Le format de date doit être localisé pour l'utilisateur.",
+              "mermaid_flow_diagram": "graph LR\n    A[Début] --\u003e B{Fichiers GPX existent ?}\n    B -- Oui --\u003e C[Afficher la liste des fichiers]\n    B -- Non --\u003e D[Afficher message 'Aucun fichier GPX sauvegardé']\n    C --\u003e E[Fin]\n    D --\u003e E"
+            },
+            {
+              "dependencies": [
+                "5-US-003-TASK-1"
+              ],
+              "id": "5-US-003-TASK-2",
+              "epic_id": "5",
+              "title": "Implémentation du stockage des métadonnées des fichiers GPX",
+              "type": "feat",
+              "description": "Implémenter un système de stockage pour les métadonnées des fichiers GPX (nom du fichier, date de sauvegarde, etc.). Ceci permettra d'afficher ces informations dans la liste des fichiers sauvegardés.",
+              "acceptance_criteria": [
+                "Les métadonnées de chaque fichier GPX sont stockées de manière persistante.",
+                "Le stockage est efficient et ne consomme pas trop de ressources.",
+                "Les métadonnées peuvent être facilement récupérées pour affichage dans l'interface utilisateur.",
+                "Le système de stockage est testé et fiable."
+              ],
+              "tech_details": "Considérer la performance du stockage pour un grand nombre de fichiers.  Considérer la sécurité des données stockées.",
+              "validation": "Valider le fonctionnement correct du stockage et de la récupération des métadonnées. Valider l'intégration avec l'interface utilisateur.",
+              "error_handling": "Gérer les erreurs de lecture/écriture du stockage.  Gérer les conflits de noms de fichiers.",
+              "database_migrations": "Créer une table 'gpx_files' avec les colonnes 'id', 'filename', 'date_saved', 'filepath'. Ajouter un index sur 'filename'.",
+              "tests": [
+                "Test unitaire: Vérifier que les métadonnées sont correctement stockées.",
+                "Test unitaire: Vérifier que les métadonnées peuvent être correctement récupérées.",
+                "Test unitaire: Vérifier la gestion des erreurs de lecture/écriture.",
+                "Test d'intégration: Vérifier l'intégration avec l'interface utilisateur."
+              ],
+              "definition_of_done": [
+                "Schéma de la base de données défini et approuvé.",
+                "Implémentation du stockage des métadonnées.",
+                "Tests unitaires pour vérifier le stockage et la récupération des métadonnées.",
+                "Tests d'intégration pour vérifier l'intégration avec l'interface utilisateur."
+              ],
+              "user_story_id": "US-003",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Choisir une solution de stockage appropriée (SQLite, Realm, Core Data, etc.).  Implémenter une couche d'abstraction pour faciliter le changement de solution de stockage ultérieurement.",
+              "mermaid_flow_diagram": "graph LR\n    A[Début] --\u003e B[Récupérer métadonnées du fichier GPX]\n    B --\u003e C[Stocker les métadonnées dans la base de données]\n    C --\u003e D[Fin]"
+            },
+            {
+              "dependencies": [
+                "5-US-003-TASK-2"
+              ],
+              "id": "5-US-003-TASK-3",
+              "epic_id": "5",
+              "title": "Intégration des données GPX dans l'interface utilisateur",
+              "type": "feat",
+              "description": "Connecter l'interface utilisateur à la source de données des fichiers GPX pour afficher les informations (nom, date de sauvegarde) dans la liste.",
+              "acceptance_criteria": [
+                "L'interface utilisateur affiche les données réelles des fichiers GPX sauvegardés.",
+                "Les données affichées correspondent aux métadonnées stockées.",
+                "La performance de l'affichage est acceptable, même avec un grand nombre de fichiers.",
+                "L'intégration est robuste et gère les erreurs potentielles."
+              ],
+              "tech_details": "Choisir une approche de gestion des données qui optimise la performance et la consommation de ressources. Considérer l'utilisation de threads ou de coroutines pour éviter de bloquer l'interface utilisateur.",
+              "validation": "Valider que l'interface utilisateur affiche correctement les données GPX. Valider la performance de l'affichage. Effectuer des tests d'erreur pour s'assurer de la robustesse de l'intégration.",
+              "error_handling": "Gérer les erreurs de connexion à la base de données ou à la source de données GPX. Afficher des messages d'erreur appropriés à l'utilisateur.",
+              "database_migrations": null,
+              "tests": [
+                "Test d'intégration: Vérifier que les données GPX sont correctement récupérées et affichées.",
+                "Test de performance: Vérifier que l'affichage de la liste est rapide et fluide.",
+                "Test d'erreur: Vérifier la gestion des erreurs de connexion et d'accès aux données."
+              ],
+              "definition_of_done": [
+                "L'interface utilisateur est connectée à la source de données GPX.",
+                "Les données GPX sont affichées correctement dans la liste.",
+                "Tests d'intégration pour valider la connexion et l'affichage des données.",
+                "Tests de performance pour assurer une bonne expérience utilisateur."
+              ],
+              "user_story_id": "US-003",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser les API ou les méthodes appropriées pour accéder aux données GPX stockées.  Implémenter un mécanisme de mise en cache pour améliorer la performance.",
+              "mermaid_flow_diagram": "graph LR\n    A[Début] --\u003e B[Récupérer les données GPX de la source]\n    B --\u003e C[Formater les données pour l'affichage]\n    C --\u003e D[Afficher les données dans la liste]\n    D --\u003e E[Fin]"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n    participant User\n    participant App\n    participant Storage\n\n    User-\u003e\u003eApp: Ouvre l'application ou la section 'Fichiers Sauvegardés'\n    App-\u003e\u003eStorage: Récupère la liste des fichiers GPX sauvegardés\n    Storage--\u003e\u003eApp: Liste des fichiers (nom, date)\n    App-\u003e\u003eApp: Trie la liste (si demandé par l'utilisateur)\n    App--\u003e\u003eUser: Affiche la liste des fichiers GPX"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "title": "En tant qu'utilisateur, je veux pouvoir personnaliser l'affichage du tracé (couleur, épaisseur)",
+      "description": "Permettre la modification de l'apparence du tracé sur la carte.",
+      "goal": "Personnaliser l'affichage du tracé selon ses préférences.",
+      "priority": "low",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir choisir une couleur pour le tracé GPX afin de mieux distinguer les différents parcours.",
+          "description": "Permettre à l'utilisateur de sélectionner une couleur spécifique pour l'affichage du tracé GPX sur la carte. Ceci améliore la lisibilité et la distinction entre plusieurs traces superposées.",
+          "acceptance_criteria": [
+            "Étant donné que l'application affiche un fichier GPX sur la carte",
+            "Quand je sélectionne une couleur dans le sélecteur de couleur",
+            "Alors le tracé GPX doit s'afficher avec la couleur sélectionnée",
+            "Et la couleur sélectionnée doit être persistée entre les sessions."
+          ],
+          "definition_of_done": "Un sélecteur de couleur est disponible dans l'interface utilisateur. L'utilisateur peut choisir une couleur et le tracé GPX est affiché avec cette couleur. La couleur est sauvegardée et restaurée au prochain lancement de l'application.",
+          "tests_to_plan": [
+            "Test unitaire du sélecteur de couleur",
+            "Test d'intégration de la sélection de couleur avec l'affichage de la carte",
+            "Test de persistance de la couleur sélectionnée",
+            "Test de l'affichage de plusieurs traces avec des couleurs différentes"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Composant de sélection de couleur (UI)",
+            "Méthode de modification de la couleur du tracé sur la carte",
+            "Mécanisme de persistance des préférences utilisateur (stockage local)"
+          ],
+          "issues": [
+            {
+              "id": "6-US-001-TASK-1",
+              "epic_id": "6",
+              "title": "Ajouter un sélecteur de couleur pour le tracé GPX",
+              "type": "feat",
+              "description": "Implémenter un composant UI permettant à l'utilisateur de choisir une couleur pour le tracé GPX affiché sur la carte.",
+              "acceptance_criteria": [
+                "Un sélecteur de couleur est présent dans l'interface utilisateur.",
+                "L'utilisateur peut sélectionner une couleur à partir du sélecteur.",
+                "La couleur sélectionnée est appliquée au tracé GPX affiché sur la carte.",
+                "La couleur sélectionnée est persistée (par exemple, dans les préférences de l'utilisateur) pour les sessions futures."
+              ],
+              "tech_details": "Définir un format de couleur standard (par exemple, hexadécimal) pour stocker et manipuler les couleurs.  Assurer la compatibilité avec la librairie de carte utilisée.",
+              "validation": "Vérifier que la couleur du tracé change correctement lorsque l'utilisateur sélectionne une nouvelle couleur. Vérifier la persistance de la couleur sélectionnée entre les sessions.",
+              "error_handling": "Afficher un message d'erreur si la couleur sélectionnée n'est pas valide.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que la couleur sélectionnée est correctement stockée.",
+                "Test d'intégration pour vérifier que la couleur sélectionnée est correctement appliquée au tracé GPX sur la carte.",
+                "Test UI pour vérifier que le sélecteur de couleur fonctionne correctement."
+              ],
+              "definition_of_done": [
+                "Code revu et approuvé.",
+                "Tests unitaires réussis.",
+                "Tests d'intégration réussis.",
+                "Fonctionnalité validée par l'équipe QA."
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Fournir une maquette du sélecteur de couleur intégré à l'interface utilisateur.",
+              "implementation_details": "Utiliser une librairie de sélecteur de couleur existante (par exemple, react-color pour React). Stocker la couleur sélectionnée dans le state de l'application ou dans un système de gestion de state global (Redux, Context API, etc.).",
+              "mermaid_flow_diagram": "graph LR\n A[User selects color] --\u003e B(Update application state)\n B --\u003e C{Re-render map with new color}\n C --\u003e D[Display updated track]"
+            },
+            {
+              "dependencies": [
+                "6-US-001-TASK-1"
+              ],
+              "id": "6-US-001-TASK-2",
+              "epic_id": "6",
+              "title": "Modifier la couleur du tracé GPX sur la carte",
+              "type": "feat",
+              "description": "Modifier le code de rendu de la carte pour utiliser la couleur sélectionnée par l'utilisateur.",
+              "acceptance_criteria": [
+                "Le tracé GPX sur la carte est affiché avec la couleur sélectionnée par l'utilisateur.",
+                "La modification de la couleur est immédiate après la sélection de la couleur.",
+                "La couleur par défaut est utilisée si aucune couleur n'a été sélectionnée par l'utilisateur."
+              ],
+              "tech_details": "Assurer la compatibilité avec les différentes librairies de carte utilisées. Optimiser le rendu pour éviter les problèmes de performance.",
+              "validation": "Vérifier que la couleur du tracé est correctement modifiée sur la carte. Vérifier que la performance de la carte n'est pas affectée.",
+              "error_handling": "Gérer les erreurs potentielles lors de la modification de la couleur du tracé sur la carte.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que la couleur du tracé est correctement modifiée.",
+                "Test d'intégration pour vérifier que la couleur du tracé est correctement affichée sur la carte."
+              ],
+              "definition_of_done": [
+                "Code revu et approuvé.",
+                "Tests unitaires réussis.",
+                "Tests d'intégration réussis."
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Modifier le code de rendu du tracé GPX pour prendre en compte la couleur sélectionnée.  Utiliser les API de la librairie de carte pour modifier la couleur du tracé.",
+              "mermaid_flow_diagram": "graph LR\n A[Get selected color] --\u003e B{Update map rendering}\n B --\u003e C[Display updated track]"
+            },
+            {
+              "dependencies": [
+                "6-US-001-TASK-1",
+                "6-US-001-TASK-2"
+              ],
+              "id": "6-US-001-TASK-3",
+              "epic_id": "6",
+              "title": "Persister la couleur sélectionnée par l'utilisateur",
+              "type": "feat",
+              "description": "Stocker la couleur sélectionnée par l'utilisateur afin qu'elle soit conservée entre les sessions.",
+              "acceptance_criteria": [
+                "La couleur sélectionnée est stockée localement (par exemple, dans les préférences de l'utilisateur).",
+                "La couleur sélectionnée est restaurée au chargement de l'application.",
+                "Une couleur par défaut est utilisée si aucune couleur n'a été sélectionnée précédemment."
+              ],
+              "tech_details": "Choisir une méthode de stockage local appropriée en fonction des exigences de sécurité et de performance. Gérer les cas où le stockage local n'est pas disponible.",
+              "validation": "Vérifier que la couleur sélectionnée est conservée entre les sessions. Vérifier que la couleur par défaut est utilisée si aucune couleur n'a été sélectionnée précédemment.",
+              "error_handling": "Gérer les erreurs potentielles lors de la lecture ou de l'écriture des préférences de l'utilisateur.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que la couleur est correctement stockée et restaurée.",
+                "Test d'intégration pour vérifier que la couleur est conservée entre les sessions."
+              ],
+              "definition_of_done": [
+                "Code revu et approuvé.",
+                "Tests unitaires réussis.",
+                "Tests d'intégration réussis."
+              ],
+              "user_story_id": "US-001",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser les API de stockage local du navigateur (localStorage, cookies, etc.) ou une librairie dédiée à la gestion des préférences utilisateur. Définir une clé unique pour stocker la couleur sélectionnée.",
+              "mermaid_flow_diagram": "graph LR\n A[User selects color] --\u003e B(Store color in preferences)\n C[App loads] --\u003e D(Load color from preferences)\n D --\u003e E{Use loaded color for track}"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n    participant User\n    participant UI\n    participant MapComponent\n    participant Storage\n\n    User-\u003e\u003eUI: Sélectionne une couleur\n    UI-\u003e\u003eMapComponent: Définit la couleur du tracé\n    MapComponent-\u003e\u003eMapComponent: Redessine le tracé avec la nouvelle couleur\n    UI-\u003e\u003eStorage: Sauvegarde la couleur sélectionnée\n    Storage--\u003e\u003eUI: Confirmation de sauvegarde\n"
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir modifier l'épaisseur du tracé GPX afin de le rendre plus ou moins visible.",
+          "description": "Permettre à l'utilisateur de modifier l'épaisseur du tracé GPX.  Une épaisseur plus importante rend le tracé plus visible, une épaisseur plus fine le rend plus discret.",
+          "acceptance_criteria": [
+            "Étant donné que l'application affiche un fichier GPX sur la carte",
+            "Quand je modifie la valeur de l'épaisseur du tracé dans le champ prévu à cet effet",
+            "Alors le tracé GPX doit s'afficher avec l'épaisseur sélectionnée",
+            "Et l'épaisseur sélectionnée doit être persistée entre les sessions."
+          ],
+          "definition_of_done": "Un champ de saisie numérique ou un slider est disponible pour modifier l'épaisseur du tracé. L'utilisateur peut modifier la valeur et le tracé GPX est affiché avec cette épaisseur. L'épaisseur est sauvegardée et restaurée au prochain lancement de l'application.",
+          "tests_to_plan": [
+            "Test unitaire du champ de saisie numérique/slider",
+            "Test d'intégration de la modification de l'épaisseur avec l'affichage de la carte",
+            "Test de persistance de l'épaisseur sélectionnée",
+            "Test des valeurs limites de l'épaisseur (min/max)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Composant de saisie numérique ou slider (UI)",
+            "Méthode de modification de l'épaisseur du tracé sur la carte",
+            "Mécanisme de persistance des préférences utilisateur (stockage local)"
+          ],
+          "issues": [
+            {
+              "id": "6-US-002-TASK-1",
+              "epic_id": "6",
+              "title": "Ajouter un contrôle de l'épaisseur du tracé dans les paramètres d'affichage",
+              "type": "feat",
+              "description": "Implémenter un contrôle dans les paramètres d'affichage pour permettre à l'utilisateur de modifier l'épaisseur du tracé GPX.",
+              "acceptance_criteria": [
+                "Un contrôle de type slider ou input number est présent dans les paramètres d'affichage.",
+                "Le contrôle permet de définir une épaisseur de tracé entre 1 et 10 pixels.",
+                "La valeur par défaut de l'épaisseur du tracé est de 3 pixels."
+              ],
+              "tech_details": "Le contrôle devra être implémenté en utilisant les composants existants de l'interface utilisateur. Les préférences utilisateur devront être gérées par le service de configuration.",
+              "validation": "Valider que la modification de l'épaisseur du tracé est visible sur la carte et que la valeur est persistée entre les sessions.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que la valeur par défaut est correctement définie.",
+                "Test d'intégration pour vérifier que la modification de l'épaisseur est persistée dans les préférences utilisateur.",
+                "Test UI pour vérifier que le contrôle est affiché correctement et fonctionnel."
+              ],
+              "definition_of_done": [
+                "Le contrôle de l'épaisseur est implémenté et fonctionnel.",
+                "La valeur par défaut est correctement définie.",
+                "Des tests unitaires et d'intégration couvrent le nouveau contrôle."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Fournir une maquette du panneau des paramètres d'affichage avec le nouveau contrôle d'épaisseur.",
+              "implementation_details": "Utiliser un composant slider ou input number de l'UI framework. Stocker la valeur de l'épaisseur dans les préférences utilisateur.",
+              "mermaid_flow_diagram": "sequenceDiagram\n participant User\n participant UI\n participant Application\n User-\u003e\u003eUI: Modifie l'épaisseur du tracé\n UI-\u003e\u003eApplication: Envoie la nouvelle épaisseur\n Application-\u003e\u003eApplication: Met à jour les préférences utilisateur\n Application-\u003e\u003eUI: Confirme la mise à jour\n UI-\u003e\u003eUser: Affiche la confirmation"
+            },
+            {
+              "dependencies": [
+                "6-US-002-TASK-1"
+              ],
+              "id": "6-US-002-TASK-2",
+              "epic_id": "6",
+              "title": "Appliquer l'épaisseur du tracé GPX configurée à l'affichage de la carte",
+              "type": "feat",
+              "description": "Modifier le rendu du tracé GPX sur la carte pour utiliser l'épaisseur configurée par l'utilisateur.",
+              "acceptance_criteria": [
+                "L'épaisseur du tracé GPX sur la carte correspond à la valeur définie dans les paramètres d'affichage.",
+                "La modification de l'épaisseur dans les paramètres est immédiatement visible sur la carte.",
+                "Les performances de l'affichage de la carte ne sont pas significativement impactées par la modification de l'épaisseur."
+              ],
+              "tech_details": "Le rendu du tracé devra être optimisé pour éviter les problèmes de performance, notamment avec des tracés complexes. Utiliser les fonctionnalités de caching de la librairie de carte.",
+              "validation": "Valider visuellement que l'épaisseur du tracé correspond à la valeur définie dans les paramètres d'affichage. Valider que la modification est réactive et que les performances sont acceptables.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que la fonction de rendu utilise la bonne épaisseur.",
+                "Test d'intégration pour vérifier que la modification de l'épaisseur est répercutée sur l'affichage de la carte.",
+                "Test de performance pour vérifier que l'affichage reste fluide avec différentes épaisseurs et différents tracés."
+              ],
+              "definition_of_done": [
+                "L'épaisseur du tracé est correctement appliquée à l'affichage de la carte.",
+                "La modification de l'épaisseur est réactive.",
+                "Des tests de performance sont effectués pour garantir un affichage fluide."
+              ],
+              "user_story_id": "US-002",
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Modifier la fonction de rendu du tracé GPX pour utiliser la valeur de l'épaisseur stockée dans les préférences utilisateur. Optimiser le rendu pour éviter les problèmes de performance.",
+              "mermaid_flow_diagram": "sequenceDiagram\n participant User\n participant UI\n participant MapRenderer\n participant Application\n User-\u003e\u003eUI: Modifie l'épaisseur du tracé\n UI-\u003e\u003eApplication: Envoie la nouvelle épaisseur\n Application-\u003e\u003eMapRenderer: Demande le rendu du tracé avec la nouvelle épaisseur\n MapRenderer-\u003e\u003eMapRenderer: Dessine le tracé avec l'épaisseur spécifiée\n MapRenderer-\u003e\u003eUI: Affiche le tracé mis à jour\n UI-\u003e\u003eUser: Affiche le tracé mis à jour"
+            }
+          ],
+          "mermaid_sequence_diagram": "sequenceDiagram\n    participant User\n    participant UI\n    participant MapComponent\n    participant Storage\n\n    User-\u003e\u003eUI: Modifie l'épaisseur du tracé\n    UI-\u003e\u003eMapComponent: Définit l'épaisseur du tracé\n    MapComponent-\u003e\u003eMapComponent: Redessine le tracé avec la nouvelle épaisseur\n    UI-\u003e\u003eStorage: Sauvegarde l'épaisseur sélectionnée\n    Storage--\u003e\u003eUI: Confirmation de sauvegarde\n"
+        }
+      ]
+    }
+  ],
+  "model": "google/gemini-2.0-flash-001",
+  "number_token": 39951,
+  "bdd_schema": "erDiagram\n    User {\n        int id PK\n        string username\n        string email\n        string password\n    }\n\n    GPXFile {\n        int id PK\n        string filename\n        string filepath\n        datetime upload_date\n        int user_id FK\n    }\n\n    GPXData {\n        int id PK\n        int gpx_file_id FK\n        float latitude\n        float longitude\n        float elevation\n        datetime timestamp\n    }\n\n    MapDisplaySetting {\n        int id PK\n        int user_id FK\n        string gpx_color\n        int gpx_thickness\n        string map_provider\n    }\n\n    Log {\n        int id PK\n        datetime timestamp\n        string level\n        string message\n        string source\n    }\n    \n    User ||--o{ GPXFile : uploads\n    GPXFile ||--o{ GPXData : contains\n    User ||--o{ MapDisplaySetting : configures\n"
+}

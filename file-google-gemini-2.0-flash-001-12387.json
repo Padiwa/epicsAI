@@ -1,0 +1,809 @@
+{
+  "idea": "Une application permettant aux utilisateurs de partager leur programme d'entrainement en salle de sport, les utilisateurs peuvent s'inscrire, se connecter, créer des entrainement, les partager\n",
+  "epics": [
+    {
+      "id": "1",
+      "title": "Enregistrer et Authentifier mon compte utilisateur",
+      "description": "Permettre aux utilisateurs de créer un compte et de se connecter en toute sécurité à l'application.",
+      "goal": "Atteindre un taux de conversion d'inscription de 70% et un taux de rétention de connexion de 80%.",
+      "issues": [
+        {
+          "id": "1-TASK-1",
+          "epic_id": "1",
+          "title": "Implémenter l'endpoint API d'enregistrement d'utilisateur",
+          "type": "feat",
+          "description": "En tant que nouvel utilisateur, je veux pouvoir m'inscrire avec mon adresse e-mail et un mot de passe sécurisé afin de pouvoir accéder aux fonctionnalités de l'application.",
+          "acceptance_criteria": [
+            "L'endpoint `/api/register` accepte les requêtes POST avec les champs `email` et `password`.",
+            "L'adresse e-mail doit être dans un format valide.",
+            "Le mot de passe doit respecter des critères de complexité (longueur minimale, caractères spéciaux, etc.).",
+            "Les données du nouvel utilisateur sont stockées de manière sécurisée dans la base de données (mot de passe haché).",
+            "En cas de succès, l'API renvoie un code de statut HTTP 201 (Created) et un jeton JWT.",
+            "Si l'adresse e-mail est déjà utilisée, l'API renvoie un code de statut HTTP 409 (Conflict).",
+            "Si les données fournies sont invalides, l'API renvoie un code de statut HTTP 400 (Bad Request) avec un message d'erreur approprié."
+          ],
+          "tech_details": "Utiliser le framework `gin` pour gérer les routes et les middlewares. Utiliser `gorm` pour l'interaction avec la base de données.  Mettre en place une validation des données entrantes.",
+          "validation": "Valider manuellement l'inscription via l'interface utilisateur (si elle existe) ou via un outil d'administration de la base de données.",
+          "error_handling": "Gérer les erreurs de validation (format d'email, mot de passe faible), les erreurs de base de données (conflit d'adresse email).",
+          "database_migrations": "Ajouter une table 'users' avec les colonnes 'id', 'email', 'password_hash', 'created_at', 'updated_at'.",
+          "tests": [
+            "Test unitaire pour valider l'inscription avec une adresse e-mail valide.",
+            "Test unitaire pour valider l'inscription avec une adresse e-mail invalide.",
+            "Test unitaire pour valider l'inscription avec un mot de passe faible.",
+            "Test unitaire pour valider l'inscription avec un mot de passe fort.",
+            "Test d'intégration pour vérifier l'enregistrement correct des données dans la base de données.",
+            "Test d'intégration pour vérifier la gestion des erreurs (email déjà existant)."
+          ],
+          "definition_of_done": [
+            "Code review effectué et approuvé.",
+            "Tests unitaires écrits et réussis.",
+            "L'endpoint est documenté (Swagger/OpenAPI)."
+          ],
+          "example_request": "{\"email\": \"utilisateur@exemple.com\", \"password\": \"MotDePasseSecurise123!\"}",
+          "example_response_success": "{\"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\"}",
+          "example_response_error_400": "{\"error\": \"Format d'email invalide\"}",
+          "example_response_error_409": "{\"error\": \"Cette adresse e-mail est déjà utilisée\"}",
+          "example_request_valid": "{\"email\": \"utilisateur@exemple.com\", \"password\": \"MotDePasseSecurise123!\"}",
+          "example_request_invalid": "{\"email\": \"utilisateur\", \"password\": \"court\"}",
+          "api_call": "/api/register (POST)",
+          "ui_design": null,
+          "implementation_details": "Utiliser `bcrypt` pour hacher les mots de passe.  Générer un JWT (JSON Web Token) pour l'authentification."
+        },
+        {
+          "dependencies": [
+            "1-TASK-1"
+          ],
+          "id": "1-TASK-2",
+          "epic_id": "1",
+          "title": "Implémenter l'endpoint API de connexion d'utilisateur",
+          "type": "feat",
+          "description": "En tant qu'utilisateur enregistré, je veux pouvoir me connecter avec mon adresse e-mail et mon mot de passe afin d'accéder à mon compte et aux fonctionnalités de l'application.",
+          "acceptance_criteria": [
+            "L'endpoint `/api/login` accepte les requêtes POST avec les champs `email` et `password`.",
+            "L'adresse e-mail et le mot de passe doivent correspondre à un utilisateur existant dans la base de données.",
+            "Le mot de passe fourni doit correspondre au hash stocké dans la base de données.",
+            "En cas de succès, l'API renvoie un code de statut HTTP 200 (OK) et un jeton JWT.",
+            "Si l'adresse e-mail ou le mot de passe sont incorrects, l'API renvoie un code de statut HTTP 401 (Unauthorized).",
+            "Si les données fournies sont invalides, l'API renvoie un code de statut HTTP 400 (Bad Request) avec un message d'erreur approprié."
+          ],
+          "tech_details": "Utiliser le framework `gin` pour gérer les routes et les middlewares. Utiliser `gorm` pour l'interaction avec la base de données. Mettre en place une validation des données entrantes.",
+          "validation": "Valider manuellement la connexion via l'interface utilisateur (si elle existe) ou en vérifiant la génération correcte du jeton JWT.",
+          "error_handling": "Gérer les erreurs d'authentification (email/mot de passe incorrects), les erreurs de validation (format d'email).",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour valider la connexion avec une adresse e-mail et un mot de passe corrects.",
+            "Test unitaire pour valider la connexion avec une adresse e-mail correcte et un mot de passe incorrect.",
+            "Test unitaire pour valider la connexion avec une adresse e-mail incorrecte et un mot de passe correct.",
+            "Test d'intégration pour vérifier l'authentification correcte avec les données stockées dans la base de données."
+          ],
+          "definition_of_done": [
+            "Code review effectué et approuvé.",
+            "Tests unitaires écrits et réussis.",
+            "L'endpoint est documenté (Swagger/OpenAPI)."
+          ],
+          "example_request": "{\"email\": \"utilisateur@exemple.com\", \"password\": \"MotDePasseSecurise123!\"}",
+          "example_response_success": "{\"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\"}",
+          "example_response_error_400": "{\"error\": \"Format d'email invalide\"}",
+          "example_response_error_401": "{\"error\": \"Adresse e-mail ou mot de passe incorrect\"}",
+          "example_request_valid": "{\"email\": \"utilisateur@exemple.com\", \"password\": \"MotDePasseSecurise123!\"}",
+          "example_request_invalid": "{\"email\": \"utilisateur\", \"password\": \"court\"}",
+          "api_call": "/api/login (POST)",
+          "ui_design": null,
+          "implementation_details": "Comparer le mot de passe fourni avec le hash stocké dans la base de données en utilisant `bcrypt`. Générer un JWT (JSON Web Token) pour l'authentification."
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "2",
+      "title": "Créer et Gérer mes programmes d'entraînement",
+      "description": "Offrir aux utilisateurs la possibilité de créer, modifier et organiser leurs propres programmes d'entraînement personnalisés.",
+      "goal": "Permettre aux utilisateurs de créer au moins 3 programmes d'entraînement en moyenne par mois.",
+      "issues": [
+        {
+          "dependencies": [
+            "1-TASK-2"
+          ],
+          "id": "2-TASK-1",
+          "epic_id": "2",
+          "title": "Implémenter l'endpoint API pour la création d'un programme d'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir créer un nouveau programme d'entraînement via une API, afin de pouvoir organiser mes séances de sport.",
+          "acceptance_criteria": [
+            "L'endpoint `/api/trainings` accepte les requêtes POST avec les champs nécessaires (nom du programme, description, exercices).",
+            "Un nouveau programme d'entraînement est créé dans la base de données avec les informations fournies.",
+            "L'API renvoie un code de statut 201 Created en cas de succès.",
+            "L'API renvoie un code de statut 400 Bad Request si les données sont invalides.",
+            "L'API renvoie un code de statut 401 Unauthorized si l'utilisateur n'est pas authentifié."
+          ],
+          "tech_details": "Utiliser le framework `gin` pour la gestion des routes et des middlewares.",
+          "validation": "Vérifier que le programme d'entraînement est correctement créé dans la base de données.",
+          "error_handling": "Gestion des erreurs de validation des données (par exemple, nom du programme trop long).",
+          "database_migrations": "Création de la table 'trainings' avec les colonnes appropriées (id, user_id, name, description, created_at, updated_at).",
+          "tests": [
+            "Test unitaire pour la validation des données.",
+            "Test d'intégration pour la création d'un programme d'entraînement avec des données valides.",
+            "Test d'intégration pour la création d'un programme d'entraînement avec des données invalides."
+          ],
+          "definition_of_done": [
+            "Code review effectué.",
+            "Tests unitaires passés.",
+            "Tests d'intégration passés."
+          ],
+          "example_request": "{\"name\": \"Programme Force\", \"description\": \"Programme axé sur la prise de force\", \"exercises\": [{\"name\": \"Squat\", \"sets\": 3, \"reps\": 5}]}",
+          "example_response_success": "{\"id\": 123, \"name\": \"Programme Force\", \"description\": \"Programme axé sur la prise de force\", \"exercises\": [{\"name\": \"Squat\", \"sets\": 3, \"reps\": 5}]}",
+          "example_response_error_400": "{\"error\": \"Le nom du programme est requis.\"}",
+          "example_response_error_401": "{\"error\": \"Non autorisé.\"}",
+          "example_response_error_409": null,
+          "example_request_valid": "{\"name\": \"Programme Force\", \"description\": \"Programme axé sur la prise de force\", \"exercises\": [{\"name\": \"Squat\", \"sets\": 3, \"reps\": 5}]}",
+          "example_request_invalid": "{\"description\": \"Programme axé sur la prise de force\", \"exercises\": [{\"name\": \"Squat\", \"sets\": 3, \"reps\": 5}]}",
+          "api_call": "/api/trainings (POST)",
+          "ui_design": null,
+          "implementation_details": "Utiliser `gorm` pour l'interaction avec la base de données. Utiliser `validator` pour valider les données entrantes."
+        },
+        {
+          "dependencies": [
+            "1-TASK-2"
+          ],
+          "id": "2-TASK-2",
+          "epic_id": "2",
+          "title": "Implémenter l'endpoint API pour la récupération des programmes d'entraînement d'un utilisateur",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir récupérer la liste de mes programmes d'entraînement via une API, afin de pouvoir les consulter.",
+          "acceptance_criteria": [
+            "L'endpoint `/api/trainings` accepte les requêtes GET.",
+            "L'API renvoie une liste de programmes d'entraînement appartenant à l'utilisateur authentifié.",
+            "L'API renvoie un code de statut 200 OK en cas de succès.",
+            "L'API renvoie un code de statut 401 Unauthorized si l'utilisateur n'est pas authentifié.",
+            "Si l'utilisateur n'a aucun programme, l'API renvoie une liste vide."
+          ],
+          "tech_details": "Utiliser le framework `gin` pour la gestion des routes et des middlewares.",
+          "validation": "Vérifier que la liste des programmes d'entraînement renvoyée correspond à ceux présents dans la base de données pour l'utilisateur.",
+          "error_handling": "Gestion des erreurs de connexion à la base de données.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour la récupération des programmes d'entraînement d'un utilisateur.",
+            "Test d'intégration pour la récupération des programmes d'entraînement d'un utilisateur authentifié.",
+            "Test d'intégration pour la récupération des programmes d'entraînement d'un utilisateur non authentifié."
+          ],
+          "definition_of_done": [
+            "Code review effectué.",
+            "Tests unitaires passés.",
+            "Tests d'intégration passés."
+          ],
+          "example_request": null,
+          "example_response_success": "[{\"id\": 123, \"name\": \"Programme Force\", \"description\": \"Programme axé sur la prise de force\", \"exercises\": [{\"name\": \"Squat\", \"sets\": 3, \"reps\": 5}]}, {\"id\": 456, \"name\": \"Programme Cardio\", \"description\": \"Programme axé sur l'endurance\", \"exercises\": [{\"name\": \"Course\", \"duration\": 30}]}]",
+          "example_response_error_400": null,
+          "example_response_error_401": "{\"error\": \"Non autorisé.\"}",
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "/api/trainings (GET)",
+          "ui_design": null,
+          "implementation_details": "Utiliser `gorm` pour l'interaction avec la base de données. Appliquer le pattern repository."
+        },
+        {
+          "dependencies": [
+            "1-TASK-2"
+          ],
+          "id": "2-TASK-3",
+          "epic_id": "2",
+          "title": "Implémenter l'endpoint API pour la modification d'un programme d'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir modifier un programme d'entraînement existant via une API, afin de pouvoir l'adapter à mes besoins.",
+          "acceptance_criteria": [
+            "L'endpoint `/api/trainings/{id}` accepte les requêtes PUT avec les champs à modifier (nom du programme, description, exercices).",
+            "Le programme d'entraînement est mis à jour dans la base de données avec les informations fournies.",
+            "L'API renvoie un code de statut 200 OK en cas de succès.",
+            "L'API renvoie un code de statut 400 Bad Request si les données sont invalides.",
+            "L'API renvoie un code de statut 401 Unauthorized si l'utilisateur n'est pas authentifié ou n'est pas le propriétaire du programme.",
+            "L'API renvoie un code de statut 404 Not Found si le programme d'entraînement n'existe pas."
+          ],
+          "tech_details": "Utiliser le framework `gin` pour la gestion des routes et des middlewares.",
+          "validation": "Vérifier que le programme d'entraînement est correctement mis à jour dans la base de données.",
+          "error_handling": "Gestion des erreurs de validation des données et de l'accès aux ressources.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour la validation des données.",
+            "Test d'intégration pour la modification d'un programme d'entraînement avec des données valides.",
+            "Test d'intégration pour la modification d'un programme d'entraînement avec des données invalides.",
+            "Test d'intégration pour la modification d'un programme d'entraînement par un utilisateur non autorisé."
+          ],
+          "definition_of_done": [
+            "Code review effectué.",
+            "Tests unitaires passés.",
+            "Tests d'intégration passés."
+          ],
+          "example_request": "{\"name\": \"Nouveau Programme Force\", \"description\": \"Programme axé sur la prise de force et l'hypertrophie\", \"exercises\": [{\"name\": \"Squat\", \"sets\": 4, \"reps\": 8}]}",
+          "example_response_success": "{\"id\": 123, \"name\": \"Nouveau Programme Force\", \"description\": \"Programme axé sur la prise de force et l'hypertrophie\", \"exercises\": [{\"name\": \"Squat\", \"sets\": 4, \"reps\": 8}]}",
+          "example_response_error_400": "{\"error\": \"Le nom du programme est requis.\"}",
+          "example_response_error_401": "{\"error\": \"Non autorisé.\"}",
+          "example_response_error_409": null,
+          "example_request_valid": "{\"name\": \"Nouveau Programme Force\", \"description\": \"Programme axé sur la prise de force et l'hypertrophie\", \"exercises\": [{\"name\": \"Squat\", \"sets\": 4, \"reps\": 8}]}",
+          "example_request_invalid": "{\"description\": \"Programme axé sur la prise de force et l'hypertrophie\", \"exercises\": [{\"name\": \"Squat\", \"sets\": 4, \"reps\": 8}]}",
+          "api_call": "/api/trainings/{id} (PUT)",
+          "ui_design": null,
+          "implementation_details": "Utiliser `gorm` pour l'interaction avec la base de données. Vérifier l'appartenance du programme à l'utilisateur."
+        },
+        {
+          "dependencies": [
+            "1-TASK-2"
+          ],
+          "id": "2-TASK-4",
+          "epic_id": "2",
+          "title": "Implémenter l'endpoint API pour la suppression d'un programme d'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir supprimer un programme d'entraînement via une API, afin de pouvoir le retirer de ma liste.",
+          "acceptance_criteria": [
+            "L'endpoint `/api/trainings/{id}` accepte les requêtes DELETE.",
+            "Le programme d'entraînement est supprimé de la base de données.",
+            "L'API renvoie un code de statut 204 No Content en cas de succès.",
+            "L'API renvoie un code de statut 401 Unauthorized si l'utilisateur n'est pas authentifié ou n'est pas le propriétaire du programme.",
+            "L'API renvoie un code de statut 404 Not Found si le programme d'entraînement n'existe pas."
+          ],
+          "tech_details": "Utiliser le framework `gin` pour la gestion des routes et des middlewares.",
+          "validation": "Vérifier que le programme d'entraînement n'existe plus dans la base de données.",
+          "error_handling": "Gestion des erreurs de l'accès aux ressources.",
+          "database_migrations": null,
+          "tests": [
+            "Test d'intégration pour la suppression d'un programme d'entraînement par un utilisateur authentifié et autorisé.",
+            "Test d'intégration pour la suppression d'un programme d'entraînement par un utilisateur non autorisé.",
+            "Test d'intégration pour la suppression d'un programme d'entraînement inexistant."
+          ],
+          "definition_of_done": [
+            "Code review effectué.",
+            "Tests unitaires passés.",
+            "Tests d'intégration passés."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": "{\"error\": \"Non autorisé.\"}",
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "/api/trainings/{id} (DELETE)",
+          "ui_design": null,
+          "implementation_details": "Utiliser `gorm` pour l'interaction avec la base de données. Vérifier l'appartenance du programme à l'utilisateur."
+        }
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "3",
+      "title": "Partager mes programmes d'entraînement avec d'autres utilisateurs",
+      "description": "Permettre aux utilisateurs de rendre leurs programmes d'entraînement publics et de les partager avec la communauté.",
+      "goal": "Atteindre un taux de partage de programmes de 20% parmi les utilisateurs actifs.",
+      "issues": [
+        {
+          "dependencies": [
+            "1-TASK-2"
+          ],
+          "id": "3-TASK-1",
+          "epic_id": "3",
+          "title": "Implémenter l'endpoint API pour rendre un programme d'entraînement public",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir rendre mes programmes d'entraînement publics via un endpoint API afin de les partager avec d'autres utilisateurs.",
+          "acceptance_criteria": [
+            "L'endpoint `/api/workouts/{workoutId}/share` accepte les requêtes POST.",
+            "L'endpoint nécessite une authentification JWT valide.",
+            "Si le programme d'entraînement existe et appartient à l'utilisateur authentifié, il est marqué comme public dans la base de données.",
+            "Une réponse 200 OK est renvoyée en cas de succès.",
+            "Une réponse 404 Not Found est renvoyée si le programme d'entraînement n'existe pas ou n'appartient pas à l'utilisateur.",
+            "Une réponse 401 Unauthorized est renvoyée si l'utilisateur n'est pas authentifié."
+          ],
+          "tech_details": "Utiliser Go et un framework web (ex: `gin`, `echo`) pour l'API.  Accès à la base de données via `gorm`.",
+          "validation": "Valider que l'endpoint fonctionne correctement et que les programmes d'entraînement publics sont bien partagés.",
+          "error_handling": "Gérer les erreurs de base de données et renvoyer des codes d'erreur appropriés.",
+          "database_migrations": "Ajouter une colonne 'is_public' de type booléen à la table 'workouts'.",
+          "tests": [
+            "Test unitaire pour vérifier que le programme d'entraînement est marqué comme public.",
+            "Test d'intégration pour vérifier l'authentification et l'autorisation.",
+            "Test d'intégration pour vérifier la gestion des erreurs (programme d'entraînement inexistant, etc.)."
+          ],
+          "definition_of_done": [
+            "Code review effectué.",
+            "Tests unitaires passés.",
+            "Tests d'intégration passés.",
+            "Documentation API mise à jour."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "POST /api/workouts/{workoutId}/share",
+          "ui_design": null,
+          "implementation_details": "Utiliser `gorilla/mux` pour le routing, `gorm` pour l'interaction avec la base de données.  Considérer l'utilisation d'un pattern repository."
+        },
+        {
+          "dependencies": [
+            "3-TASK-1"
+          ],
+          "id": "3-TASK-2",
+          "epic_id": "3",
+          "title": "Développer une fonction pour récupérer les programmes d'entraînement publics",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir consulter les programmes d'entraînement publics partagés par d'autres utilisateurs afin de trouver de l'inspiration et de nouveaux entraînements.",
+          "acceptance_criteria": [
+            "L'endpoint `/api/workouts/public` accepte les requêtes GET.",
+            "L'endpoint ne nécessite pas d'authentification.",
+            "L'endpoint renvoie une liste de programmes d'entraînement publics, incluant le nom de l'utilisateur qui l'a créé.",
+            "La liste est paginée (ex: 10 programmes par page).",
+            "Une réponse 200 OK est renvoyée en cas de succès.",
+            "Si aucun programme d'entraînement public n'est disponible, une liste vide est renvoyée."
+          ],
+          "tech_details": "Utiliser Go et un framework web (ex: `gin`, `echo`) pour l'API.  Accès à la base de données via `gorm`.",
+          "validation": "Valider que l'endpoint fonctionne correctement et que seuls les programmes d'entraînement publics sont affichés.",
+          "error_handling": "Gérer les erreurs de base de données et renvoyer des codes d'erreur appropriés.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour vérifier que seuls les programmes d'entraînement publics sont renvoyés.",
+            "Test d'intégration pour vérifier la pagination.",
+            "Test d'intégration pour vérifier le retour d'une liste vide si aucun programme d'entraînement public n'est disponible."
+          ],
+          "definition_of_done": [
+            "Code review effectué.",
+            "Tests unitaires passés.",
+            "Tests d'intégration passés.",
+            "Documentation API mise à jour."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "GET /api/workouts/public",
+          "ui_design": null,
+          "implementation_details": "Utiliser `gorm` pour l'interaction avec la base de données et implémenter la pagination."
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "4",
+      "title": "Découvrir et Explorer les programmes d'entraînement partagés",
+      "description": "Permettre aux utilisateurs de rechercher, filtrer et consulter les programmes d'entraînement partagés par d'autres membres.",
+      "goal": "Générer au moins 500 consultations de programmes partagés par jour.",
+      "issues": [
+        {
+          "id": "4-TASK-1",
+          "epic_id": "4",
+          "title": "Implémenter le modèle de données 'Programme d'Entraînement'",
+          "type": "feat",
+          "description": "En tant que développeur, je dois définir le modèle de données pour un programme d'entraînement partagé, incluant les champs essentiels tels que le nom, la description, la liste des exercices, la difficulté, et l'auteur, afin de stocker efficacement les informations des programmes d'entraînement.",
+          "acceptance_criteria": [
+            "Le modèle de données 'Programme d'Entraînement' est défini avec les champs: nom (string), description (string), exercices (array de strings), difficulté (enum [facile, moyen, difficile]), auteur (ID utilisateur).",
+            "Le modèle de données est défini en utilisant GORM pour l'ORM.",
+            "Une migration de base de données est créée pour refléter le nouveau modèle.",
+            "Des tests unitaires sont écrits pour valider la structure du modèle."
+          ],
+          "tech_details": "Choisir les types de données Go appropriés pour chaque champ du modèle.",
+          "validation": null,
+          "error_handling": null,
+          "database_migrations": "Créer une migration GORM pour la table 'programmes_entrainement' avec les champs appropriés.",
+          "tests": [
+            "Tests unitaires pour valider la structure du modèle et l'intégrité des données."
+          ],
+          "definition_of_done": [
+            "Code review effectué et approuvé.",
+            "Tests unitaires passant.",
+            "Migration de base de données appliquée avec succès."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": null,
+          "ui_design": null,
+          "implementation_details": "Utiliser GORM pour la définition du modèle et la gestion des migrations."
+        },
+        {
+          "dependencies": [
+            "3-TASK-1",
+            "4-TASK-1"
+          ],
+          "id": "4-TASK-2",
+          "epic_id": "4",
+          "title": "Implémenter l'API pour récupérer la liste des programmes d'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir voir une liste des programmes d'entraînement partagés, afin de pouvoir parcourir et choisir un programme qui correspond à mes besoins.",
+          "acceptance_criteria": [
+            "L'API GET `/api/programmes_entrainement` renvoie une liste de programmes d'entraînement au format JSON.",
+            "Chaque programme d'entraînement dans la liste contient les champs définis dans le modèle de données 'Programme d'Entraînement'.",
+            "L'API renvoie un code de statut 200 OK en cas de succès.",
+            "L'API gère les erreurs et renvoie un code de statut approprié (ex: 500 en cas d'erreur serveur)."
+          ],
+          "tech_details": "Implémenter la pagination pour gérer un grand nombre de programmes d'entraînement (MVP: pas de pagination).",
+          "validation": null,
+          "error_handling": "Gérer les erreurs de base de données et renvoyer un code de statut 500 en cas d'erreur.",
+          "database_migrations": null,
+          "tests": [
+            "Tests d'intégration pour vérifier que l'API renvoie les données correctes.",
+            "Tests unitaires pour les fonctions de gestion des données."
+          ],
+          "definition_of_done": [
+            "Code review effectué et approuvé.",
+            "Tests d'intégration passant.",
+            "Documentation de l'API mise à jour."
+          ],
+          "example_request": null,
+          "example_response_success": "[{\"id\": 1, \"nom\": \"Programme Débutant\", \"description\": \"Un programme simple pour commencer\", \"exercices\": [\"Squats\", \"Pompes\"], \"difficulté\": \"facile\", \"auteur\": 1}]",
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "GET /api/programmes_entrainement",
+          "ui_design": null,
+          "implementation_details": "Utiliser `gorilla/mux` pour le routing et GORM pour l'accès aux données."
+        },
+        {
+          "dependencies": [
+            "4-TASK-2"
+          ],
+          "id": "4-TASK-3",
+          "epic_id": "4",
+          "title": "Implémenter l'API pour filtrer les programmes d'entraînement",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir filtrer les programmes d'entraînement par difficulté, afin de trouver rapidement un programme adapté à mon niveau.",
+          "acceptance_criteria": [
+            "L'API GET `/api/programmes_entrainement?difficulté={difficulté}` renvoie une liste de programmes d'entraînement filtrés par la difficulté spécifiée.",
+            "Les valeurs possibles pour le paramètre 'difficulté' sont 'facile', 'moyen', et 'difficile'.",
+            "Si le paramètre 'difficulté' n'est pas spécifié, l'API renvoie tous les programmes d'entraînement.",
+            "L'API renvoie un code de statut 200 OK en cas de succès.",
+            "L'API gère les erreurs et renvoie un code de statut approprié (ex: 400 si la difficulté est invalide)."
+          ],
+          "tech_details": "Valider la valeur du paramètre 'difficulté' avant d'effectuer la requête à la base de données.",
+          "validation": null,
+          "error_handling": "Renvoyer un code de statut 400 si la valeur du paramètre 'difficulté' est invalide.",
+          "database_migrations": null,
+          "tests": [
+            "Tests d'intégration pour vérifier que l'API filtre correctement les programmes d'entraînement.",
+            "Tests unitaires pour la fonction de validation de la difficulté."
+          ],
+          "definition_of_done": [
+            "Code review effectué et approuvé.",
+            "Tests d'intégration passant.",
+            "Documentation de l'API mise à jour."
+          ],
+          "example_request": null,
+          "example_response_success": "[{\"id\": 1, \"nom\": \"Programme Débutant\", \"description\": \"Un programme simple pour commencer\", \"exercices\": [\"Squats\", \"Pompes\"], \"difficulté\": \"facile\", \"auteur\": 1}]",
+          "example_response_error_400": "{\"error\": \"Difficulté invalide. Les valeurs possibles sont facile, moyen, difficile.\"}",
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "/api/programmes_entrainement?difficulté=facile",
+          "example_request_invalid": "/api/programmes_entrainement?difficulté=invalide",
+          "api_call": "GET /api/programmes_entrainement?difficulté={difficulté}",
+          "ui_design": null,
+          "implementation_details": "Utiliser GORM pour filtrer les résultats de la requête."
+        },
+        {
+          "dependencies": [
+            "4-TASK-2"
+          ],
+          "id": "4-TASK-4",
+          "epic_id": "4",
+          "title": "Implémenter l'API pour consulter un programme d'entraînement spécifique",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je veux pouvoir consulter les détails d'un programme d'entraînement spécifique, afin d'avoir plus d'informations avant de le choisir.",
+          "acceptance_criteria": [
+            "L'API GET `/api/programmes_entrainement/{id}` renvoie les détails du programme d'entraînement avec l'ID spécifié au format JSON.",
+            "Si le programme d'entraînement n'existe pas, l'API renvoie un code de statut 404 Not Found.",
+            "L'API renvoie un code de statut 200 OK en cas de succès.",
+            "L'API gère les erreurs et renvoie un code de statut approprié (ex: 500 en cas d'erreur serveur)."
+          ],
+          "tech_details": "Gérer les erreurs si l'ID n'est pas un entier valide.",
+          "validation": null,
+          "error_handling": "Renvoyer un code de statut 404 si le programme d'entraînement n'existe pas.",
+          "database_migrations": null,
+          "tests": [
+            "Tests d'intégration pour vérifier que l'API renvoie les détails du programme d'entraînement correct.",
+            "Tests d'intégration pour vérifier que l'API renvoie une erreur 404 si le programme d'entraînement n'existe pas."
+          ],
+          "definition_of_done": [
+            "Code review effectué et approuvé.",
+            "Tests d'intégration passant.",
+            "Documentation de l'API mise à jour."
+          ],
+          "example_request": null,
+          "example_response_success": "{\"id\": 1, \"nom\": \"Programme Débutant\", \"description\": \"Un programme simple pour commencer\", \"exercices\": [\"Squats\", \"Pompes\"], \"difficulté\": \"facile\", \"auteur\": 1}",
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": "/api/programmes_entrainement/1",
+          "example_request_invalid": null,
+          "api_call": "GET /api/programmes_entrainement/{id}",
+          "ui_design": null,
+          "implementation_details": "Utiliser `gorilla/mux` pour le routing et GORM pour l'accès aux données."
+        }
+      ],
+      "priority": "medium"
+    },
+    {
+      "id": "5",
+      "title": "Personnaliser mon profil utilisateur",
+      "description": "Permettre aux utilisateurs de modifier leur profil, ajouter une photo et des informations personnelles.",
+      "goal": "Atteindre un taux de personnalisation de profil de 90% parmi les utilisateurs inscrits.",
+      "issues": [
+        {
+          "dependencies": [
+            "1-TASK-2"
+          ],
+          "id": "5-TASK-1",
+          "epic_id": "5",
+          "title": "Implémenter l'endpoint API pour la modification du profil utilisateur",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je souhaite pouvoir modifier mon profil via une API afin de mettre à jour mes informations personnelles.",
+          "acceptance_criteria": [
+            "L'endpoint `/api/profile` accepte les requêtes PUT avec les données du profil.",
+            "Les données modifiables incluent au minimum le nom d'utilisateur et la description.",
+            "Une requête réussie renvoie un code 200 OK avec les données du profil mises à jour.",
+            "Une requête avec des données invalides renvoie un code 400 Bad Request avec un message d'erreur approprié.",
+            "L'utilisateur doit être authentifié pour accéder à cet endpoint."
+          ],
+          "tech_details": "Utiliser JWT pour l'authentification.",
+          "validation": "Valider que les données sont correctement mises à jour dans la base de données.",
+          "error_handling": "Gestion des erreurs de validation des données et des erreurs de base de données.",
+          "database_migrations": null,
+          "tests": [
+            "Test unitaire pour vérifier la mise à jour réussie du profil.",
+            "Test unitaire pour vérifier la gestion des erreurs de validation.",
+            "Test d'intégration pour vérifier l'interaction avec la base de données."
+          ],
+          "definition_of_done": [
+            "Code review effectué et approuvé.",
+            "Tests unitaires couvrant les cas de succès et d'erreur sont implémentés.",
+            "Documentation de l'API mise à jour."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "PUT /api/profile",
+          "ui_design": null,
+          "implementation_details": "Utiliser `gorilla/mux` pour le routing et `gorm` pour l'interaction avec la base de données. Valider les données avec `go-playground/validator`."
+        },
+        {
+          "dependencies": [
+            "5-TASK-1"
+          ],
+          "id": "5-TASK-2",
+          "epic_id": "5",
+          "title": "Implémenter le stockage et la récupération de la photo de profil",
+          "type": "feat",
+          "description": "En tant qu'utilisateur, je souhaite pouvoir ajouter une photo à mon profil afin de le personnaliser.",
+          "acceptance_criteria": [
+            "L'endpoint `/api/profile/picture` accepte les requêtes POST avec un fichier image.",
+            "Les formats d'image supportés sont JPEG et PNG.",
+            "L'image est stockée sur un stockage d'objet (ex: S3, ou local pour le prototype).",
+            "Une requête réussie renvoie un code 200 OK avec l'URL de l'image stockée.",
+            "Une requête avec un fichier invalide renvoie un code 400 Bad Request avec un message d'erreur approprié.",
+            "L'utilisateur doit être authentifié pour accéder à cet endpoint.",
+            "La photo de profil est affichée sur la page de profil de l'utilisateur."
+          ],
+          "tech_details": "Considerer l'utilisation d'un service de CDN pour la diffusion des images.",
+          "validation": "Valider que l'image est correctement stockée et affichée sur la page de profil.",
+          "error_handling": "Gestion des erreurs de téléchargement de fichier, de stockage et de format d'image.",
+          "database_migrations": "Ajouter une colonne `profile_picture_url` dans la table `users` pour stocker l'URL de l'image.",
+          "tests": [
+            "Test unitaire pour vérifier le téléchargement et le stockage de l'image.",
+            "Test unitaire pour vérifier la gestion des erreurs de format d'image.",
+            "Test d'intégration pour vérifier l'interaction avec le stockage d'objet."
+          ],
+          "definition_of_done": [
+            "Code review effectué et approuvé.",
+            "Tests unitaires couvrant les cas de succès et d'erreur sont implémentés.",
+            "Documentation de l'API mise à jour."
+          ],
+          "example_request": null,
+          "example_response_success": null,
+          "example_response_error_400": null,
+          "example_response_error_401": null,
+          "example_response_error_409": null,
+          "example_request_valid": null,
+          "example_request_invalid": null,
+          "api_call": "POST /api/profile/picture",
+          "ui_design": "Prévoir un composant UI pour l'affichage et le téléchargement de la photo de profil.",
+          "implementation_details": "Utiliser `net/http` pour gérer les requêtes et `image/jpeg` et `image/png` pour le décodage des images. Utiliser `aws-sdk-go` pour le stockage sur S3 (si applicable)."
+        }
+      ],
+      "priority": "low"
+    }
+  ],
+  "model": "google/gemini-2.0-flash-001",
+  "number_token": 12387,
+  "marketing": {
+    "analyse_marketing": {
+      "synthese_executive": {
+        "potentiel_global": {
+          "note": 3,
+          "echelle": 5
+        },
+        "forces_principales": [
+          "Communauté et partage d'expérience",
+          "Personnalisation des entraînements",
+          "Potentiel de viralité"
+        ],
+        "risques_majeurs": [
+          "Concurrence forte des applications existantes",
+          "Difficulté à monétiser",
+          "Besoin d'une base d'utilisateurs importante pour créer de la valeur"
+        ]
+      },
+      "analyse_marche": {
+        "taille_marche": {
+          "valeur": "10",
+          "unite": "milliards USD",
+          "tendance": "croissance"
+        },
+        "segments_cibles": [
+          {
+            "nom": "Débutants en musculation",
+            "description": "Personnes souhaitant commencer la musculation et ayant besoin de conseils et d'un programme structuré.",
+            "priorite": "Primaire"
+          },
+          {
+            "nom": "Sportifs réguliers",
+            "description": "Personnes pratiquant la musculation régulièrement et souhaitant diversifier leurs entraînements et découvrir de nouvelles méthodes.",
+            "priorite": "Secondaire"
+          },
+          {
+            "nom": "Coachs sportifs",
+            "description": "Professionnels du sport souhaitant partager leurs programmes et gagner en visibilité.",
+            "priorite": "Tertiaire"
+          }
+        ],
+        "positionnement": {
+          "concurrents_principaux": [
+            "Freeletics",
+            "Nike Training Club",
+            "Applications de suivi d'activité physique (Fitbit, Strava)"
+          ],
+          "avantage_concurrentiel": "Plateforme de partage d'entraînements créés par les utilisateurs, favorisant la communauté et la personnalisation."
+        }
+      },
+      "proposition_valeur": {
+        "probleme_resolu": "Manque d'inspiration et de programmes d'entraînement personnalisés pour les utilisateurs de salles de sport.",
+        "benefices_uniques": [
+          "Accès à une grande variété de programmes d'entraînement créés par d'autres utilisateurs.",
+          "Personnalisation des entraînements en fonction des objectifs et du niveau de chacun.",
+          "Communauté et partage d'expérience avec d'autres sportifs.",
+          "Découverte de nouvelles méthodes et exercices."
+        ],
+        "differentiation": "Plateforme axée sur le partage et la personnalisation des entraînements, avec une forte dimension communautaire."
+      },
+      "faisabilite": {
+        "ressources_necessaires": {
+          "equipe": [
+            "Développeurs iOS et Android",
+            "Designers UX/UI",
+            "Community manager",
+            "Spécialiste marketing digital"
+          ],
+          "technologies": [
+            "Framework de développement mobile (React Native, Flutter)",
+            "Base de données (MongoDB, PostgreSQL)",
+            "API pour l'authentification et le partage de contenu",
+            "Hébergement cloud (AWS, Google Cloud)"
+          ]
+        },
+        "barrieres_entree": [
+          "Concurrence forte des applications existantes",
+          "Acquisition d'une base d'utilisateurs suffisante",
+          "Nécessité de modération du contenu partagé par les utilisateurs"
+        ]
+      },
+      "strategie_go_to_market": {
+        "canaux_acquisition": [
+          {
+            "canal": "Publicités sur les réseaux sociaux (Facebook, Instagram)",
+            "priorite": "Élevée",
+            "cout_estime": "Variable, dépend du ciblage et du budget"
+          },
+          {
+            "canal": "Influenceurs fitness",
+            "priorite": "Moyenne",
+            "cout_estime": "Variable, dépend de la notoriété de l'influenceur"
+          },
+          {
+            "canal": "Partenariats avec des salles de sport",
+            "priorite": "Moyenne",
+            "cout_estime": "Variable, dépend des accords négociés"
+          },
+          {
+            "canal": "SEO (optimisation pour les moteurs de recherche)",
+            "priorite": "Faible",
+            "cout_estime": "Temps et ressources pour la création de contenu"
+          }
+        ],
+        "pricing": {
+          "modele": "Freemium",
+          "fourchette": {
+            "min": 4.99,
+            "max": 9.99,
+            "devise": "EUR"
+          }
+        },
+        "tactiques_lancement": [
+          "Campagne de pré-lancement avec inscription pour un accès anticipé",
+          "Offre de lancement avec une période d'essai gratuite",
+          "Concours et challenges pour encourager le partage de contenu",
+          "Relations presse et communication avec les médias spécialisés"
+        ]
+      },
+      "metriques_cles": {
+        "kpis": [
+          {
+            "nom": "Nombre d'utilisateurs inscrits",
+            "objectif_6_mois": "10 000",
+            "objectif_12_mois": "50 000"
+          },
+          {
+            "nom": "Nombre d'entraînements partagés",
+            "objectif_6_mois": "1 000",
+            "objectif_12_mois": "5 000"
+          },
+          {
+            "nom": "Taux de conversion vers la version premium",
+            "objectif_6_mois": "5%",
+            "objectif_12_mois": "10%"
+          },
+          {
+            "nom": "Taux de rétention des utilisateurs",
+            "objectif_6_mois": "30%",
+            "objectif_12_mois": "50%"
+          }
+        ]
+      },
+      "recommandations": {
+        "actions_prioritaires": [
+          {
+            "action": "Développer une version MVP (Minimum Viable Product) pour tester le concept et recueillir des feedbacks.",
+            "delai": "Court terme",
+            "impact": "Élevé"
+          },
+          {
+            "action": "Mettre en place une stratégie de contenu pour attirer et engager les utilisateurs.",
+            "delai": "Moyen terme",
+            "impact": "Élevé"
+          },
+          {
+            "action": "Construire une communauté active autour de l'application.",
+            "delai": "Long terme",
+            "impact": "Élevé"
+          }
+        ],
+        "quick_wins": [
+          "Lancer une campagne de parrainage pour encourager le bouche-à-oreille",
+          "Organiser des sessions de questions-réponses avec des coachs sportifs",
+          "Mettre en avant les entraînements les plus populaires"
+        ],
+        "points_attention": [
+          "Modération du contenu partagé par les utilisateurs",
+          "Gestion des données personnelles et respect de la vie privée",
+          "Mise à jour régulière de l'application avec de nouvelles fonctionnalités"
+        ]
+      },
+      "metadata": {
+        "date_analyse": "2025-11-24",
+        "niveau_confiance": "Moyen",
+        "hypotheses_cles": [
+          "Les utilisateurs sont prêts à partager leurs entraînements avec d'autres.",
+          "La personnalisation des entraînements est un facteur important pour les utilisateurs.",
+          "La communauté est un élément clé de l'engagement des utilisateurs."
+        ]
+      }
+    }
+  }
+}

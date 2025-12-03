@@ -1,0 +1,1512 @@
+{
+  "idea": "Une application permettant de partager des fichiers GPX et de les fisualiser",
+  "epics": [
+    {
+      "id": "1",
+      "title": "En tant qu'utilisateur, je veux pouvoir m'inscrire pour accéder à l'application",
+      "description": "Permettre aux nouveaux utilisateurs de créer un compte pour utiliser l'application.",
+      "goal": "Augmenter le nombre d'utilisateurs inscrits de 20% dans le premier mois.",
+      "priority": "high",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur non enregistré, je veux pouvoir accéder à la page d'inscription afin de créer un compte.",
+          "description": "L'utilisateur doit pouvoir accéder à un formulaire d'inscription pour créer un nouveau compte.",
+          "acceptance_criteria": [
+            "Étant donné que je suis un utilisateur non enregistré",
+            "Quand je clique sur le bouton 'S'inscrire'",
+            "Alors je suis redirigé vers la page d'inscription"
+          ],
+          "definition_of_done": "La page d'inscription est accessible depuis la page d'accueil et contient tous les champs nécessaires.",
+          "tests_to_plan": [
+            "Test de l'existence du bouton 'S'inscrire'",
+            "Test de la redirection vers la page d'inscription",
+            "Test de l'affichage correct des champs du formulaire"
+          ],
+          "priority": "high",
+          "estimation_story_points": 1,
+          "technical_dependencies": [],
+          "issues": [
+            {
+              "id": "1-TASK-1",
+              "epic_id": "1",
+              "title": "Créer la route /register",
+              "type": "feat",
+              "description": "Créer une route pour accéder au formulaire d'inscription.",
+              "acceptance_criteria": [
+                "La route /register doit être accessible via une requête GET.",
+                "La route doit renvoyer le template HTML du formulaire d'inscription."
+              ],
+              "tech_details": "Utiliser le framework Gin pour la gestion des routes et des templates HTML.",
+              "validation": "Vérifier manuellement que la route /register est accessible dans le navigateur et que le formulaire d'inscription s'affiche correctement.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que la route /register est accessible.",
+                "Test d'intégration pour vérifier que le template HTML est renvoyé correctement."
+              ],
+              "definition_of_done": [
+                "Route créée et accessible.",
+                "Template HTML du formulaire d'inscription renvoyé correctement."
+              ],
+              "example_request": "GET /register",
+              "example_response_success": "HTML du formulaire d'inscription",
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": "GET /register",
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser le framework web (ex: Gin) pour définir la route et servir le template HTML."
+            },
+            {
+              "dependencies": [
+                "1-TASK-1"
+              ],
+              "id": "1-TASK-2",
+              "epic_id": "1",
+              "title": "Créer le template HTML du formulaire d'inscription",
+              "type": "feat",
+              "description": "Créer un template HTML contenant les champs nécessaires pour l'inscription (nom d'utilisateur, email, mot de passe, confirmation du mot de passe).",
+              "acceptance_criteria": [
+                "Le formulaire doit contenir les champs : nom d'utilisateur, email, mot de passe, confirmation du mot de passe.",
+                "Les champs doivent être correctement étiquetés.",
+                "Le formulaire doit contenir un bouton \"S'inscrire\"."
+              ],
+              "tech_details": "HTML, CSS, potentiellement un framework CSS.",
+              "validation": "Vérifier manuellement que le formulaire s'affiche correctement dans le navigateur et que tous les champs sont présents et correctement étiquetés.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test visuel pour vérifier que le formulaire s'affiche correctement.",
+                "Test pour vérifier que tous les champs requis sont présents."
+              ],
+              "definition_of_done": [
+                "Template HTML créé et contenant tous les champs requis.",
+                "Les champs sont correctement étiquetés.",
+                "Un bouton \"S'inscrire\" est présent."
+              ],
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser HTML et potentiellement un framework CSS (ex: Bootstrap, Tailwind) pour styliser le formulaire."
+            }
+          ]
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir saisir mon nom, adresse e-mail, mot de passe et confirmation du mot de passe, afin de créer un compte.",
+          "description": "L'utilisateur doit pouvoir fournir les informations nécessaires à la création d'un compte (nom, email, mot de passe, confirmation du mot de passe).",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page d'inscription",
+            "Quand je remplis tous les champs du formulaire d'inscription avec des informations valides",
+            "Alors je peux soumettre le formulaire"
+          ],
+          "definition_of_done": "Le formulaire d'inscription accepte les informations de l'utilisateur et envoie une requête au backend.",
+          "tests_to_plan": [
+            "Test de la validation des champs (format email, longueur du mot de passe)",
+            "Test de la correspondance entre le mot de passe et la confirmation",
+            "Test de la soumission du formulaire avec des données valides"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": []
+        },
+        {
+          "id": "US-003",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux voir des messages d'erreur clairs si je saisis des informations incorrectes lors de l'inscription, afin de comprendre comment corriger mes erreurs.",
+          "description": "L'application doit afficher des messages d'erreur clairs et concis si l'utilisateur saisit des informations invalides (e-mail invalide, mot de passe trop court, etc.).",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page d'inscription",
+            "Et que je saisis une adresse e-mail invalide",
+            "Quand je tente de soumettre le formulaire",
+            "Alors un message d'erreur s'affiche, m'indiquant que l'adresse e-mail est invalide"
+          ],
+          "definition_of_done": "Des messages d'erreur clairs sont affichés pour chaque champ invalide du formulaire d'inscription.",
+          "tests_to_plan": [
+            "Test des messages d'erreur pour chaque champ invalide (email, mot de passe, etc.)",
+            "Test de l'absence de messages d'erreur pour des données valides"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": []
+        },
+        {
+          "id": "US-004",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux recevoir un e-mail de confirmation après mon inscription, afin de valider mon adresse e-mail.",
+          "description": "L'application doit envoyer un email de confirmation à l'adresse fournie lors de l'inscription.",
+          "acceptance_criteria": [
+            "Étant donné que je viens de m'inscrire avec une adresse e-mail valide",
+            "Quand je soumets le formulaire d'inscription",
+            "Alors je reçois un e-mail de confirmation à cette adresse"
+          ],
+          "definition_of_done": "Un email de confirmation est envoyé à l'utilisateur après l'inscription.",
+          "tests_to_plan": [
+            "Test de l'envoi de l'email de confirmation",
+            "Test du contenu de l'email de confirmation (lien de validation)",
+            "Test de la non réception de l'email en cas d'erreur"
+          ],
+          "priority": "high",
+          "estimation_story_points": 8,
+          "technical_dependencies": []
+        },
+        {
+          "id": "US-005",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir cliquer sur un lien dans l'e-mail de confirmation afin de valider mon compte.",
+          "description": "L'utilisateur doit pouvoir valider son compte en cliquant sur un lien dans l'email de confirmation.",
+          "acceptance_criteria": [
+            "Étant donné que j'ai reçu un e-mail de confirmation",
+            "Quand je clique sur le lien de validation dans l'e-mail",
+            "Alors mon compte est validé et je suis redirigé vers une page de confirmation"
+          ],
+          "definition_of_done": "Le compte de l'utilisateur est validé après avoir cliqué sur le lien de confirmation.",
+          "tests_to_plan": [
+            "Test de la validation du compte après avoir cliqué sur le lien",
+            "Test de la redirection vers la page de confirmation",
+            "Test de l'invalidation du lien après utilisation"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": []
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "En tant qu'utilisateur, je veux pouvoir me connecter à l'application",
+      "description": "Permettre aux utilisateurs enregistrés d'accéder à leur compte.",
+      "goal": "Garantir un taux de connexion réussi de 99%.",
+      "priority": "high",
+      "user_stories": [
+        {
+          "id": "US-101",
+          "epic_parent": "EPIC-002",
+          "title": "En tant qu'utilisateur enregistré, je veux me connecter avec mon email et mon mot de passe afin d'accéder à mon compte et à mes données.",
+          "description": "Cette User Story permet aux utilisateurs ayant déjà un compte de se connecter à l'application en utilisant leur email et leur mot de passe. Une fois connectés, ils peuvent accéder à leurs programmes d'entraînement, leurs statistiques et autres fonctionnalités personnalisées.",
+          "acceptance_criteria": [
+            "Étant donné que je suis un utilisateur enregistré",
+            "Quand je saisis mon email et mon mot de passe dans le formulaire de connexion",
+            "Et que je clique sur le bouton 'Se connecter'",
+            "Alors je suis redirigé vers mon tableau de bord personnalisé",
+            "Et je vois un message de bienvenue personnalisé",
+            "Étant donné que j'ai saisi un email ou un mot de passe incorrect",
+            "Quand je clique sur le bouton 'Se connecter'",
+            "Alors un message d'erreur s'affiche m'indiquant que les identifiants sont incorrects",
+            "Étant donné que j'ai oublié mon mot de passe",
+            "Quand je clique sur le lien 'Mot de passe oublié'",
+            "Alors je suis redirigé vers la page de réinitialisation du mot de passe"
+          ],
+          "definition_of_done": "La fonctionnalité de connexion est implémentée et testée avec succès. Les utilisateurs peuvent se connecter avec leur email et mot de passe. La gestion des erreurs (identifiants incorrects) est correctement gérée. La redirection vers la page de réinitialisation du mot de passe fonctionne.",
+          "tests_to_plan": [
+            "Tests unitaires pour la fonction de connexion",
+            "Tests d'intégration pour vérifier l'interaction avec la base de données",
+            "Tests d'acceptation pour valider le comportement de l'utilisateur",
+            "Tests de sécurité pour vérifier la protection contre les attaques par force brute et les injections SQL"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Base de données utilisateur existante",
+            "API d'authentification",
+            "Système de gestion des sessions"
+          ]
+        },
+        {
+          "id": "US-102",
+          "epic_parent": "EPIC-002",
+          "title": "En tant qu'utilisateur, je veux une option 'Se souvenir de moi' afin de ne pas avoir à me reconnecter à chaque fois que je ferme l'application.",
+          "description": "Cette User Story ajoute une option 'Se souvenir de moi' à la page de connexion. Si l'utilisateur coche cette option, l'application conserve sa session active, lui évitant ainsi de devoir se reconnecter à chaque ouverture de l'application.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page de connexion",
+            "Quand je coche la case 'Se souvenir de moi'",
+            "Et que je me connecte avec succès",
+            "Alors ma session est conservée même après la fermeture de l'application",
+            "Et quand je rouvre l'application",
+            "Alors je suis automatiquement connecté à mon compte",
+            "Étant donné que je n'ai pas coché la case 'Se souvenir de moi'",
+            "Quand je ferme l'application",
+            "Alors ma session est supprimée",
+            "Et quand je rouvre l'application",
+            "Alors je suis invité à me reconnecter"
+          ],
+          "definition_of_done": "L'option 'Se souvenir de moi' est implémentée et fonctionne correctement. Les utilisateurs peuvent choisir de conserver leur session active ou non. La gestion des sessions persistantes est sécurisée.",
+          "tests_to_plan": [
+            "Tests unitaires pour la gestion des cookies de session",
+            "Tests d'intégration pour vérifier l'interaction avec le système de gestion des sessions",
+            "Tests d'acceptation pour valider le comportement de l'utilisateur",
+            "Tests de sécurité pour vérifier la protection contre le vol de session"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Système de gestion des cookies",
+            "API d'authentification",
+            "Système de gestion des sessions"
+          ],
+          "issues": [
+            {
+              "id": "2-TASK-1",
+              "epic_id": "2",
+              "title": "Ajouter une case à cocher 'Se souvenir de moi' à la page de connexion",
+              "type": "feat",
+              "description": "Implémenter une case à cocher 'Se souvenir de moi' sur la page de connexion. L'utilisateur doit pouvoir cocher ou décocher cette option.",
+              "acceptance_criteria": [
+                "Une case à cocher 'Se souvenir de moi' est visible sur la page de connexion.",
+                "La case à cocher est correctement étiquetée.",
+                "L'état de la case à cocher (coché/décoché) est persistant lors de la soumission du formulaire de connexion."
+              ],
+              "tech_details": "Utiliser du Javascript pour gérer l'état de la case à cocher et l'envoyer au backend lors de la soumission du formulaire.",
+              "validation": "Valider que la case à cocher est présente et fonctionnelle sur la page de connexion. Vérifier que l'état de la case est correctement enregistré lors de la soumission du formulaire.",
+              "error_handling": null,
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que la case à cocher est rendue correctement.",
+                "Test unitaire pour vérifier que l'état de la case à cocher est correctement géré."
+              ],
+              "definition_of_done": [
+                "Case à cocher 'Se souvenir de moi' implémentée et fonctionnelle.",
+                "Tests unitaires écrits et réussis.",
+                "Code relu et approuvé."
+              ],
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Voir maquette de la page de connexion.",
+              "implementation_details": "Utiliser un composant de case à cocher existant de la librairie UI. Gérer l'état de la case à cocher dans le formulaire de connexion."
+            },
+            {
+              "dependencies": [
+                "2-TASK-1",
+                "2-TASK-3"
+              ],
+              "id": "2-TASK-2",
+              "epic_id": "2",
+              "title": "Persister la session utilisateur si l'option 'Se souvenir de moi' est cochée",
+              "type": "feat",
+              "description": "Si l'utilisateur coche l'option 'Se souvenir de moi' lors de la connexion, l'application doit conserver sa session active, même après la fermeture de l'application.",
+              "acceptance_criteria": [
+                "Si l'option 'Se souvenir de moi' est cochée, l'utilisateur reste connecté après la fermeture et la réouverture de l'application.",
+                "Si l'option 'Se souvenir de moi' n'est pas cochée, l'utilisateur doit se reconnecter après la fermeture et la réouverture de l'application.",
+                "La session utilisateur est invalidée après une période d'inactivité définie (ex: 30 jours).",
+                "L'utilisateur peut se déconnecter manuellement, ce qui invalide la session persistante."
+              ],
+              "tech_details": "Utiliser une librairie de gestion de session pour simplifier l'implémentation.  Implémenter un mécanisme d'expiration de session.  Considérer l'utilisation de JWT (JSON Web Tokens) pour la gestion de l'authentification.",
+              "validation": "Valider que l'utilisateur reste connecté après la fermeture et la réouverture de l'application si l'option 'Se souvenir de moi' est cochée. Vérifier que la session est invalidée après une période d'inactivité. Vérifier que l'utilisateur peut se déconnecter manuellement.",
+              "error_handling": "Gérer les erreurs lors de la lecture ou de l'écriture des données de session persistantes. Afficher un message d'erreur approprié à l'utilisateur.",
+              "database_migrations": null,
+              "tests": [
+                "Test d'intégration pour vérifier que la session est persistée correctement si l'option 'Se souvenir de moi' est cochée.",
+                "Test d'intégration pour vérifier que la session est invalidée après une période d'inactivité.",
+                "Test d'intégration pour vérifier que l'utilisateur peut se déconnecter manuellement."
+              ],
+              "definition_of_done": [
+                "La session utilisateur est persistée correctement si l'option 'Se souvenir de moi' est cochée.",
+                "La session utilisateur est invalidée après une période d'inactivité.",
+                "L'utilisateur peut se déconnecter manuellement.",
+                "Tests d'intégration écrits et réussis.",
+                "Code relu et approuvé."
+              ],
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser les cookies ou le stockage local du navigateur pour persister la session utilisateur.  Crypter les données sensibles avant de les stocker. Définir une durée de vie pour la session persistante."
+            },
+            {
+              "dependencies": [
+                "2-TASK-1"
+              ],
+              "id": "2-TASK-3",
+              "epic_id": "2",
+              "title": "Mettre à jour l'API de connexion pour gérer l'option 'Se souvenir de moi'",
+              "type": "feat",
+              "description": "Modifier l'API de connexion pour prendre en compte l'option 'Se souvenir de moi' et retourner un token de session persistant si l'option est cochée.",
+              "acceptance_criteria": [
+                "L'API de connexion accepte un paramètre pour indiquer si l'option 'Se souvenir de moi' est cochée.",
+                "Si l'option 'Se souvenir de moi' est cochée, l'API retourne un token de session persistant.",
+                "Le token de session persistant est valide pendant une période définie.",
+                "L'API de connexion retourne une erreur appropriée si les informations d'identification sont invalides."
+              ],
+              "tech_details": "Utiliser une librairie de gestion de JWT (JSON Web Tokens) pour la génération et la validation des tokens.  Implémenter un mécanisme de révocation de tokens.",
+              "validation": "Valider que l'API de connexion retourne un token de session persistant si l'option 'Se souvenir de moi' est cochée. Vérifier que le token de session persistant est valide et permet à l'utilisateur de rester connecté. Vérifier que le token de session persistant est invalidé après une période d'inactivité ou lors de la déconnexion.",
+              "error_handling": "Gérer les erreurs lors de la création du token de session persistant. Retourner une erreur appropriée à l'utilisateur.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier que l'API de connexion retourne un token de session persistant si l'option 'Se souvenir de moi' est cochée.",
+                "Test d'intégration pour vérifier que le token de session persistant est valide et permet à l'utilisateur de rester connecté.",
+                "Test d'intégration pour vérifier que le token de session persistant est invalidé après une période d'inactivité ou lors de la déconnexion."
+              ],
+              "definition_of_done": [
+                "L'API de connexion gère correctement l'option 'Se souvenir de moi'.",
+                "Un token de session persistant est retourné si l'option est cochée.",
+                "Tests unitaires et d'intégration écrits et réussis.",
+                "Code relu et approuvé."
+              ],
+              "example_request": "{ \"username\": \"testuser\", \"password\": \"password123\", \"remember_me\": true }",
+              "example_response_success": "{ \"token\": \"\u003clong_session_token\u003e\" }",
+              "example_response_error_400": "{ \"error\": \"Invalid credentials\" }",
+              "example_response_error_401": "{ \"error\": \"Unauthorized\" }",
+              "example_response_error_409": null,
+              "example_request_valid": "{ \"username\": \"testuser\", \"password\": \"password123\", \"remember_me\": true }",
+              "example_request_invalid": "{ \"username\": \"\", \"password\": \"\", \"remember_me\": true }",
+              "api_call": "POST /api/login",
+              "ui_design": null,
+              "implementation_details": "Modifier la logique de l'API de connexion pour générer un token de session persistant si l'option 'Se souvenir de moi' est cochée.  Stocker le token de session persistant dans une base de données.  Utiliser une librairie de gestion de JWT pour générer et valider les tokens."
+            }
+          ]
+        },
+        {
+          "id": "US-103",
+          "epic_parent": "EPIC-002",
+          "title": "En tant qu'utilisateur, je veux pouvoir me déconnecter de l'application afin de protéger mes données lorsque j'utilise un appareil partagé.",
+          "description": "Cette User Story ajoute une fonctionnalité de déconnexion à l'application. Les utilisateurs peuvent se déconnecter de leur compte pour protéger leurs données, notamment lorsqu'ils utilisent un appareil partagé.",
+          "acceptance_criteria": [
+            "Étant donné que je suis connecté à mon compte",
+            "Quand je clique sur le bouton 'Déconnexion'",
+            "Alors je suis déconnecté de mon compte",
+            "Et je suis redirigé vers la page de connexion",
+            "Et quand je tente d'accéder à mon tableau de bord sans me reconnecter",
+            "Alors je suis redirigé vers la page de connexion"
+          ],
+          "definition_of_done": "La fonctionnalité de déconnexion est implémentée et fonctionne correctement. Les utilisateurs peuvent se déconnecter de leur compte et sont redirigés vers la page de connexion. L'accès aux données protégées est bloqué après la déconnexion.",
+          "tests_to_plan": [
+            "Tests unitaires pour la fonction de déconnexion",
+            "Tests d'intégration pour vérifier la suppression de la session",
+            "Tests d'acceptation pour valider le comportement de l'utilisateur"
+          ],
+          "priority": "high",
+          "estimation_story_points": 2,
+          "technical_dependencies": [
+            "API d'authentification",
+            "Système de gestion des sessions"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "En tant qu'utilisateur, je veux pouvoir créer un programme d'entraînement",
+      "description": "Permettre aux utilisateurs de définir et de sauvegarder leurs propres programmes d'entraînement.",
+      "goal": "Permettre à 80% des utilisateurs actifs de créer au moins un programme d'entraînement.",
+      "priority": "high",
+      "user_stories": [
+        {
+          "id": "US-101",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir créer un nouveau programme d'entraînement afin de pouvoir le personnaliser selon mes besoins.",
+          "description": "L'utilisateur doit pouvoir créer un nouveau programme d'entraînement en fournissant un nom pour ce programme.",
+          "acceptance_criteria": [
+            "Étant donné que je suis un utilisateur authentifié",
+            "Quand je clique sur le bouton 'Créer un programme'",
+            "Alors je suis redirigé vers un formulaire de création de programme",
+            "Et je peux entrer un nom pour mon programme",
+            "Et quand je soumets le formulaire",
+            "Alors un nouveau programme d'entraînement est créé avec le nom que j'ai fourni",
+            "Et je suis redirigé vers la page d'édition de ce programme"
+          ],
+          "definition_of_done": "Un programme d'entraînement peut être créé avec un nom valide et est associé à l'utilisateur connecté.",
+          "tests_to_plan": [
+            "Test unitaire: Vérification de la création du programme avec un nom valide.",
+            "Test unitaire: Vérification du rejet de la création du programme avec un nom vide.",
+            "Test d'intégration: Vérification de la redirection vers la page d'édition après la création.",
+            "Test d'authentification: Seul un utilisateur authentifié peut créer un programme."
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "API d'authentification fonctionnelle.",
+            "Base de données prête à stocker les programmes d'entraînement."
+          ]
+        },
+        {
+          "id": "US-102",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir ajouter des exercices à mon programme d'entraînement afin de définir mon plan d'entraînement.",
+          "description": "L'utilisateur doit pouvoir rechercher des exercices existants et les ajouter à son programme d'entraînement, en spécifiant le nombre de séries et de répétitions.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page d'édition d'un programme d'entraînement",
+            "Quand je recherche un exercice",
+            "Alors une liste d'exercices correspondants s'affiche",
+            "Et quand je sélectionne un exercice",
+            "Alors je peux spécifier le nombre de séries et de répétitions",
+            "Et quand je confirme l'ajout",
+            "Alors l'exercice est ajouté à mon programme avec les informations spécifiées"
+          ],
+          "definition_of_done": "Des exercices peuvent être ajoutés à un programme d'entraînement avec le nombre de séries et de répétitions spécifié.",
+          "tests_to_plan": [
+            "Test unitaire: Vérification de l'ajout d'un exercice avec des données valides.",
+            "Test unitaire: Vérification du rejet de l'ajout d'un exercice avec des données invalides (ex: nombre de séries négatif).",
+            "Test d'intégration: Vérification de la persistance des exercices ajoutés au programme.",
+            "Test de recherche: Vérification de la pertinence des résultats de recherche d'exercices."
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "API de gestion des exercices fonctionnelle.",
+            "Interface utilisateur pour la recherche et la sélection d'exercices."
+          ]
+        },
+        {
+          "id": "US-103",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir modifier les informations d'un exercice dans mon programme afin de l'adapter à ma progression.",
+          "description": "L'utilisateur doit pouvoir modifier le nombre de séries et de répétitions d'un exercice existant dans son programme d'entraînement.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page d'édition d'un programme d'entraînement",
+            "Et qu'un exercice est déjà présent dans mon programme",
+            "Quand je clique sur 'Modifier' pour cet exercice",
+            "Alors je peux modifier le nombre de séries et de répétitions",
+            "Et quand je sauvegarde les modifications",
+            "Alors les informations de l'exercice sont mises à jour dans mon programme"
+          ],
+          "definition_of_done": "Le nombre de séries et de répétitions d'un exercice dans un programme d'entraînement peut être modifié.",
+          "tests_to_plan": [
+            "Test unitaire: Vérification de la modification d'un exercice avec des données valides.",
+            "Test unitaire: Vérification du rejet de la modification d'un exercice avec des données invalides.",
+            "Test d'intégration: Vérification de la persistance des modifications apportées à l'exercice."
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "API de gestion des exercices fonctionnelle.",
+            "Interface utilisateur pour la modification des informations d'un exercice."
+          ],
+          "issues": [
+            {
+              "id": "3-TASK-1",
+              "epic_id": "3",
+              "title": "Ajouter un endpoint API pour modifier un exercice",
+              "type": "feat",
+              "description": "Créer un endpoint API permettant de modifier le nombre de séries et de répétitions d'un exercice existant dans un programme d'entraînement.",
+              "acceptance_criteria": [
+                "L'API doit permettre de modifier le nombre de séries et de répétitions d'un exercice.",
+                "L'API doit valider que l'utilisateur a le droit de modifier le programme d'entraînement.",
+                "L'API doit retourner une erreur appropriée si l'exercice n'existe pas ou si l'utilisateur n'a pas les droits.",
+                "L'API doit mettre à jour la base de données avec les nouvelles informations."
+              ],
+              "tech_details": "Implémenter un endpoint PUT pour modifier un exercice. Utiliser un DTO pour la requête et la réponse. Ajouter des validations pour les champs sets et reps.",
+              "validation": "Vérifier que les informations de l'exercice sont bien mises à jour dans la base de données.",
+              "error_handling": "Retourner des erreurs 400, 401, 404 selon le cas.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour valider la modification d'un exercice.",
+                "Test d'intégration pour valider l'endpoint API.",
+                "Test de non regression"
+              ],
+              "definition_of_done": [
+                "Code review effectué",
+                "Tests unitaires et d'intégration réussis",
+                "Documentation API mise à jour"
+              ],
+              "example_request": "PUT /api/workouts/123/exercises/456\n{\n  \"sets\": 4,\n  \"reps\": 10\n}",
+              "example_response_success": "{\n  \"id\": 456,\n  \"name\": \"Squat\",\n  \"sets\": 4,\n  \"reps\": 10\n}",
+              "example_response_error_400": "{\n  \"error\": \"Invalid input\"\n}",
+              "example_response_error_401": "{\n  \"error\": \"Unauthorized\"\n}",
+              "example_response_error_409": null,
+              "example_request_valid": "PUT /api/workouts/123/exercises/456\n{\n  \"sets\": 4,\n  \"reps\": 10\n}",
+              "example_request_invalid": "PUT /api/workouts/123/exercises/456\n{\n  \"sets\": \"invalid\",\n  \"reps\": 10\n}",
+              "api_call": "PUT /api/workouts/{workoutId}/exercises/{exerciseId}",
+              "ui_design": null,
+              "implementation_details": "Utiliser le framework pour la gestion des requêtes HTTP. Valider les entrées avec un middleware de validation. Utiliser l'ORM pour interagir avec la base de données."
+            },
+            {
+              "dependencies": [
+                "3-TASK-1"
+              ],
+              "id": "3-TASK-2",
+              "epic_id": "3",
+              "title": "Implémenter la logique de modification d'exercice dans le service",
+              "type": "feat",
+              "description": "Implémenter la logique métier pour modifier les informations d'un exercice (séries, répétitions) dans le service d'entraînement.",
+              "acceptance_criteria": [
+                "Le service doit pouvoir modifier les séries et répétitions d'un exercice existant.",
+                "Le service doit valider que l'exercice existe.",
+                "Le service doit lancer une exception si l'exercice n'existe pas.",
+                "Le service doit mettre à jour la base de données."
+              ],
+              "tech_details": "Créer une fonction dans le service d'entraînement pour modifier un exercice. Utiliser un DTO pour les données d'entrée.",
+              "validation": "Vérifier que les informations de l'exercice sont bien mises à jour dans la base de données.",
+              "error_handling": "Lancer une exception si l'exercice n'existe pas ou si les données sont invalides.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour valider la modification d'un exercice.",
+                "Test unitaire pour valider l'erreur si l'exercice n'existe pas."
+              ],
+              "definition_of_done": [
+                "Code review effectué",
+                "Tests unitaires réussis"
+              ],
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser l'ORM pour interagir avec la base de données. Utiliser un DTO pour les données d'entrée."
+            },
+            {
+              "dependencies": [
+                "3-TASK-1",
+                "3-TASK-2"
+              ],
+              "id": "3-TASK-3",
+              "epic_id": "3",
+              "title": "Mettre à jour l'interface utilisateur pour permettre la modification des exercices",
+              "type": "feat",
+              "description": "Mettre à jour l'interface utilisateur pour permettre à l'utilisateur de modifier le nombre de séries et de répétitions d'un exercice dans son programme d'entraînement.",
+              "acceptance_criteria": [
+                "L'utilisateur doit pouvoir modifier le nombre de séries et de répétitions d'un exercice.",
+                "L'interface utilisateur doit afficher les informations de l'exercice.",
+                "L'interface utilisateur doit valider les données entrées par l'utilisateur.",
+                "L'interface utilisateur doit appeler l'API pour mettre à jour l'exercice."
+              ],
+              "tech_details": "Ajouter un formulaire pour modifier les informations de l'exercice. Utiliser un composant de validation pour les données entrées par l'utilisateur.",
+              "validation": "Vérifier que les informations de l'exercice sont bien mises à jour dans l'interface utilisateur.",
+              "error_handling": "Afficher des messages d'erreur appropriés à l'utilisateur.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour valider le formulaire de modification.",
+                "Test d'intégration pour valider l'appel API.",
+                "Test manuel pour valider le workflow utilisateur."
+              ],
+              "definition_of_done": [
+                "Code review effectué",
+                "Tests unitaires et d'intégration réussis",
+                "Tests manuels réussis"
+              ],
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": "PUT /api/workouts/{workoutId}/exercises/{exerciseId}",
+              "ui_design": "Mettre à jour la maquette de l'interface utilisateur avec les nouveaux composants.",
+              "implementation_details": "Utiliser le framework UI pour la gestion des composants. Utiliser l'API pour mettre à jour l'exercice."
+            }
+          ]
+        },
+        {
+          "id": "US-104",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir supprimer un exercice de mon programme d'entraînement afin de le personnaliser.",
+          "description": "L'utilisateur doit pouvoir supprimer un exercice existant de son programme d'entraînement.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page d'édition d'un programme d'entraînement",
+            "Et qu'un exercice est déjà présent dans mon programme",
+            "Quand je clique sur 'Supprimer' pour cet exercice",
+            "Alors l'exercice est supprimé de mon programme",
+            "Et je reçois une confirmation de la suppression"
+          ],
+          "definition_of_done": "Un exercice peut être supprimé d'un programme d'entraînement.",
+          "tests_to_plan": [
+            "Test unitaire: Vérification de la suppression d'un exercice.",
+            "Test d'intégration: Vérification de la persistance de la suppression de l'exercice."
+          ],
+          "priority": "high",
+          "estimation_story_points": 2,
+          "technical_dependencies": [
+            "API de gestion des exercices fonctionnelle.",
+            "Interface utilisateur pour la suppression d'un exercice."
+          ]
+        },
+        {
+          "id": "US-105",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir voir la liste des exercices de mon programme d'entraînement afin de suivre ma progression.",
+          "description": "L'utilisateur doit pouvoir voir la liste des exercices ajoutés à son programme d'entraînement, avec le nombre de séries et de répétitions pour chaque exercice.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page d'édition d'un programme d'entraînement",
+            "Alors je vois la liste des exercices ajoutés à mon programme",
+            "Et pour chaque exercice, je vois le nom, le nombre de séries et le nombre de répétitions"
+          ],
+          "definition_of_done": "La liste des exercices d'un programme d'entraînement est affichée avec les informations pertinentes.",
+          "tests_to_plan": [
+            "Test d'intégration: Vérification de l'affichage correct des exercices et de leurs informations.",
+            "Test de performance: Vérification de la performance de l'affichage de la liste des exercices (si le programme contient un grand nombre d'exercices)."
+          ],
+          "priority": "high",
+          "estimation_story_points": 2,
+          "technical_dependencies": [
+            "API de gestion des exercices fonctionnelle.",
+            "Interface utilisateur pour l'affichage de la liste des exercices."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "title": "En tant qu'utilisateur, je veux pouvoir partager un programme d'entraînement avec d'autres utilisateurs",
+      "description": "Permettre aux utilisateurs de diffuser leurs programmes d'entraînement à la communauté.",
+      "goal": "Atteindre un taux de partage de programmes d'entraînement de 30% parmi les utilisateurs actifs.",
+      "priority": "medium",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir rendre mon programme d'entraînement public, afin de le partager avec d'autres utilisateurs.",
+          "description": "Permettre à l'utilisateur de choisir de rendre son programme d'entraînement visible par les autres utilisateurs de l'application. Un programme public sera visible et consultable par tous.",
+          "acceptance_criteria": [
+            "Étant donné que je suis connecté et que j'ai créé un programme d'entraînement",
+            "Quand je modifie les paramètres de visibilité de ce programme et que je choisis 'Public'",
+            "Alors le programme devient visible par les autres utilisateurs de l'application"
+          ],
+          "definition_of_done": "L'utilisateur peut modifier le statut de son programme d'entraînement à 'Public'. Le programme est visible dans les listes de programmes publics.",
+          "tests_to_plan": [
+            "Test de modification du statut de visibilité",
+            "Test de visibilité dans les listes publiques",
+            "Test d'accès au programme par un autre utilisateur"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Implémentation de la gestion des droits d'accès",
+            "Modification du modèle de données pour inclure un champ 'visibilité'"
+          ]
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir rechercher des programmes d'entraînement publics, afin de trouver de l'inspiration ou de nouveaux exercices.",
+          "description": "Permettre à l'utilisateur de rechercher des programmes d'entraînement partagés par d'autres utilisateurs, en utilisant des critères de recherche (nom, type d'entraînement, etc.).",
+          "acceptance_criteria": [
+            "Étant donné que je suis connecté",
+            "Quand j'utilise la fonctionnalité de recherche de programmes",
+            "Et que j'entre des critères de recherche (ex : 'Force', 'Débutant')",
+            "Alors je vois une liste de programmes d'entraînement publics correspondant à mes critères"
+          ],
+          "definition_of_done": "L'utilisateur peut rechercher des programmes d'entraînement publics et voir les résultats de sa recherche.",
+          "tests_to_plan": [
+            "Test de recherche avec différents critères",
+            "Test de l'affichage des résultats de recherche",
+            "Test de performance de la recherche"
+          ],
+          "priority": "high",
+          "estimation_story_points": 8,
+          "technical_dependencies": [
+            "Implémentation de l'indexation des programmes d'entraînement",
+            "Création d'une API de recherche"
+          ]
+        },
+        {
+          "id": "US-003",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir consulter le profil d'un autre utilisateur, afin de voir ses programmes d'entraînement publics.",
+          "description": "Permettre à l'utilisateur de consulter le profil d'un autre utilisateur et de voir la liste des programmes d'entraînement qu'il a rendus publics.",
+          "acceptance_criteria": [
+            "Étant donné que je suis connecté",
+            "Quand je vais sur le profil d'un autre utilisateur",
+            "Alors je vois la liste de ses programmes d'entraînement publics"
+          ],
+          "definition_of_done": "L'utilisateur peut consulter le profil d'un autre utilisateur et voir ses programmes publics.",
+          "tests_to_plan": [
+            "Test d'accès au profil d'un autre utilisateur",
+            "Test de l'affichage des programmes publics sur le profil",
+            "Test de gestion des droits d'accès (programmes privés)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Implémentation de la gestion des profils utilisateurs",
+            "Modification de l'API de profil pour inclure les programmes publics"
+          ]
+        },
+        {
+          "id": "US-004",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir copier un programme d'entraînement public, afin de l'utiliser comme base pour mon propre entraînement.",
+          "description": "Permettre à l'utilisateur de copier un programme d'entraînement public dans son propre compte, afin de pouvoir le modifier et l'adapter à ses besoins.",
+          "acceptance_criteria": [
+            "Étant donné que j'ai trouvé un programme d'entraînement public qui m'intéresse",
+            "Quand je clique sur le bouton 'Copier'",
+            "Alors une copie de ce programme est créée dans mon compte"
+          ],
+          "definition_of_done": "L'utilisateur peut copier un programme public dans son compte.",
+          "tests_to_plan": [
+            "Test de copie d'un programme public",
+            "Test de l'intégrité des données copiées",
+            "Test de gestion des droits d'accès (copie d'un programme)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Implémentation de la fonctionnalité de copie de programme",
+            "Gestion des conflits de noms (si l'utilisateur a déjà un programme avec le même nom)"
+          ],
+          "issues": [
+            {
+              "id": "4-TASK-1",
+              "epic_id": "4",
+              "title": "Créer une API pour copier un programme d'entraînement public",
+              "type": "feat",
+              "description": "Développer une API qui permet à un utilisateur de copier un programme d'entraînement public existant dans son propre compte. L'API doit gérer la création d'une nouvelle entrée de programme d'entraînement pour l'utilisateur, en dupliquant les données du programme d'entraînement public original.",
+              "acceptance_criteria": [
+                "L'API doit être accessible via une requête POST.",
+                "L'API doit prendre en entrée l'ID du programme d'entraînement public à copier.",
+                "L'API doit vérifier si le programme d'entraînement public existe.",
+                "L'API doit créer une copie du programme d'entraînement dans le compte de l'utilisateur authentifié.",
+                "L'API doit renvoyer un code de statut 201 Created en cas de succès.",
+                "L'API doit renvoyer un code d'erreur approprié en cas d'échec (ex: 404 si le programme n'existe pas, 400 si la requête est mal formée)."
+              ],
+              "tech_details": "Utiliser le framework Go pour développer l'API.  Utiliser le package `net/http` pour gérer les requêtes HTTP. Utiliser un package de routage comme `gorilla/mux` pour définir les routes. Utiliser un ORM comme `gorm` ou `xorm` pour interagir avec la base de données. Utiliser des tests unitaires et d'intégration pour valider le code.",
+              "validation": "Valider que le nouveau programme d'entraînement est créé dans le compte de l'utilisateur et contient les mêmes exercices que le programme original.",
+              "error_handling": "Retourner des erreurs HTTP appropriées (400, 404, 500) avec des messages d'erreur clairs.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier la copie correcte des données.",
+                "Test d'intégration pour vérifier le fonctionnement de l'API.",
+                "Test de gestion des erreurs (programme inexistant, utilisateur non authentifié)."
+              ],
+              "definition_of_done": [
+                "API développée et testée avec succès.",
+                "Documentation de l'API mise à jour.",
+                "Tests unitaires et d'intégration implémentés."
+              ],
+              "example_request": "POST /api/workouts/123/copy",
+              "example_response_success": "{\"message\": \"Workout copied successfully\", \"workoutId\": \"456\"}",
+              "example_response_error_400": "{\"error\": \"Invalid workout ID\"}",
+              "example_response_error_401": "{\"error\": \"Unauthorized\"}",
+              "example_response_error_409": null,
+              "example_request_valid": "POST /api/workouts/123/copy",
+              "example_request_invalid": "POST /api/workouts/abc/copy",
+              "api_call": "POST /api/workouts/{workoutId}/copy",
+              "ui_design": null,
+              "implementation_details": "Utiliser un ORM pour interagir avec la base de données. Gérer les transactions pour assurer la cohérence des données en cas d'erreur. Cloner les données du programme d'entraînement public, y compris les exercices associés."
+            },
+            {
+              "dependencies": [
+                "4-TASK-1"
+              ],
+              "id": "4-TASK-2",
+              "epic_id": "4",
+              "title": "Mettre à jour l'interface utilisateur pour permettre la copie d'un programme",
+              "type": "feat",
+              "description": "Ajouter un bouton ou une option dans l'interface utilisateur pour permettre à l'utilisateur de copier un programme d'entraînement public. Ce bouton doit être visible sur la page de détails du programme d'entraînement public.",
+              "acceptance_criteria": [
+                "Un bouton 'Copier' est visible sur la page de détails d'un programme d'entraînement public.",
+                "Lorsque l'utilisateur clique sur 'Copier', une requête est envoyée à l'API de copie de programme d'entraînement.",
+                "Un message de succès est affiché à l'utilisateur si la copie réussit.",
+                "Un message d'erreur est affiché à l'utilisateur si la copie échoue.",
+                "L'utilisateur est redirigé vers la page de son nouveau programme d'entraînement copié."
+              ],
+              "tech_details": "Modifier le code HTML/CSS pour ajouter le bouton 'Copier'. Utiliser JavaScript pour gérer l'événement de clic sur le bouton. Utiliser la fonction `fetch` ou une librairie comme `axios` pour faire la requête POST à l'API. Gérer la réponse de l'API et afficher les messages appropriés.",
+              "validation": "Valider que le bouton 'Copier' est visible et fonctionne correctement. Valider que l'utilisateur est redirigé vers la page de son nouveau programme d'entraînement copié.",
+              "error_handling": "Afficher des messages d'erreur clairs à l'utilisateur en cas d'échec de la copie.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier le comportement du bouton 'Copier'.",
+                "Test d'intégration pour vérifier le fonctionnement de la fonctionnalité de copie.",
+                "Test de l'affichage correct des messages de succès et d'erreur."
+              ],
+              "definition_of_done": [
+                "Interface utilisateur mise à jour avec le bouton 'Copier'.",
+                "Fonctionnalité de copie implémentée et testée.",
+                "Messages de succès et d'erreur affichés correctement."
+              ],
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": "POST /api/workouts/{workoutId}/copy",
+              "ui_design": "Ajouter un bouton 'Copier' à la page de détails du programme d'entraînement public.  Le bouton doit être clairement visible et identifiable.",
+              "implementation_details": "Utiliser JavaScript pour gérer les interactions utilisateur.  Utiliser des requêtes AJAX pour communiquer avec l'API."
+            },
+            {
+              "dependencies": [
+                "2-TASK-3"
+              ],
+              "id": "4-TASK-3",
+              "epic_id": "4",
+              "title": "Sécuriser l'API de copie de programme d'entraînement",
+              "type": "feat",
+              "description": "Ajouter une couche de sécurité à l'API de copie de programme d'entraînement pour s'assurer que seuls les utilisateurs authentifiés peuvent copier les programmes d'entraînement.",
+              "acceptance_criteria": [
+                "L'API doit vérifier si l'utilisateur est authentifié avant de permettre la copie.",
+                "Si l'utilisateur n'est pas authentifié, l'API doit renvoyer une erreur 401 Unauthorized.",
+                "L'API doit utiliser un middleware d'authentification pour valider le token JWT de l'utilisateur."
+              ],
+              "tech_details": "Utiliser un middleware comme `jwt-go` pour valider le token JWT. Ajouter le middleware à la route de l'API de copie de programme d'entraînement.",
+              "validation": "Valider que l'API renvoie une erreur 401 si l'utilisateur n'est pas authentifié. Valider que l'API fonctionne correctement si l'utilisateur est authentifié.",
+              "error_handling": "Retourner une erreur 401 Unauthorized si l'utilisateur n'est pas authentifié.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier le fonctionnement du middleware d'authentification.",
+                "Test d'intégration pour vérifier que l'API renvoie une erreur 401 si l'utilisateur n'est pas authentifié."
+              ],
+              "definition_of_done": [
+                "Middleware d'authentification implémenté.",
+                "API sécurisée avec le middleware d'authentification.",
+                "Tests unitaires et d'intégration implémentés pour la sécurité."
+              ],
+              "example_request": "POST /api/workouts/123/copy",
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": "{\"error\": \"Unauthorized\"}",
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": "POST /api/workouts/{workoutId}/copy",
+              "ui_design": null,
+              "implementation_details": "Utiliser un middleware d'authentification pour valider le token JWT de l'utilisateur. Extraire l'ID de l'utilisateur du token JWT."
+            }
+          ]
+        },
+        {
+          "id": "US-005",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir signaler un programme d'entraînement inapproprié, afin de maintenir la qualité du contenu partagé.",
+          "description": "Permettre à l'utilisateur de signaler un programme d'entraînement qui ne respecte pas les règles de la communauté (contenu offensant, dangereux, etc.).",
+          "acceptance_criteria": [
+            "Étant donné que je consulte un programme d'entraînement public",
+            "Quand je clique sur le bouton 'Signaler'",
+            "Et que je sélectionne une raison pour le signalement",
+            "Alors le programme est signalé à l'équipe de modération"
+          ],
+          "definition_of_done": "L'utilisateur peut signaler un programme inapproprié. L'équipe de modération est notifiée.",
+          "tests_to_plan": [
+            "Test de signalement d'un programme",
+            "Test de notification à l'équipe de modération",
+            "Test de gestion des signalements (modération)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Implémentation de la fonctionnalité de signalement",
+            "Création d'un système de modération"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "title": "En tant qu'utilisateur, je veux pouvoir découvrir les programmes d'entraînement partagés par les autres",
+      "description": "Permettre aux utilisateurs d'explorer et de s'inspirer des programmes d'entraînement créés par d'autres.",
+      "goal": "Augmenter le nombre de programmes d'entraînement consultés par utilisateur de 50%.",
+      "priority": "medium",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux voir une liste des programmes d'entraînement partagés, afin de pouvoir m'inspirer et découvrir de nouvelles routines.",
+          "description": "L'application doit afficher une liste paginée des programmes d'entraînement partagés par d'autres utilisateurs. Chaque élément de la liste doit inclure le nom du programme, le nom de l'utilisateur qui l'a créé, et une brève description ou résumé du programme.",
+          "acceptance_criteria": [
+            "Étant donné que je suis un utilisateur connecté",
+            "Quand je navigue vers la page de découverte des programmes",
+            "Alors je vois une liste paginée des programmes d'entraînement partagés",
+            "Et chaque programme affiche le nom du programme, le nom de l'utilisateur et une brève description"
+          ],
+          "definition_of_done": "La liste des programmes d'entraînement partagés est affichée correctement, avec les informations nécessaires (nom du programme, nom de l'utilisateur, description). La pagination fonctionne correctement. Les performances de chargement de la liste sont acceptables.",
+          "tests_to_plan": [
+            "Tests unitaires sur le composant d'affichage de la liste",
+            "Tests d'intégration avec l'API pour récupérer les programmes",
+            "Tests de performance pour vérifier le temps de chargement de la liste",
+            "Tests d'UI pour vérifier l'affichage correct des informations"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "API endpoint pour récupérer la liste des programmes d'entraînement partagés"
+          ]
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir filtrer les programmes d'entraînement par type (force, cardio, etc.), afin de trouver plus facilement les programmes qui correspondent à mes besoins.",
+          "description": "L'application doit permettre aux utilisateurs de filtrer la liste des programmes d'entraînement par type (par exemple, force, cardio, endurance, etc.). Les filtres doivent être facilement accessibles et intuitifs.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page de découverte des programmes",
+            "Quand je sélectionne un ou plusieurs filtres de type d'entraînement",
+            "Alors la liste des programmes est mise à jour pour afficher uniquement les programmes correspondant aux filtres sélectionnés"
+          ],
+          "definition_of_done": "Les filtres de type d'entraînement sont implémentés et fonctionnent correctement. La liste des programmes est mise à jour en fonction des filtres sélectionnés. L'UI des filtres est claire et intuitive.",
+          "tests_to_plan": [
+            "Tests unitaires sur les composants de filtre",
+            "Tests d'intégration avec l'API pour appliquer les filtres",
+            "Tests d'UI pour vérifier le comportement des filtres"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "API endpoint pour récupérer la liste des programmes d'entraînement partagés avec des filtres"
+          ]
+        },
+        {
+          "id": "US-003",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir rechercher des programmes d'entraînement par mots-clés (nom du programme, nom de l'utilisateur), afin de trouver rapidement des programmes spécifiques.",
+          "description": "L'application doit permettre aux utilisateurs de rechercher des programmes d'entraînement en utilisant des mots-clés. La recherche doit prendre en compte le nom du programme et le nom de l'utilisateur.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page de découverte des programmes",
+            "Quand je saisis un mot-clé dans la barre de recherche",
+            "Et que je valide ma recherche",
+            "Alors la liste des programmes est mise à jour pour afficher uniquement les programmes correspondant au mot-clé"
+          ],
+          "definition_of_done": "La fonctionnalité de recherche est implémentée et fonctionne correctement. La recherche prend en compte le nom du programme et le nom de l'utilisateur. Les résultats de la recherche sont pertinents.",
+          "tests_to_plan": [
+            "Tests unitaires sur le composant de recherche",
+            "Tests d'intégration avec l'API pour effectuer la recherche",
+            "Tests d'UI pour vérifier le comportement de la recherche"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "API endpoint pour récupérer la liste des programmes d'entraînement partagés avec une recherche par mots-clés"
+          ]
+        },
+        {
+          "id": "US-004",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir trier les programmes d'entraînement par popularité (nombre de vues, nombre de likes), afin de voir les programmes les plus populaires en premier.",
+          "description": "L'application doit permettre aux utilisateurs de trier la liste des programmes d'entraînement par popularité (nombre de vues, nombre de likes). Le tri doit être facile à utiliser et intuitif.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page de découverte des programmes",
+            "Quand je sélectionne une option de tri (par exemple, 'Nombre de vues')",
+            "Alors la liste des programmes est triée en fonction de l'option sélectionnée"
+          ],
+          "definition_of_done": "Le tri par popularité est implémenté et fonctionne correctement. La liste des programmes est triée en fonction de l'option de tri sélectionnée. L'UI du tri est claire et intuitive.",
+          "tests_to_plan": [
+            "Tests unitaires sur le composant de tri",
+            "Tests d'intégration avec l'API pour appliquer le tri",
+            "Tests d'UI pour vérifier le comportement du tri"
+          ],
+          "priority": "high",
+          "estimation_story_points": 2,
+          "technical_dependencies": [
+            "API endpoint pour récupérer la liste des programmes d'entraînement partagés avec un tri"
+          ]
+        },
+        {
+          "id": "US-005",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir voir les détails d'un programme d'entraînement, afin de savoir si il correspond à mes attentes.",
+          "description": "L'application doit permettre aux utilisateurs de consulter le détail d'un programme d'entrainement. Le détail doit contenir la description complète, la liste des exercices, le nombre de séries et répétitions, et tout autre information utile.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page de découverte des programmes",
+            "Quand je clique sur un programme d'entrainement",
+            "Alors je suis redirigé vers la page de détail du programme",
+            "Et je vois la description complète, la liste des exercices, le nombre de séries et répétitions"
+          ],
+          "definition_of_done": "La page de détail d'un programme d'entrainement est affichée correctement, avec toutes les informations nécessaires. La navigation vers la page de détail fonctionne correctement.",
+          "tests_to_plan": [
+            "Tests unitaires sur le composant d'affichage du détail du programme",
+            "Tests d'intégration avec l'API pour récupérer le détail du programme",
+            "Tests d'UI pour vérifier l'affichage correct des informations"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "API endpoint pour récupérer le détail d'un programme d'entraînement"
+          ],
+          "issues": [
+            {
+              "dependencies": [
+                "2-TASK-3"
+              ],
+              "id": "5-TASK-1",
+              "epic_id": "5",
+              "title": "Créer l'API pour récupérer les détails d'un programme d'entraînement",
+              "type": "feat",
+              "description": "Développer une API qui permet de récupérer les détails complets d'un programme d'entraînement spécifique à partir de son ID. Les détails incluent la description, la liste des exercices avec le nombre de séries et répétitions, et d'autres informations pertinentes.",
+              "acceptance_criteria": [
+                "L'API doit retourner les détails du programme d'entraînement au format JSON.",
+                "L'API doit gérer les erreurs si le programme d'entraînement n'est pas trouvé (retourner un code d'erreur approprié).",
+                "L'API doit être sécurisée et accessible uniquement aux utilisateurs authentifiés."
+              ],
+              "tech_details": "L'API doit être implémentée en utilisant Go et le framework Gin. La base de données sera accessible via GORM. Utiliser un middleware d'authentification pour sécuriser l'API.",
+              "validation": "Valider que l'API retourne les informations correctes du programme d'entraînement. Vérifier que les erreurs sont gérées correctement.",
+              "error_handling": "Retourner une erreur 404 si le programme d'entraînement n'est pas trouvé. Retourner une erreur 500 en cas d'erreur serveur.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier la récupération des détails d'un programme d'entraînement existant.",
+                "Test unitaire pour vérifier la gestion des erreurs si le programme d'entraînement n'existe pas.",
+                "Test d'intégration pour vérifier l'interaction avec la base de données."
+              ],
+              "definition_of_done": [
+                "Code review effectué et approuvé.",
+                "Tests unitaires réussis.",
+                "API documentée avec Swagger/OpenAPI."
+              ],
+              "example_request": "GET /api/workouts/123",
+              "example_response_success": "{\n  \"id\": 123,\n  \"name\": \"Programme Force\",\n  \"description\": \"Programme axé sur la force musculaire\",\n  \"exercises\": [\n    {\n      \"name\": \"Squat\",\n      \"sets\": 3,\n      \"reps\": 5\n    },\n    {\n      \"name\": \"Bench Press\",\n      \"sets\": 3,\n      \"reps\": 5\n    }\n  ]\n}",
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": "GET /api/workouts/123",
+              "example_request_invalid": null,
+              "api_call": "GET /api/workouts/{workoutId}",
+              "ui_design": null,
+              "implementation_details": "Utiliser le framework Gin pour la gestion des routes API. Accéder à la base de données via GORM."
+            },
+            {
+              "dependencies": [
+                "5-TASK-1"
+              ],
+              "id": "5-TASK-2",
+              "epic_id": "5",
+              "title": "Implémenter la logique pour récupérer les détails du programme d'entraînement depuis la base de données",
+              "type": "feat",
+              "description": "Développer la logique pour interroger la base de données et récupérer les détails d'un programme d'entraînement en fonction de son ID. Inclure la récupération de la description, de la liste des exercices, du nombre de séries et de répétitions pour chaque exercice.",
+              "acceptance_criteria": [
+                "La logique doit récupérer correctement tous les détails du programme d'entraînement.",
+                "La logique doit être optimisée pour minimiser le temps de réponse.",
+                "La logique doit gérer les erreurs si le programme d'entraînement n'est pas trouvé."
+              ],
+              "tech_details": "Utiliser GORM pour interagir avec la base de données. Implémenter une couche de service pour séparer la logique métier de l'accès aux données.",
+              "validation": "Valider que la logique récupère les informations correctes du programme d'entraînement. Vérifier que les erreurs sont gérées correctement.",
+              "error_handling": "Retourner une erreur si la requête à la base de données échoue.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier la récupération des détails d'un programme d'entraînement existant.",
+                "Test unitaire pour vérifier la gestion des erreurs si le programme d'entraînement n'existe pas.",
+                "Test d'intégration pour vérifier l'interaction avec la base de données."
+              ],
+              "definition_of_done": [
+                "Code review effectué et approuvé.",
+                "Tests unitaires réussis.",
+                "La logique est intégrée à l'API."
+              ],
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": null,
+              "implementation_details": "Utiliser GORM pour interagir avec la base de données. Écrire des requêtes SQL optimisées pour récupérer les données."
+            },
+            {
+              "dependencies": [
+                "5-TASK-1",
+                "5-TASK-2"
+              ],
+              "id": "5-TASK-3",
+              "epic_id": "5",
+              "title": "Afficher les détails du programme d'entraînement sur l'interface utilisateur",
+              "type": "feat",
+              "description": "Développer l'interface utilisateur pour afficher les détails d'un programme d'entraînement. Inclure la description, la liste des exercices avec le nombre de séries et de répétitions, et d'autres informations pertinentes.",
+              "acceptance_criteria": [
+                "L'interface utilisateur doit afficher tous les détails du programme d'entraînement de manière claire et lisible.",
+                "L'interface utilisateur doit être responsive et s'adapter à différentes tailles d'écran.",
+                "L'interface utilisateur doit être accessible aux utilisateurs handicapés."
+              ],
+              "tech_details": "Utiliser React pour développer l'interface utilisateur. Consommer l'API pour récupérer les détails du programme d'entraînement.",
+              "validation": "Valider que l'interface utilisateur affiche les informations correctes du programme d'entraînement. Vérifier que l'interface utilisateur est responsive et accessible.",
+              "error_handling": "Afficher un message d'erreur si les détails du programme d'entraînement ne peuvent pas être chargés.",
+              "database_migrations": null,
+              "tests": [
+                "Test unitaire pour vérifier l'affichage des détails du programme d'entraînement.",
+                "Test d'intégration pour vérifier l'interaction avec l'API.",
+                "Test d'accessibilité pour vérifier que l'interface utilisateur est accessible aux utilisateurs handicapés."
+              ],
+              "definition_of_done": [
+                "Code review effectué et approuvé.",
+                "Tests unitaires réussis.",
+                "L'interface utilisateur est intégrée à l'API."
+              ],
+              "example_request": null,
+              "example_response_success": null,
+              "example_response_error_400": null,
+              "example_response_error_401": null,
+              "example_response_error_409": null,
+              "example_request_valid": null,
+              "example_request_invalid": null,
+              "api_call": null,
+              "ui_design": "Voir maquettes UI/UX pour la mise en page et le style.",
+              "implementation_details": "Utiliser React pour développer l'interface utilisateur. Utiliser des composants réutilisables pour afficher les détails du programme d'entraînement."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "title": "En tant qu'utilisateur, je veux pouvoir rechercher des programmes d'entraînement spécifiques",
+      "description": "Permettre aux utilisateurs de trouver rapidement des programmes d'entraînement correspondant à leurs besoins.",
+      "goal": "Réduire le temps moyen de recherche d'un programme d'entraînement de 50%.",
+      "priority": "medium",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir rechercher des programmes d'entraînement par mots-clés afin de trouver rapidement des programmes pertinents.",
+          "description": "L'utilisateur doit pouvoir entrer des mots-clés (ex: 'perte de poids', 'débutant', 'full body') pour filtrer les programmes d'entraînement disponibles.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page de recherche de programmes",
+            "Quand je saisis un mot-clé dans le champ de recherche et que je valide",
+            "Alors je vois une liste de programmes d'entraînement dont le titre, la description ou les tags contiennent le mot-clé saisi"
+          ],
+          "definition_of_done": "Le champ de recherche est implémenté et fonctionnel. Les résultats de recherche sont affichés correctement et pertinents par rapport aux mots-clés saisis.",
+          "tests_to_plan": [
+            "Tests unitaires sur la fonction de recherche",
+            "Tests d'intégration avec la base de données",
+            "Tests de performance avec un grand nombre de programmes",
+            "Tests de recherche avec des mots-clés différents (uniques, multiples, inexistants)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "API de recherche de programmes d'entraînement",
+            "Indexation des programmes d'entraînement pour la recherche"
+          ]
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir filtrer les programmes d'entraînement par niveau (débutant, intermédiaire, avancé) afin de trouver des programmes adaptés à mon expérience.",
+          "description": "L'utilisateur doit pouvoir sélectionner un niveau de difficulté pour affiner sa recherche de programmes.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page de recherche de programmes",
+            "Quand je sélectionne un niveau de difficulté (ex: 'débutant') dans les filtres",
+            "Alors je vois une liste de programmes d'entraînement correspondant au niveau de difficulté sélectionné"
+          ],
+          "definition_of_done": "Le filtre par niveau est implémenté et fonctionnel. Les programmes affichés correspondent au niveau sélectionné.",
+          "tests_to_plan": [
+            "Tests unitaires sur la fonction de filtrage par niveau",
+            "Tests d'intégration avec la base de données",
+            "Tests de filtrage avec différents niveaux (débutant, intermédiaire, avancé)",
+            "Tests de filtrage combiné avec d'autres critères (ex: niveau + mot-clé)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Attribut 'niveau' dans le modèle de données des programmes d'entraînement",
+            "Interface utilisateur pour la sélection du niveau"
+          ]
+        },
+        {
+          "id": "US-003",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir filtrer les programmes d'entraînement par type (cardio, musculation, etc.) afin de trouver des programmes correspondant à mes objectifs.",
+          "description": "L'utilisateur doit pouvoir sélectionner un ou plusieurs types d'entraînement pour affiner sa recherche.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page de recherche de programmes",
+            "Quand je sélectionne un ou plusieurs types d'entraînement (ex: 'cardio', 'musculation') dans les filtres",
+            "Alors je vois une liste de programmes d'entraînement correspondant aux types sélectionnés"
+          ],
+          "definition_of_done": "Le filtre par type est implémenté et fonctionnel. Les programmes affichés correspondent aux types sélectionnés.",
+          "tests_to_plan": [
+            "Tests unitaires sur la fonction de filtrage par type",
+            "Tests d'intégration avec la base de données",
+            "Tests de filtrage avec différents types (cardio, musculation, etc.)",
+            "Tests de filtrage avec plusieurs types sélectionnés",
+            "Tests de filtrage combiné avec d'autres critères"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Attribut 'type' (ou 'types') dans le modèle de données des programmes d'entraînement",
+            "Interface utilisateur pour la sélection des types"
+          ]
+        },
+        {
+          "id": "US-004",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir trier les programmes d'entraînement par popularité ou date de création afin de voir les programmes les plus pertinents ou les plus récents.",
+          "description": "L'utilisateur doit pouvoir choisir un critère de tri pour ordonner les résultats de recherche.",
+          "acceptance_criteria": [
+            "Étant donné que je suis sur la page de recherche de programmes",
+            "Quand je sélectionne un critère de tri (ex: 'popularité', 'date de création')",
+            "Alors je vois la liste des programmes d'entraînement triée selon le critère sélectionné"
+          ],
+          "definition_of_done": "Le tri des résultats est implémenté et fonctionnel. Les programmes sont affichés dans l'ordre correct selon le critère de tri choisi.",
+          "tests_to_plan": [
+            "Tests unitaires sur la fonction de tri",
+            "Tests d'intégration avec la base de données",
+            "Tests de tri avec différents critères (popularité, date de création)",
+            "Tests de tri combiné avec d'autres critères (ex: recherche + tri)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Attributs 'popularité' (nombre de vues, nombre de likes, etc.) et 'date de création' dans le modèle de données des programmes",
+            "Interface utilisateur pour la sélection du critère de tri"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7",
+      "title": "En tant qu'utilisateur, je veux pouvoir sauvegarder mes programmes d'entraînement favoris",
+      "description": "Permettre aux utilisateurs de conserver une liste de programmes d'entraînement qu'ils apprécient.",
+      "goal": "Permettre à 60% des utilisateurs de sauvegarder au moins un programme d'entraînement.",
+      "priority": "low",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur enregistré, je veux pouvoir ajouter un programme d'entraînement à mes favoris afin de pouvoir le retrouver facilement plus tard.",
+          "description": "Permettre à l'utilisateur, une fois connecté, d'ajouter un programme d'entraînement spécifique à une liste de favoris. Cette liste sera accessible depuis son profil.",
+          "acceptance_criteria": [
+            "Étant donné que je suis un utilisateur connecté et que je visualise un programme d'entraînement,\nQuand je clique sur le bouton 'Ajouter aux favoris',\nAlors le programme d'entraînement est ajouté à ma liste de favoris.",
+            "Étant donné que je suis un utilisateur connecté et que j'ai déjà ajouté un programme d'entraînement à mes favoris,\nQuand je clique sur le bouton 'Retirer des favoris',\nAlors le programme d'entraînement est retiré de ma liste de favoris."
+          ],
+          "definition_of_done": "L'utilisateur peut ajouter et supprimer des programmes d'entraînement de sa liste de favoris. La liste des favoris est persistée en base de données et accessible depuis le profil utilisateur.",
+          "tests_to_plan": [
+            "Test unitaire de l'ajout et suppression des favoris",
+            "Test d'intégration avec la base de données",
+            "Test d'interface utilisateur pour l'ajout et la suppression des favoris",
+            "Test de performance pour la gestion d'un grand nombre de favoris"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "Implémentation de l'authentification utilisateur",
+            "Modèle de données pour les programmes d'entraînement",
+            "API pour gérer les relations entre utilisateurs et programmes d'entraînement"
+          ]
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur enregistré, je veux pouvoir consulter ma liste de programmes d'entraînement favoris afin de pouvoir les retrouver rapidement.",
+          "description": "L'utilisateur doit pouvoir accéder à une page dédiée listant tous les programmes d'entraînement qu'il a marqués comme favoris. Cette page doit être accessible depuis son profil.",
+          "acceptance_criteria": [
+            "Étant donné que je suis un utilisateur connecté et que j'ai des programmes d'entraînement dans ma liste de favoris,\nQuand je navigue vers la page 'Mes favoris',\nAlors je vois une liste de tous les programmes d'entraînement que j'ai ajoutés à mes favoris.",
+            "Étant donné que je suis un utilisateur connecté et que je n'ai aucun programme d'entraînement dans ma liste de favoris,\nQuand je navigue vers la page 'Mes favoris',\nAlors je vois un message indiquant que ma liste de favoris est vide."
+          ],
+          "definition_of_done": "L'utilisateur peut consulter une liste de ses programmes d'entraînement favoris. La liste est paginée si elle contient un grand nombre d'éléments.",
+          "tests_to_plan": [
+            "Test unitaire de la récupération des favoris",
+            "Test d'intégration avec la base de données pour récupérer les favoris",
+            "Test d'interface utilisateur pour l'affichage de la liste des favoris",
+            "Test de performance pour l'affichage d'une liste de favoris volumineuse"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Implémentation de l'authentification utilisateur",
+            "API pour récupérer la liste des favoris d'un utilisateur",
+            "Composant UI pour afficher une liste de programmes d'entraînement"
+          ]
+        },
+        {
+          "id": "US-003",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux voir une indication visuelle claire si un programme d'entraînement est déjà dans mes favoris afin de ne pas l'ajouter plusieurs fois.",
+          "description": "Lorsqu'un utilisateur consulte un programme d'entraînement, l'interface doit indiquer clairement si ce programme est déjà présent dans sa liste de favoris. Cela peut se faire en changeant l'icône du bouton 'Ajouter aux favoris' ou en affichant un message.",
+          "acceptance_criteria": [
+            "Étant donné que je suis un utilisateur connecté et que je consulte un programme d'entraînement qui est déjà dans mes favoris,\nAlors le bouton 'Ajouter aux favoris' est remplacé par un bouton 'Retirer des favoris' ou une icône différente indiquant qu'il est déjà favori.",
+            "Étant donné que je suis un utilisateur connecté et que je consulte un programme d'entraînement qui n'est pas dans mes favoris,\nAlors le bouton 'Ajouter aux favoris' est affiché normalement."
+          ],
+          "definition_of_done": "L'interface utilisateur indique clairement si un programme d'entraînement est déjà dans la liste des favoris de l'utilisateur.",
+          "tests_to_plan": [
+            "Test unitaire pour vérifier l'état du bouton 'Ajouter aux favoris'",
+            "Test d'interface utilisateur pour vérifier l'affichage correct du bouton en fonction de l'état des favoris"
+          ],
+          "priority": "high",
+          "estimation_story_points": 2,
+          "technical_dependencies": [
+            "API pour vérifier si un programme d'entraînement est dans les favoris d'un utilisateur",
+            "Composant UI pour gérer l'état du bouton 'Ajouter aux favoris'"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "8",
+      "title": "En tant qu'utilisateur, je veux pouvoir évaluer et commenter les programmes d'entraînement",
+      "description": "Permettre aux utilisateurs de donner leur avis sur les programmes d'entraînement et d'interagir avec la communauté.",
+      "goal": "Obtenir une moyenne de 5 évaluations par programme d'entraînement partagé.",
+      "priority": "low",
+      "user_stories": [
+        {
+          "id": "US-001",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir évaluer un programme d'entraînement, afin de donner mon avis et aider les autres utilisateurs à choisir les meilleurs programmes.",
+          "description": "Permettre aux utilisateurs d'attribuer une note (par exemple, de 1 à 5 étoiles) à un programme d'entraînement.",
+          "acceptance_criteria": [
+            "Étant donné que je suis un utilisateur connecté et que j'ai consulté un programme d'entraînement,",
+            "Quand je clique sur l'option d'évaluation,",
+            "Alors je peux attribuer une note de 1 à 5 étoiles."
+          ],
+          "definition_of_done": "L'utilisateur peut attribuer une note à un programme d'entraînement. La note est stockée et visible par les autres utilisateurs.",
+          "tests_to_plan": [
+            "Test d'attribution d'une note valide (1 à 5)",
+            "Test d'attribution d'une note invalide (hors de la plage 1-5)",
+            "Test de vérification de la persistance de la note",
+            "Test de l'affichage correct de la note moyenne"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "API pour la gestion des évaluations",
+            "Base de données pour stocker les évaluations"
+          ]
+        },
+        {
+          "id": "US-002",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir commenter un programme d'entraînement, afin de partager mon expérience et donner des conseils.",
+          "description": "Permettre aux utilisateurs de rédiger et de publier des commentaires textuels sur les programmes d'entraînement.",
+          "acceptance_criteria": [
+            "Étant donné que je suis un utilisateur connecté et que j'ai consulté un programme d'entraînement,",
+            "Quand je clique sur l'option de commenter,",
+            "Alors je peux rédiger et soumettre un commentaire.",
+            "Etant donné qu'un commentaire est posté",
+            "Quand un utilisateur regarde les détails d'un programme",
+            "Alors il voit la liste des commentaires les plus récents."
+          ],
+          "definition_of_done": "L'utilisateur peut rédiger et publier un commentaire. Le commentaire est stocké et visible par les autres utilisateurs.",
+          "tests_to_plan": [
+            "Test de publication d'un commentaire valide (texte non vide)",
+            "Test de publication d'un commentaire invalide (texte vide)",
+            "Test de vérification de la persistance du commentaire",
+            "Test de l'affichage correct du commentaire",
+            "Test de modération des commentaires (si applicable)"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "API pour la gestion des commentaires",
+            "Base de données pour stocker les commentaires",
+            "Système de modération des commentaires (optionnel)"
+          ]
+        },
+        {
+          "id": "US-003",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux voir la note moyenne et les commentaires d'un programme d'entraînement, afin de me faire une idée de sa qualité et de son adéquation à mes besoins.",
+          "description": "Afficher la note moyenne et les commentaires des utilisateurs sur la page de détails d'un programme d'entraînement.",
+          "acceptance_criteria": [
+            "Étant donné qu'un programme d'entraînement a reçu des évaluations et des commentaires,",
+            "Quand je consulte la page de détails de ce programme,",
+            "Alors je vois la note moyenne calculée à partir des évaluations.",
+            "Et je vois les commentaires publiés par les autres utilisateurs."
+          ],
+          "definition_of_done": "La note moyenne et les commentaires sont affichés correctement sur la page de détails du programme.",
+          "tests_to_plan": [
+            "Test de l'affichage correct de la note moyenne",
+            "Test de l'affichage correct des commentaires",
+            "Test de l'affichage des commentaires les plus récents en premier",
+            "Test de l'affichage d'un message approprié si aucun commentaire n'est disponible"
+          ],
+          "priority": "high",
+          "estimation_story_points": 3,
+          "technical_dependencies": [
+            "Calcul de la note moyenne à partir des évaluations",
+            "Récupération et affichage des commentaires"
+          ]
+        },
+        {
+          "id": "US-004",
+          "epic_parent": "EPIC-001",
+          "title": "En tant qu'utilisateur, je veux pouvoir signaler un commentaire inapproprié, afin de maintenir un environnement respectueux.",
+          "description": "Permettre aux utilisateurs de signaler les commentaires qui violent les règles de la communauté.",
+          "acceptance_criteria": [
+            "Étant donné que je suis un utilisateur connecté et que je vois un commentaire inapproprié,",
+            "Quand je clique sur l'option de signaler,",
+            "Alors le commentaire est signalé à l'équipe de modération.",
+            "Et je reçois une confirmation que le signalement a été pris en compte."
+          ],
+          "definition_of_done": "L'utilisateur peut signaler un commentaire. Le signalement est enregistré et notifie l'équipe de modération.",
+          "tests_to_plan": [
+            "Test de signalement d'un commentaire",
+            "Test de vérification de la notification à l'équipe de modération",
+            "Test de la gestion des doublons de signalement"
+          ],
+          "priority": "high",
+          "estimation_story_points": 5,
+          "technical_dependencies": [
+            "API pour la gestion des signalements",
+            "Système de notification à l'équipe de modération",
+            "Interface de modération pour l'équipe"
+          ]
+        }
+      ]
+    }
+  ],
+  "model": "google/gemini-2.0-flash-001",
+  "number_token": 281,
+  "marketing": {
+    "analyse_marketing": {
+      "synthese_executive": {
+        "potentiel_global": {
+          "note": 0,
+          "echelle": 0
+        },
+        "forces_principales": null,
+        "risques_majeurs": null
+      },
+      "analyse_marche": {
+        "taille_marche": {
+          "valeur": "",
+          "unite": "",
+          "tendance": ""
+        },
+        "segments_cibles": null,
+        "positionnement": {
+          "concurrents_principaux": null,
+          "avantage_concurrentiel": ""
+        }
+      },
+      "proposition_valeur": {
+        "probleme_resolu": "",
+        "benefices_uniques": null,
+        "differentiation": ""
+      },
+      "faisabilite": {
+        "ressources_necessaires": {
+          "equipe": null,
+          "technologies": null
+        },
+        "barrieres_entree": null
+      },
+      "strategie_go_to_market": {
+        "canaux_acquisition": null,
+        "pricing": {
+          "modele": "",
+          "fourchette": {
+            "min": 0,
+            "max": 0,
+            "devise": ""
+          }
+        },
+        "tactiques_lancement": null
+      },
+      "metriques_cles": {
+        "kpis": null
+      },
+      "recommandations": {
+        "actions_prioritaires": null,
+        "quick_wins": null,
+        "points_attention": null
+      },
+      "metadata": {
+        "date_analyse": "",
+        "niveau_confiance": "",
+        "hypotheses_cles": null
+      }
+    }
+  }
+}
